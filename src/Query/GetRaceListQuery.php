@@ -9,8 +9,8 @@
 namespace App\Query;
 
 use App\Entity\Partial\RacePartial;
+use App\Repository\AreaRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\VarDumper\VarDumper;
 
 /**
  * Description of GetRaceListQuery
@@ -42,8 +42,9 @@ class GetRaceListQuery {
             $racesQuery = $conn->prepare(self::SQL_RACES);
             $racesQuery->bindParam(1, $data['city']);
             $racesQuery->execute();
+            AreaRepository::getColoredCityName($data['city']);
             while ($race = $racesQuery->fetch()) {
-                $result[$data['city']][] = RacePartial::fromData($race);
+                $result[$cityName][] = RacePartial::fromData($race);
             }
         }
         return $result;
