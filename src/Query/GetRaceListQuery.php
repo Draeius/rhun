@@ -38,11 +38,11 @@ class GetRaceListQuery {
         $cityQuery->execute();
         $result = [];
         while ($data = $cityQuery->fetch()) {
-            $result[$data['city']] = [];
+            $cityName = AreaRepository::getColoredCityName($data['city']);
+            $result[$cityName] = [];
             $racesQuery = $conn->prepare(self::SQL_RACES);
             $racesQuery->bindParam(1, $data['city']);
             $racesQuery->execute();
-            $cityName = AreaRepository::getColoredCityName($data['city']);
             while ($race = $racesQuery->fetch()) {
                 $result[$cityName][] = RacePartial::fromData($race);
             }
