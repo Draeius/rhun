@@ -1,0 +1,91 @@
+
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{parent()}}
+    <link href="{{ asset('css/christmas.css')}}" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Mountains+of+Christmas" rel="stylesheet">
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        var downfall = null;
+
+        function displaySnowControl() {
+            var element = document.getElementById("snow-control");
+            element.innerHTML = "<span style='color: #B4E7FF;'>Die Schneeflocken sind los!</span><br />";
+            element.innerHTML += "<span style='color: #00C2FF;' class=\"clickable\" onclick=\"downfall.stop();\">Die Schneeflocken wegpusten.</span>";
+        }
+
+        $(document).ready(function () {
+            displaySnowControl();
+
+            var windowWidth = window.screen.width < window.outerWidth ?
+                    window.screen.width : window.outerWidth;
+            var mobile = windowWidth < 500;
+
+            downfall = new bio.Downfall({});
+
+            if (!mobile && document.cookie.indexOf("snow = 0") === -1) {
+                downfall.start();
+            }
+        });
+
+
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div id="header">
+        <img src="{{ asset('images/logd.png')}}">
+        <h1 id='pagetitle'>
+            {{pagetitle}}
+        </h1>
+        {% if showLinks %}
+            &Diamond; <a href="http://forum.rhun-logd.de" target="_blank">Forum</a> &Diamond;
+            <a href="http://www.rhun-logd.de/wiki" target="_blank">Wiki</a> &Diamond;
+            <a href="{{path('charmanagement', {'_fragment': 'news'})}}" target="_blank"> MotD </a> &Diamond;<!-- echo($this->motdlink)  echo($this->petition) -->
+        {% endif %}
+        {% if showMails %}
+            <a href="{{path(mail_link)}}" target="_blank">Mails {% if new_mails is defined and new_mails > 0 %} (Neu: {{ new_mails }}){% endif %}</a> &Diamond;
+        {% endif %}
+    </div>
+    <table>
+        <tr>
+            <td id="navbar">
+                <div>
+                </div>
+                <img id="nav-muetze" src="{{ asset('images/weihnachtsmuetze.png')}}" />
+                {{navbar|raw}}
+            </td>
+            <td id="content">
+                <div style="border: 2px solid #D76000;">
+                    <div style="border: 2px solid black;">
+                        <img id="schleife" src="{{ asset('images/xmas_schleife.png')}}" />
+                        <div id="snow-control">
+
+                        </div>
+                        {% include asset(page ~ '.html.twig') %}
+                    </div>
+                </div>
+            </td>
+            <td id="infobar">
+                {% if uuid != '1' or account %}
+                    {% include 'parts/stats.html.twig' %}
+                {% endif %}
+                {% if charsPresent %}
+                    {% include 'parts/charsPresent.html.twig' %}
+                {% endif %}
+                {% if not userOnline is same as(false) %}
+                    {% include 'parts/userOnline.html.twig' %}
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+    <div id="footer">
+        Design: Draeius für Rhûn
+    </div>
+
+{% endblock %}

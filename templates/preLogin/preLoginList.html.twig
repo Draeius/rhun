@@ -1,0 +1,100 @@
+<script>
+    function sendForm(id) {
+        document.forms.select.character.value = id;
+        document.forms.select.submit();
+    }
+
+    function searchTable(offset, filter) {
+        var table = document.getElementById('char_list');
+        var trs = table.getElementsByTagName("tr");
+        for (i = 0; i < trs.length; i++) {
+            td = trs[i].getElementsByTagName("td")[offset];
+            if (td) {
+                if (td.textContent.toUpperCase().indexOf(filter) > -1) {
+                    trs[i].style.display = "";
+                } else {
+                    trs[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+    function stopEvent(event) {
+        event.stopPropagation();
+    }
+
+    var tableSorter;
+    $(document).ready(function () {
+        $('#standard_sort').click();
+    });
+</script>
+
+
+<div>
+    Auf diesem Server gibt es insgesamt {{ characters |length }} Einwohner.
+</div>
+<br />
+
+<table id="char_list">
+    <thead>
+    <th>Name <br /> <input onclick="stopEvent(event)" onkeyup="searchTable(0, this.value.toUpperCase())" /></th>
+    <th>Rasse <br /> <input onclick="stopEvent(event)" onkeyup="searchTable(1, this.value.toUpperCase())" /></th>
+    <th>Geschlecht</th>
+    <th>Gilde</th>
+    <th>Level</th>
+    <th>Ort <br /> <input onclick="stopEvent(event)" onkeyup="searchTable(4, this.value.toUpperCase())" </th>
+    <th>Status</th>
+    <th id="standard_sort">Zuletzt online</th>
+</thead>
+<tbody>
+    {% for char in characters %}
+        <tr>
+            <td>
+                {% if char.getGuild() %}[{{ char.getGuild().getTag() |colorize |raw }}]{% endif %} {{ char |charName |colorize |raw }}
+            </td>
+            <td>
+                {{ char.getRace().getName() |colorize |raw }}
+            </td>
+            <td>
+                {{ char.getGender() ? "`9Männlich" |colorize |raw : "`àWeiblich" |colorize |raw }}
+            </td>
+            <td>
+                {% if char.getGuild() %}
+                    {{ char.getGuild().getName() |colorize |raw }}
+                {% else %}
+                    Keine
+                {% endif %}
+            </td>
+            <td>
+                {{ char.getLevel() }}
+            </td>
+            <td>
+                {{ char.getLocation().getTitle() |colorize |raw}}
+            </td>
+            <td>
+                {% if not char.getDead() %}
+                    <span style="color: green;">lebendig</span>
+                {% else %}
+                    <span style="color: red;">tot</span>
+                {% endif %}
+            </td>
+            <td data-type="date" data-value="{{char.getLastActive().format('Y-m-d H:i:s')}}">
+                {% if char.getOnline() %}
+                    <span style="color: green;">online</span>
+                {% else %}
+                    {% set active = char.getLastActive() %}
+                    {% set interval = active.diff(dateNow) %}
+
+                    {% if interval.format('%a') == '0' %}
+                        heute
+                    {% elseif interval.format('%a') == '1' %}
+                        vor einem Tag
+                    {% else %}
+                        {{ interval.format('vor %a Tagen') }}
+                    {% endif %}
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+</tbody>
+</table>

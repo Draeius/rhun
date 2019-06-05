@@ -1,0 +1,96 @@
+
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{parent()}}
+    <link href="{{ asset('css/yarbrough.css')}}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block body %}
+    <div id="bgcolor">
+    </div>
+    <div id="content">
+        <table style="border-style: none;  width: 100%; border-collapse: collapse;">
+            <tr>
+                <td>
+                    <div style="height: 8px"></div>
+                </td>
+            <tr>
+                <td>
+                    <div style="width: 6px;"></div>
+                </td>
+                <td class="place">
+                    <span class="placename">
+                        {{pagetitle}}
+                    </span>
+                </td>
+                <td style="text-align: right; width: 50%; background: url('/images/skins/yarbrough/head2.png')">
+                    <img src="{{ asset('images/skins/yarbrough/logd.png')}}" />
+                </td>
+            </tr>
+        </table>
+        <table id="innerContent">
+            <tr>
+                <td>
+                    <div style="width: 6px"></div>
+                </td>
+                <td class="sidebar">
+                    <img src="{{ asset('images/skins/yarbrough/topnav.png')}}" />
+                    <div style="text-align: center;">
+                        {{navbar|raw}}
+                    </div>
+                    <img src="{{ asset('images/skins/yarbrough/bottomnav.png')}}" /><br>
+                    <br>
+
+                    {% if charsPresent %}
+                        <img src="{{ asset('images/skins/yarbrough/topnav.png')}}" />
+                        {% include 'parts/charsPresent.html.twig' %}
+                        <img src="{{ asset('images/skins/yarbrough/bottomnav.png')}}" /><br>
+                    {% endif %}
+                    {% if not userOnline is same as(false) %}
+                        <img src="{{ asset('images/skins/yarbrough/topnav.png')}}" />
+                        {% include 'parts/userOnline.html.twig' %}
+                        <img src="{{ asset('images/skins/yarbrough/bottomnav.png')}}" /><br>
+                    {% endif %}
+                    {% if showMails %}
+                        <a href="{{path(mail_link)}}" target="_blank">
+                            {% if new_mails is defined and new_mails < 1 %}
+                                Mails
+                            {% endif %}
+                            {% if new_mails is defined and new_mails > 0 %}
+                                <b><font color="FFFF00">Mails (Neu: {{ new_mails }})</font></b>
+                                {% endif %}
+                        </a> &Diamond;
+                    {% endif %}
+
+                    {% if uuid != '1' or account %}
+                        <img src="{{ asset('images/skins/yarbrough/topnav.png')}}" />
+                        {% include 'parts/stats.html.twig' %}
+                        <img src="{{ asset('images/skins/yarbrough/bottomnav.png')}}" /><br>
+                    {% endif %}
+                </td>
+                <td class="mainArea">
+                    {% include asset(page ~ '.html.twig') %}
+                </td>
+            </tr>
+        </table>
+        <table id="footer">
+            <tr>
+                <td>
+                    <div style="width: 6px"></div>
+                </td>
+                <td style="background-image: url('{{ asset('images/skins/yarbrough/foot.png')}}'); width: 100%;">
+                    
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div style="width: 6px"></div>
+                </td>
+                <td>
+                    <div style="color: white;">Template by Chris Yarbrough</div>
+                </td>
+            </tr>
+        </table>
+    </div>
+{% endblock %}

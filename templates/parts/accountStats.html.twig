@@ -1,0 +1,29 @@
+<div id="statswindow">
+    <h3>Account Info:</h3>
+    <table>
+        <tr>
+            <td>
+                Name:
+            </td>
+            <td>
+                {{ account.getUsername() }}
+            </td>
+        </tr> 
+        <tr>
+            <td>
+                Edelsteine:
+            </td>
+            <td>
+                {{ account.getGems() }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Charaktere:
+            </td>
+            <td>
+        <status-bar current_value="{{ account.getCharacters() |length }}" max_value="{{ account.getMaxChars() }}" width="150"></status-bar>
+        </td>
+        </tr> 
+    </table>
+</div>

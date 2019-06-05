@@ -1,0 +1,304 @@
+<div id="statswindow">
+    <table style="text-align: center">
+        <tr>
+            <td style="width: 100%; font-size: 15px;">
+                {% if character.getGuild() %}[{{ character.getGuild().getTag() |colorize |raw }}]{% endif %} {{ character |charName |colorize |raw }}
+            </td>
+        </tr>
+    </table>
+    <table style="text-align: center">
+        <tr>
+            <td style="width: 33%">
+                <p style="font-size: 1.5em; margin-top: 0px;">
+                    Level {{ character.getLevel() }}
+                </p>
+                <span style="font-size: 1.5em;">
+                    HP:
+                </span>
+                {% set percentage = (character.getCurrentHP() / -character.getMaxHPWithBuff()) %}
+                <div style="
+                     display: inline-block; 
+                     width: 200px; 
+                     height: 10px;
+                     border: 1px solid darkred;
+                     background-image: url({{asset('/images/vitalinfo/HPBar.png')}});
+                     background-position: {{200 - percentage * 200}}px 0px;">
+                </div><br />
+                <div style="text-align: left; margin-left: 40px;">
+                    {{character.getCurrentHP()}}/{{character.getMaxHPWithBuff()}}
+                </div>
+                <span style="font-size: 1.5em;">
+                    AP:
+                </span>
+                {% set percentage = (character.getCurrentStamina() / -character.getMaxStaminaWithBuff()) %}
+                <div style="
+                     display: inline-block; 
+                     width: 200px; 
+                     height: 10px;
+                     border: 1px solid green;
+                     background-image: url({{asset('/images/vitalinfo/APBar.png')}});
+                     background-position: {{200 - percentage * 200}}px 0px;">
+                </div><br />
+                <div style="text-align: left; margin-left: 40px;">
+                    {{character.getCurrentStamina()}}/{{character.getMaxStaminaWithBuff()}}
+                </div>
+                <!--
+            <span style="font-size: 1.5em;">
+                MP: (TBD)
+                </span>
+                {% set percentage = 0 %}
+                <div style="
+                     display: inline-block; 
+                     width: 200px; 
+                     height: 10px;
+                     border: 1px solid grey;
+                     background-image: url({{asset('/images/vitalinfo/MPBar.png')}});
+                     background-position: {{200 - percentage * 200}}px 0px;">
+                </div><br />
+                <div style="text-align: left; margin-left: 40px;">
+                {{character.getCurrentHP()}}/{{character.getMaxHPWithBuff()}}
+            </div>
+                -->
+                <span style="font-size: 1.5em;">
+                    XP:
+                </span>
+                {% set percentage = (character.getExp() / -levelUpExp) %}
+                <div style="
+                     display: inline-block; 
+                     width: 200px; 
+                     height: 10px;
+                     border: 1px solid grey;
+                     background-image: url({{asset('/images/vitalinfo/XPBar.png')}});
+                     background-position: {{200 - percentage * 200}}px 0px;">
+                </div><br />
+                <div style="text-align: left; margin-left: 40px;">
+                    {{character.getExp()}}/{{levelUpExp}}
+                </div>
+            </td>
+        </tr>
+    </table>
+    <table style="text-align: center">
+        <tr>
+            <td style="width: 50%;">
+                <div>
+                    <span>Waffe</span>
+                </div>
+                <div style="
+                     width: 40px;
+                     height: 40px;
+                     margin: 0 auto;
+                     {% set weaponType = character.getWeapon().getWeaponTemplate().getWeaponType() %}
+                     {% if weaponType == 0 %}
+                         background-image: url({{asset('/images/weapon_icons/dagger_ico.png')}});
+                     {% elseif weaponType == 1 %}
+                         background-image: url({{asset('/images/weapon_icons/sword_ico.png')}});
+                     {% elseif weaponType == 2 %}
+                         background-image: url({{asset('/images/weapon_icons/mace_ico.png')}});
+                     {% elseif weaponType == 3 %}
+                         background-image: url({{asset('/images/weapon_icons/bow_ico.png')}});
+                     {% elseif weaponType == 4 %}
+                         background-image: url({{asset('/images/weapon_icons/hammer_ico.png')}});
+                     {% elseif weaponType == 5 %}
+                         background-image: url({{asset('/images/weapon_icons/axe_ico.png')}});
+                     {% elseif weaponType == 6 %}
+                         background-image: url({{asset('/images/weapon_icons/pole_ico.png')}});
+                     {% elseif weaponType == 7 %}
+                         background-image: url({{asset('/images/weapon_icons/greatsword_ico.png')}});
+                     {% endif %}"
+                     onmouseover="display.Infobox.showInfobox(event, -150, 10)" onmouseout="display.Infobox.hideInfobox(event)">
+
+                    {% include(asset('parts/weaponInfobox.html.twig')) with {'item': character.getWeapon().getWeaponTemplate(), 'weaponType': weaponType} only %}
+                </div>
+            </td>
+            <td style="width: 50%;">
+                <div>
+                    <span>Rüstung</span>
+                </div>
+                <div style="
+                     width: 40px;
+                     height: 40px;
+                     margin: 0 auto;
+                     {% set armorType = character.getArmor().getArmorTemplate().getArmorType() %}
+                     {% if armorType == 0 %}
+                         background-image: url({{asset('/images/armor_icons/light_armor_ico.png')}});
+                     {% elseif armorType == 1 %}
+                         background-image: url({{asset('/images/armor_icons/medium_armor_ico.png')}});
+                     {% elseif armorType == 2 %}
+                         background-image: url({{asset('/images/armor_icons/heavy_armor_ico.png')}});
+                     {% endif %}"
+                     onmouseover="display.Infobox.showInfobox(event, -150, 10)" onmouseout="display.Infobox.hideInfobox(event)">
+
+                    {% include(asset('parts/armorInfobox.html.twig')) with {'item': character.getArmor().getArmorTemplate(), 'armorType': armorType} only %}
+                </div>
+            </td>
+        </tr>
+    </table>
+    <table style="text-align: center">
+        <tr>
+            <td style="width: 0%">
+            </td>
+            <td>
+                <div>
+                    <span>Effekte</span><br />
+                    {% if character.getBuffs() |length == 0 %}
+                        Keine Effekte.
+                    {% else %}
+                        {% for buff in character.getBuffs() %}
+                            {% include(asset('parts/buff.html.twig')) with {'buff': buff} only %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </td>
+            <td style="width: 0%">
+            </td>
+        </tr>
+    </table>
+
+    <h3>Sonstige Infos:</h3>
+    <table>
+        <tr>
+            <td>
+                <a href="{{path('inventory', {'uuid': uuid})}}"> <img src="{{asset('images/bag.png')}}"> </a>
+            </td>
+            <td>
+                <a href="{{path('inventory', {'uuid': uuid})}}">Inventar</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Gilde:
+            </td>
+            <td>
+                {% if character.getGuild() %} 
+                    <a href="{{ path('guild_show', {'uuid': uuid, 'id': character.getGuild().getId()}) }}">[{{ character.getGuild().getTag() |colorize |raw }}]
+                    {{ character.getGuild().getName() |colorize |raw }}</a>
+                {% else %}
+                    Keine
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="{{path('change_rp_state', {'uuid': uuid})}}"> 
+                    <img src="{% if character.getRpState() %}{{asset('images/Icon_green_dot.png')}}{% else %}{{asset('images/Icon_red_dot.png')}}{% endif %}"
+                         style="width: 20px; height: 20px;">
+                </a>
+            </td>
+            <td>
+                <a href="{{path('change_rp_state', {'uuid': uuid})}}">RP-Status</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                {{ 'Gold / Bank:' |colorize |raw }}
+            </td>
+            <td>
+                {{ character.getWallet().getGold() }} / {{ character.getWallet().getBankGold() }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                {{ 'Platin / Bank:' |colorize |raw }}
+            </td>
+            <td>
+                {{ character.getWallet().getPlatin() }} / {{ character.getWallet().getBankPlatin() }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                {{ 'Edelsteine:' |colorize |raw }}
+            </td>
+            <td>
+                {{ character.getWallet().getGems() }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Reputation:
+            </td>
+            <td>
+                {{ ((character.getAttributes().getReputation() < 0 ? "`e" : "`d") ~ character.getAttributes().getReputation()) |colorize |raw }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Charme:
+            </td>
+            <td>
+                {{ ((character.getAttributes().getCharme() < 0 ? "`e" : "`d") ~ character.getAttributes().getCharme()) |colorize |raw }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Stärke:
+            </td>
+            <td>
+                {{ character.getAttributeWithBuff(0) }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Präzision:
+            </td>
+            <td>
+                {{ character.getAttributeWithBuff(1) }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Geschicklichkeit:
+            </td>
+            <td>
+                {{ character.getAttributeWithBuff(2) }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Agilität:
+            </td>
+            <td>
+                {{ character.getAttributeWithBuff(4) }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Konstitution:
+            </td>
+            <td>
+                {{ character.getAttributeWithBuff(3) }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Intelligenz:
+            </td>
+            <td>
+                {{ character.getAttributeWithBuff(5) }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Skillpunkte:
+            </td>
+            <td>
+                {{ character.getAttributes().getSkillpoints() }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Beruf:
+            </td>
+            <td>
+                {{ character.getJob() ? character.getJob().getName() : 'Arbeitslos' }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Nächsten Phase:
+            </td>
+            <td>
+                {{ nextPhase }}
+            </td>
+        </tr>
+    </table>
+</div>

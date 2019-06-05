@@ -1,0 +1,5 @@
+
+<span> {{news.getCreationDate().format("d.m.Y G:i")}}</span>
+<p>
+    {{ news.getContent() |colorize |raw}}
+</p>

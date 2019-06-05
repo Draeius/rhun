@@ -1,0 +1,10 @@
+<div class='info'>
+    <h3>Spieler online: </h3>
+    {% if userOnline |length == 0 %} 
+        Keine Spieler wach
+    {% else %}
+        {% for awake in userOnline %}
+            <span>{{ awake |charName |colorize |raw }}</span><br />
+        {% endfor %}
+    {% endif %}
+</div>

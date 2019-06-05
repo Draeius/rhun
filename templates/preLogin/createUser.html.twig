@@ -1,0 +1,46 @@
+<p style="color: blue;">
+    INFO: Du erstellst hier keinen Charakter mit dem du dich sp&auml;ter durch
+    die Welt von Rhun bewegen kannst, sondern nur einen Account um dich
+    anmelden zu k&ouml;nnen. Wenn du das erledigt hast, kannst du nach
+    Herzenslust Charaktere erstellen und damit die Welt erkunden.<br />
+    Du darfst maximal einen Account erstellen. Mehrere Accounts pro Person sind nicht gestattet und werden gelöscht.
+</p>
+<br />
+<span style="color: red;">Wir empfehlen diesen Account nicht nach einem deiner sp&auml;teren Charaktere zu benennen.</span>
+<br />
+
+{{ form_start(form) }}
+<table>
+    <tr>
+        <td style="text-align: right; vertical-align: center;">Name:</td>
+        <td>{{ form_row(form.username) }}</td>
+    </tr>
+    <tr>
+        <td style="text-align: right; vertical-align: center;">Passwort:</td>
+        <td>{{ form_row(form.password.first) }}</td>
+    </tr>
+    <tr>
+        <td style="text-align: right; vertical-align: center;">Passwort best&auml;tigen:</td>
+        <td>{{ form_row(form.password.second) }}</td>
+    </tr>
+    <tr>
+        <td style="text-align: right; vertical-align: center;">Deine Email
+            Adresse:</td>
+        <td>{{ form_row(form.email) }}</td>
+    </tr>
+    <tr>
+        <td style="text-align: right; vertical-align: center;">Dein Geburtstag:</td>
+        <td>{{ form_row(form.birthday) }}  (Freiwillig. Wird benötigt um bestimmte Räume betreten zu können.)</td>
+    </tr>
+</table>
+<br />
+<br />
+<span>
+    Mit dem Erstellen deines Charakters stimmst du den hier geltenden "<a href='/rules' target='_blank'>Regeln und Gesetzen</a>" zu!
+</span>
+<br />
+<br />
+{{error}}
+<br />
+<input type='submit' class='button' value='Erstellen'>
+{{ form_end(form) }}

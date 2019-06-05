@@ -1,0 +1,27 @@
+<script>
+    function changeVisibility(city) {
+        var element = document.getElementById("races_" + city);
+        if (element.style.display == "block") {
+            element.style.display = "none";
+        } else {
+            element.style.display = "block";
+        }
+    }
+</script>
+
+{% for name,city in races %}
+    <h3 class="clickable" onclick="changeVisibility('{{name}}');">{{ name |colorize |raw}}</h3>
+    <table id="races_{{ name }}" style="display: none;">
+        <th>Name</th>
+        <th>Beschreibung</th>
+        {% for race in city %}
+            <tr>
+                <td>
+                    {{ race.getName() |colorize |raw}}
+                </td>
+                <td>
+                    {{ race.getDescription() |colorize |raw}}
+                </td>
+            {% endfor %}
+    </table>
+{% endfor %}

@@ -1,0 +1,50 @@
+
+{% set original = item %}
+{% if item.getWeaponTemplate() is defined %}
+    {% set item = item.getWeaponTemplate() %}
+{% endif %}
+{% set weaponType = item.getWeaponType() %}
+
+<div onmouseover="display.Infobox.showInfobox(event, 10, 10)" onmouseout="display.Infobox.hideInfobox(event)">
+    <table>
+        <tr>
+            <td>
+                <img src="
+                     {% if weaponType == 0 %}
+                         {{asset('/images/weapon_icons/dagger_ico.png')}}
+                     {% elseif weaponType == 1 %}
+                         {{asset('/images/weapon_icons/sword_ico.png')}}
+                     {% elseif weaponType == 2 %}
+                         {{asset('/images/weapon_icons/mace_ico.png')}}
+                     {% elseif weaponType == 3 %}
+                         {{asset('/images/weapon_icons/bow_ico.png')}}
+                     {% elseif weaponType == 4 %}
+                         {{asset('/images/weapon_icons/hammer_ico.png')}}
+                     {% elseif weaponType == 5 %}
+                         {{asset('/images/weapon_icons/axe_ico.png')}}
+                     {% elseif weaponType == 6 %}
+                         {{asset('/images/weapon_icons/pole_ico.png')}}
+                     {% elseif weaponType == 7 %}
+                         {{asset('/images/weapon_icons/greatsword_ico.png')}}
+                     {% endif %}" style="width: 40px; height: 40px; float: left;">
+            </td>
+            <td>
+                <span style="font-size: 1.5em;">
+                    {% if name is defined %}
+                        {{ name |colorize |raw }}
+                    {% else %}
+                        {{ original.getName() |colorize |raw }}
+                    {% endif %}
+                </span><br />
+                <p>
+                    {% if description is defined %}
+                        {{ description |colorize |raw }}
+                    {% else %}
+                        {{ original.getDescription() |colorize |raw }}
+                    {% endif %}
+                </p>
+                {% include(asset('parts/weaponInfobox.html.twig')) with {'item': item, 'weaponType': weaponType} only %}
+            </td>
+        </tr>
+    </table>
+</div>

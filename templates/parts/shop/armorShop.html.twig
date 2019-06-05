@@ -1,0 +1,44 @@
+<ul class="tab">
+    {% for armorType, armorArray in items %}
+        <li>
+            <a class="tablinks" onclick="content.ContentManager.openTab(event, '{{ armorType }}');">
+                {{ armorType |armorType }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>
+
+{% for armorType, armorArray in items %}
+    <div id="{{ armorType }}" class="tabcontent">
+        <table id="inventory">
+            <thead>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Level
+                    </th>
+                    <th>
+                        Preis
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for armor in armorArray %}
+                    <tr class="clickable" onclick="buyItem({{ armor.id}});">
+                        <td>
+                            {% include 'parts/armor.html.twig' with {'item': armor} %}
+                        </td>
+                        <td data-type="number">
+                            {{ armor.level }}
+                        </td>
+                        <td data-type="number">
+                            {{ armor.buyPrice }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endfor %}

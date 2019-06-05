@@ -1,0 +1,136 @@
+<div style="
+     width: 40px;
+     height: 40px;
+     margin: 0 auto;
+     display: inline-block;
+     margin: 2px;
+     background-image: url({{asset('/images/buff_icons/' ~ buff.getTemplate().getIcon() ~ '.png')}});"
+     onmouseover="display.Infobox.showInfobox(event, -200, 10)" onmouseout="display.Infobox.hideInfobox(event)">
+
+    <div class="infobox" style="display: none; z-index: 1000; text-align: left;">
+        <table>
+            <tr>
+                <td>
+                    <div style="
+                         width: 40px;
+                         height: 40px;
+                         margin: 0 auto;
+                         background-image: url({{asset('/images/buff_icons/' ~ buff.getTemplate().getIcon() ~ '.png')}});"
+                         onmouseover="display.Infobox.showInfobox(event, -100, 10)" onmouseout="display.Infobox.hideInfobox(event)">
+                    </div>
+                </td>
+                <td>
+                    <span style="font-size: 20px;">{{buff.getTemplate().getName() |colorize |raw}}</span><br />
+                    <br />
+                    <p>
+                        {{buff.getTemplate().getDescription() |colorize |raw}}
+                    </p>
+                    <br />
+                    {% if buff.getTemplate().getHpBuff() > 0 %}
+                        {% if buff.getTemplate().getHpBuff() <= 1 %}
+                            <span style="color: green">Maximale Lebenspunkte {{buff.getTemplate().getHpBuff() * 100}}%</span><br />
+                        {% else %}
+                            <span style="color: green">Maximale Lebenspunkte {{buff.getTemplate().getHpBuff() }}</span><br />
+                        {% endif %}
+                    {% else %}
+                        {% if buff.getTemplate().getHpBuff() != 0 %}
+                            {% if buff.getTemplate().getHpBuff() >= -1 %}
+                                <span style="color: red">Maximale Lebenspunkte {{buff.getTemplate().getHpBuff() * 100}}%</span><br />
+                            {% else %}
+                                <span style="color: red">Maximale Lebenspunkte {{buff.getTemplate().getHpBuff() * 1}}</span><br />
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+
+                    {% if buff.getTemplate().getHpRegen() > 0 %}
+                        {% if buff.getTemplate().getHpRegen() < 1 %}
+                            <span style="color: green">Lebenspunkte Regeneration {{buff.getTemplate().getHpRegen() * 100}}%</span><br />
+                        {% else %}
+                            <span style="color: green">Lebenspunkte Regeneration {{buff.getTemplate().getHpRegen() }}</span><br />
+                        {% endif %}
+                    {% else %}
+                        {% if buff.getTemplate().getHpRegen() != 0 %}
+                            {% if buff.getTemplate().getHpRegen() > -1 %}
+                                <span style="color: red">Lebenspunkte Degeneration {{buff.getTemplate().getHpRegen() * 100}}%</span><br />
+                            {% else %}
+                                <span style="color: red">Lebenspunkte Degeneration {{buff.getTemplate().getHpRegen() }}</span><br />
+                            {% endif %}
+                        {%endif %}
+                    {% endif %}
+
+                    {% if buff.getTemplate().getStaminaBuff() > 0 %}
+                        {% if buff.getTemplate().getStaminaBuff() < 1 %}
+                            <span style="color: green">Maximale Ausdauer {{buff.getTemplate().getStaminaBuff() * 100}}%</span><br />
+                        {% else %}
+                            <span style="color: green">Maximale Ausdauer {{buff.getTemplate().getStaminaBuff() }}</span><br />
+                        {% endif %}
+                    {% else %}
+                        {% if buff.getTemplate().getStaminaBuff() != 0 %}
+                            {% if buff.getTemplate().getStaminaBuff() > -1 %}
+                                <span style="color: red">Maximale Ausdauer {{buff.getTemplate().getStaminaBuff() * 100}}%</span><br />
+                            {% else %}
+                                <span style="color: red">Maximale Ausdauer {{buff.getTemplate().getStaminaBuff() }}</span><br />
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+
+                    {% if buff.getTemplate().getStaminaRegen() > 0 %}
+                        {% if buff.getTemplate().getStaminaRegen() < 1 %}
+                            <span style="color: green">Ausdauer Regeneration {{buff.getTemplate().getStaminaRegen() * 100}}%</span><br />
+                        {% else %}
+                            <span style="color: green">Ausdauer Regeneration {{buff.getTemplate().getStaminaRegen() }}</span><br />
+                        {% endif %}
+                    {% else %}
+                        {% if buff.getTemplate().getStaminaRegen() != 0 %}
+                            {% if buff.getTemplate().getStaminaRegen() > -1 %}
+                                <span style="color: red">Ausdauer Degeneration {{buff.getTemplate().getStaminaRegen() * 100}}%</span><br />
+                            {% else %}
+                                <span style="color: red">Ausdauer Degeneration {{buff.getTemplate().getStaminaRegen() }}</span><br />
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+
+                    {% if buff.getTemplate().getAttackBuff() > 0 %}
+                        {% if buff.getTemplate().getAttackBuff() <= 1 %}
+                            <span style="color: green">Angriff +{{buff.getTemplate().getAttackBuff() * 100}}%</span><br />
+                        {% else %}
+                            <span style="color: green">Angriff +{{buff.getTemplate().getAttackBuff() }}</span><br />
+                        {% endif %}
+                    {% else %}
+                        {% if  buff.getTemplate().getAttackBuff() != 0 %}
+                            {% if buff.getTemplate().getAttackBuff() >= -1 %}
+                                <span style="color: red">Angriff {{buff.getTemplate().getAttackBuff() * 100}}%</span><br />
+                            {% else %}
+                                <span style="color: red">Angriff {{buff.getTemplate().getAttackBuff() }}</span><br />
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+
+                    {% if buff.getTemplate().getDefenseBuff() > 0 %}
+                        {% if buff.getTemplate().getDefenseBuff() <= 1 %}
+                            <span style="color: green">Verteidigung +{{buff.getTemplate().getDefenseBuff() * 100}}%</span><br />
+                        {% else %}
+                            <span style="color: green">Verteidigung +{{buff.getTemplate().getDefenseBuff() }}</span><br />
+                        {% endif %}
+                    {% else %}
+                        {% if  buff.getTemplate().getDefenseBuff() != 0 %}
+                            {% if buff.getTemplate().getDefenseBuff() >= -1 %}
+                                <span style="color: red">Verteidigung {{buff.getTemplate().getDefenseBuff() * 100}}%</span><br />
+                            {% else %}
+                                <span style="color: red">Verteidigung {{buff.getTemplate().getDefenseBuff() }}</span><br />
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+
+                    {% if not buff.getTemplate().getCanWork() %}
+                        <span style="color: red;">Kann nicht arbeiten</span><br />
+                    {% endif %}
+
+                    {% if not buff.getTemplate().getEndOnDeath() %}
+                        <span style="color: red;">Endet nicht bei Tod</span><br />
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

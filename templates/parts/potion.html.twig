@@ -1,0 +1,60 @@
+<div onmouseover="display.Infobox.showInfobox(event, 10, 10)" onmouseout="display.Infobox.hideInfobox(event)">
+    <table>
+        <tr>
+            <td>
+                <img src="
+                     {% if item.getIcon() == '' %}
+                         {% if item.getRestoreHP() >= item.getRestoreStamina() %}
+                             {{asset('/images/item_icons/potion_red_ico.png')}}
+                         {% else %}
+                             {{asset('/images/item_icons/potion_green_ico.png')}}
+                         {% endif %}
+                     {% else %}
+                         {{asset('/images/item_icons/' ~ item.getIcon() ~ '.png')}}
+                     {% endif %}" style="width: 40px; height: 40px;">
+            </td>
+            <td>
+                <span style="font-size: 1.5em;">
+                    {{ item.getName() |colorize |raw }}
+                </span><br />
+                <p>
+                    {{ item.getDescription() |colorize |raw }}
+                </p>
+                <div class="infobox" style="display: none; z-index: 1000;">
+                    <table>
+                        <tr>
+                            <td>
+                                <div style="
+                                     width: 40px;
+                                     height: 40px;
+                                     margin: 0 auto;
+                                     {% if item.getIcon() == '' %}
+                                         {% if item.getRestoreHP() >= item.getRestoreStamina() %}
+                                             background-image: url({{asset('/images/item_icons/potion_red_ico.png')}});
+                                         {% else %}
+                                             background-image: url({{asset('/images/item_icons/potion_green_ico.png')}});
+                                         {% endif %}
+                                     {% else %}
+                                         background-image: url({{asset('/images/item_icons/' ~ item.getIcon() ~ '.png')}});
+                                     {% endif %}">
+                                </div>
+                            </td>
+                            <td>
+                                {% if item.getRestoreHP() > 0 %}
+                                    <span style="color: green">Lebenspunkte +{{item.getRestoreHP()}}</span><br />
+                                {% elseif item.getRestoreHP() < 0 %}
+                                    <span style="color: red">Lebenspunkte {{item.getRestoreHP()}}</span><br />
+                                {% endif %}
+                                {% if item.getRestoreStamina() > 0 %}
+                                    <span style="color: green">Ausdauer +{{item.getRestoreStamina()}}</span>
+                                {% elseif item.getRestoreStamina() < 0 %}
+                                    <span style="color: red">Ausdauer {{item.getRestoreStamina()}}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>

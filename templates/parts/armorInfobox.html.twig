@@ -1,0 +1,41 @@
+<div class="infobox" style="display: none; z-index: 1000;">
+    <table>
+        <tr>
+            <td>
+                <div style="
+                     width: 40px;
+                     height: 40px;
+                     margin: 0 auto;
+                     {% if armorType == 0 %}
+                         background-image: url({{asset('/images/armor_icons/light_armor_ico.png')}});
+                     {% elseif armorType == 1 %}
+                         background-image: url({{asset('/images/armor_icons/medium_armor_ico.png')}});
+                     {% elseif armorType == 2 %}
+                         background-image: url({{asset('/images/armor_icons/heavy_armor_ico.png')}});
+                     {% endif %}"
+                     onmouseover="display.Infobox.showInfobox(event, -100, 10)" onmouseout="display.Infobox.hideInfobox(event)">
+                </div>
+            </td>
+            <td>
+                <span>
+                    {{ item.getArmorType() |armorType }} Level {{ item.getLevel() }} 
+                </span><br />
+                <span>
+                    Ausdauerverlust: {{ item.getStaminaDrain() }}
+                </span>
+                <br />
+                <br />
+                Voraussetzungen:<br />
+                <span>
+                    {{ item.getAttribute() |attributeName }}: {{ item.getMinAttribute() }}
+                </span>
+                {% if item.getSecondAttribute |isValidAttribute and item.getMinSecondAttr() > 0 %}
+                    <br />
+                    <span>
+                        {{ item.getSecondAttribute() |attributeName }}: {{ item.getMinSecondAttr() }}
+                    </span>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+</div>

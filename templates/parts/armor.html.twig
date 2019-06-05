@@ -1,0 +1,40 @@
+
+{% set original = item %}
+{% if item.getArmorTemplate() is defined %}
+    {% set item = item.getArmorTemplate() %}
+{% endif %}
+{% set armorType = item.getArmorType() %}
+
+<div onmouseover="display.Infobox.showInfobox(event, 10, 10)" onmouseout="display.Infobox.hideInfobox(event)">
+    <table>
+        <tr>
+            <td>
+                <img src="
+                     {% if armorType == 0 %}
+                         {{asset('/images/armor_icons/light_armor_ico.png')}}
+                     {% elseif armorType == 1 %}
+                         {{asset('/images/armor_icons/medium_armor_ico.png')}}
+                     {% elseif armorType == 2 %}
+                         {{asset('/images/armor_icons/heavy_armor_ico.png')}}
+                     {% endif %}" style="width: 40px; height: 40px;">
+            </td>
+            <td>
+                <span style="font-size: 1.5em;">
+                    {% if name is defined %}
+                        {{ name |colorize |raw }}
+                    {% else %}
+                        {{ item.getName() |colorize |raw }}
+                    {% endif %}
+                </span><br />
+                <p>
+                    {% if description is defined %}
+                        {{ description |colorize |raw }}
+                    {% else %}
+                        {{ original.getDescription() |colorize |raw }}
+                    {% endif %}
+                </p>
+                {% include(asset('parts/armorInfobox.html.twig')) with {'item': item, 'armorType': armorType} only %}
+            </td>
+        </tr>
+    </table>
+</div>

@@ -1,0 +1,42 @@
+{% set id = posts[0].getId() %}
+<table style="margin-top: 35px;">
+    <tr>
+        <td style="width: 100%;">
+            <h3 class="clickable" onClick="changeVisibility(document.getElementById('{{ id }}'));">
+                {{ locationName |colorize |raw}}
+            </h3>
+            <span>{{ posts |length }} Posts</span>
+        </td>
+        <td>
+            <form method="POST" action="/admin/post/delete_all">
+                <input type="hidden" name="loc_id" value="{{ posts[0].getLocation().getId() }}" />
+                <input type="submit" value="Alles Löschen" />
+            </form>
+        </td>
+    </tr>
+</table>
+<table id="{{ id }}" style="width: 100%;" >
+    <thead>
+        <tr>
+            <th style="width: 100px;">
+                Datum
+            </th>
+            <th style="width: 100px;">
+                Charakter
+            </th>
+            <th  style="width: auto;">
+                Inhalt
+            </th>
+            <th style="width: 75px">
+                Löschen
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% set visible = true %}
+        {% for post in posts |filter(v => post is defined)%}
+            {% include(asset('parts/admin/post.html.twig')) with {'post': post, 'visible': visible} %}
+            {% set visible = false %}
+        {% endfor %}
+    </tbody>
+</table>

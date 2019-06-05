@@ -1,0 +1,17 @@
+<tr {% if not visible %} style="display: none;" {% endif %}>
+    <td data-type="date" data-value="{{ post.getCreationDate() |date('Y-m-d H:i:s') }}">
+        {{ post.getCreationDate() |date('d.m.Y') }}
+    </td>
+    <td>
+        {{ post.getAuthor() |charName |colorize |raw }}
+    </td>
+    <td>
+        {{ post.getContent() |colorize |raw}}
+    </td>
+    <td>
+        <form method="POST" action="/admin/post/delete">
+            <input type="hidden" name="id" value="{{ post.getId() }}" />
+            <input type="submit" value="Löschen" onclick="return Ajax.submitForm(this.parentElement, getBaseURL() + 'locations/admin/PostList.php')" />
+        </form>
+    </td>
+</tr>

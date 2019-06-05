@@ -1,0 +1,53 @@
+
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{parent()}}
+    <link href="{{ asset('css/fire.css')}}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Tangerine">
+{% endblock %}
+
+{% block body %}
+    <div id="header">
+        <img src="{{ asset('images/logd.png')}}">
+        <h1 id='pagetitle'>
+            {{pagetitle}}
+        </h1>
+        {% if showLinks %}
+            &Diamond; <a href="http://forum.rhun-logd.de" target="_blank">Forum</a> &Diamond;
+            <!-- <a href="http://wiki.rhun-logd.de" target="_blank">Wiki</a> &Diamond; -->
+            <a href="{{path('charmanagement', {'_fragment': 'news'})}}" target="_blank"> MotD </a> &Diamond;<!-- echo($this->motdlink)  echo($this->petition) -->
+        {% endif %}
+        {% if showMails %}
+            <a href="{{path(mail_link)}}" target="_blank">Wiki</a> &Diamond;
+        {% endif %}
+    </div>
+    <table>
+        <tr>
+            <td id="navbar">
+                <div>
+
+                </div>
+                {{navbar|raw}}
+            </td>
+            <td id="content">
+                {% include asset(page ~ '.html.twig') %}
+            </td>
+            <td id="infobar">
+                {% if uuid != '1' or account %}
+                    {% include 'parts/stats.html.twig' %}
+                {% endif %}
+                {% if charsPresent %}
+                    {% include 'parts/charsPresent.html.twig' %}
+                {% endif %}
+                {% if not userOnline is same as(false) %}
+                    {% include 'parts/userOnline.html.twig' %}
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+    <div id="footer">
+        Design: Draeius für Rhûn
+    </div>
+
+{% endblock %}

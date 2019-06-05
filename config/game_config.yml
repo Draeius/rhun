@@ -1,0 +1,55 @@
+role_play:
+    post:
+        reward:
+            point_multiplier: 1 
+            min_word_count: 50
+            max_word_count: 550
+            monetary:
+                gold: 0
+                platin: 0.1
+                gems: 1
+                word_count: 5.5
+        word_filter: false
+    colored_name:
+        price:
+            gold: 0
+            platin: 0
+            gems: 200
+    colored_title:
+        price:
+            gold: 0
+            platin: 0
+            gems: 500
+         
+house:
+    price:
+        gold: 0
+        platin: 100
+        gems: 350
+    room:
+        price: #Wenn die Stufe eines Hauses erweitert wird, gilt dieser Preis
+            gold: 0
+            platin: 150
+            gems: 0
+            
+guild:
+    founding_price:
+            gold: 0
+            platin: 1000
+            gems: 0
+            
+settings:
+    start_money:
+        gold: 0
+        platin: 0
+        gems: 0
+    start_user_level: 1
+    email_validation: 0
+    phase_per_day: 4
+    ooc_days: 3
+    post_days: 28
+    delete_threshold: 365
+    
+            
+            
+        

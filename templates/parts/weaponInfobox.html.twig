@@ -1,0 +1,49 @@
+<div class="infobox" style="display: none; z-index: 1000;">
+    <table>
+        <tr>
+            <td>
+                <div style="
+                     width: 40px;
+                     height: 40px;
+                     margin: 0 auto;
+                     {% if weaponType == 0 %}
+                         background-image: url({{asset('/images/weapon_icons/dagger_ico.png')}});
+                     {% elseif weaponType == 1 %}
+                         background-image: url({{asset('/images/weapon_icons/sword_ico.png')}});
+                     {% elseif weaponType == 2 %}
+                         background-image: url({{asset('/images/weapon_icons/mace_ico.png')}});
+                     {% elseif weaponType == 3 %}
+                         background-image: url({{asset('/images/weapon_icons/bow_ico.png')}});
+                     {% elseif weaponType == 4 %}
+                         background-image: url({{asset('/images/weapon_icons/hammer_ico.png')}});
+                     {% elseif weaponType == 5 %}
+                         background-image: url({{asset('/images/weapon_icons/axe_ico.png')}});
+                     {% elseif weaponType == 6 %}
+                         background-image: url({{asset('/images/weapon_icons/pole_ico.png')}});
+                     {% elseif weaponType == 7 %}
+                         background-image: url({{asset('/images/weapon_icons/greatsword_ico.png')}});
+                     {% endif %}"
+                     onmouseover="display.Infobox.showInfobox(event, -100, 10)" onmouseout="display.Infobox.hideInfobox(event)">
+                </div>
+            </td>
+            <td>
+                <span>
+                    {{ item.getWeaponType |weaponType }} Level {{ item.getLevel() }}
+                </span><br />
+                <span>
+                    Schaden:
+                    {{ item |damageInfo }}
+                </span><br />
+                <span>
+                    Ausdauerverlust: {{ item.getStaminaDrain() }}
+                </span>
+                <br />
+                <br />
+                Voraussetzungen:<br />
+                <span>
+                    {{ item.getAttribute() |attributeName }}: {{ item.getMinAttribute() }}
+                </span><br />
+            </td>
+        </tr>
+    </table>
+</div>

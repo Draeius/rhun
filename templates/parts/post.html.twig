@@ -1,0 +1,21 @@
+{% if post.getLocation().getId() != 1 %}
+    <div class="dropdown" style="display: inline;">
+        <span class="dropdown-btn" data-target="{{post.getId()}}" >[*]</span>
+        <div id="dropdown-{{post.getId()}}" class="dropdown-content" style="display: none">
+            Autor: {{ post.getAuthor() |charName |colorize |raw}}<br />
+            Datum: {{ post.getCreationDate().format('d.m. H:i') }}<br />
+            RP: <img src="{% if post.getAuthor().getRpState() %}{{asset('images/Icon_green_dot.png')}}{% else %}{{asset('images/Icon_red_dot.png')}}{% endif %}"
+                     style="width: 12px; height: 12px;"><br />
+            <br />
+            <a href="{{ path('bio', {'charId': post.getAuthor().getId(), 'uuid': uuid })}}" >Biographie besuchen</a><br />
+            <br />
+            {% if uuid != '1' %}
+                <a href="{{ path('mail_show', {'charName': post.getAuthor().getName(), 'charId': char.getId()})}}" target="_blank" >Brieftaube senden</a><br />
+                <br />
+            {% endif %}
+        </div>
+    </div>
+{% else %}
+    [{{post.getCreationDate() |date("G:i")}}]
+{% endif %}
+{{content |colorize(false, true) |raw}}

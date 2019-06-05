@@ -1,0 +1,195 @@
+<div id="statswindow">
+    <h3>Vital Info:</h3>
+    <table>
+        <tr>
+            <td>
+                Name:
+            </td>
+            <td>
+                {{ character |charName |colorize |raw }}
+            </td>
+        </tr> 
+        <tr>
+            <td>
+                HP:
+            </td>
+            <td>
+        <status-bar current_value="{{ character.getCurrentHP() }}" max_value="{{ character.getMaxHP() }}" width="150"></status-bar>
+        </td>
+        </tr>
+        <tr>
+            <td>
+                Ausdauer:
+            </td>
+            <td>
+        <status-bar current_value="{{ character.getCurrentStamina() }}" max_value="{{ character.getMaxStamina() }}" width="150"></status-bar>
+        </td>
+        </tr>
+        <tr>
+            <td>
+                Waffe:
+            </td>
+            <td>
+                {% include 'parts/weapon.html.twig' with {'item': character.getWeapon().getWeaponTemplate()} %}
+            </td>
+        </tr> 
+        <tr>
+            <td>
+                Rüstung:
+            </td>
+            <td>
+                {% include 'parts/armor.html.twig' with {'item': character.getArmor().getArmorTemplate()} %}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                EXP:
+            </td>
+            <td>
+        <status-bar current_value="{{ character.getExp() }}" max_value="{{ levelUpExp }}" width="150"></status-bar>
+        </td>
+        </tr>
+        <tr>
+            <td>
+                Level:
+            </td>
+            <td>
+                {{ character.getLevel() }}
+            </td>
+        </tr>
+    </table>
+    <h3>Sonstige Infos:</h3>
+    <table>
+        <tr>
+            <td>
+                <a href="{{path('inventory', {'uuid': uuid})}}"> <img src="{{asset('images/bag.png')}}"> </a>
+            </td>
+            <td>
+                <a href="{{path('inventory', {'uuid': uuid})}}">Inventar</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="{{path('change_rp_state', {'uuid': uuid})}}"> 
+                    <img src="{% if character.getRpState() %}{{asset('images/Icon_green_dot.png')}}{% else %}{{asset('images/Icon_red_dot.png')}}{% endif %}"
+                         style="width: 20px; height: 20px;">
+                </a>
+            </td>
+            <td>
+                <a href="{{path('change_rp_state', {'uuid': uuid})}}">RP-Status</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                {{ 'Gold / Bank:' |colorize |raw }}
+            </td>
+            <td>
+                {{ character.getWallet().getGold() }} / {{ character.getWallet().getBankGold() }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                {{ 'Platin / Bank:' |colorize |raw }}
+            </td>
+            <td>
+                {{ character.getWallet().getPlatin() }} / {{ character.getWallet().getBankPlatin() }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                {{ 'Edelsteine:' |colorize |raw }}
+            </td>
+            <td>
+                {{ character.getWallet().getGems() }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Reputation:
+            </td>
+            <td>
+                {{ ((character.getAttributes().getReputation() < 0 ? "`e" : "`d") ~ character.getAttributes().getReputation()) |colorize |raw }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Charme:
+            </td>
+            <td>
+                {{ ((character.getAttributes().getCharme() < 0 ? "`e" : "`d") ~ character.getAttributes().getCharme()) |colorize |raw }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Stärke:
+            </td>
+            <td>
+                {{ character.getAttributes().getStrength() }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Präzision:
+            </td>
+            <td>
+                {{ character.getAttributes().getPrecision() }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Geschicklichkeit:
+            </td>
+            <td>
+                {{ character.getAttributes().getDexterousness() }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Agilität:
+            </td>
+            <td>
+                {{ character.getAttributes().getAgility() }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Konstitution:
+            </td>
+            <td>
+                {{ character.getAttributes().getConstitution() }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Intelligenz:
+            </td>
+            <td>
+                {{ character.getAttributes().getIntelligence() }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Skillpunkte:
+            </td>
+            <td>
+                {{ character.getAttributes().getSkillpoints() }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Beruf:
+            </td>
+            <td>
+                {{ character.getJob() ? character.getJob().getName() : 'Arbeitslos' }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Nächsten Phase:
+            </td>
+            <td>
+                {{ nextPhase }}
+            </td>
+        </tr>
+    </table>
+</div>

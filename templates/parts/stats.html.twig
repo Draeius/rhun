@@ -1,0 +1,10 @@
+
+{% block stats %}
+    {% if uuid != '1' and uuid %}
+        {% include 'parts/characterStats.html.twig' %}
+    {% elseif account %}
+        {% include 'parts/accountStats.html.twig' %}
+        <br />
+        <br />
+    {% endif %}
+{% endblock %}

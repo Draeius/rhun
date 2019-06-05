@@ -1,0 +1,43 @@
+<ul class="tab">
+    {% for weaponType, weaponArray in items %}
+        <li>
+            <a class="tablinks" onclick="content.ContentManager.openTab(event, '{{ weaponType }}')">
+                {{ weaponType |weaponType }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>
+{% for weaponType, weaponArray in items %}
+    <div id="{{ weaponType }}" class="tabcontent">
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Level
+                    </th>
+                    <th>
+                        Preis
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for weapon in weaponArray %}
+                    <tr class="clickable" onclick='buyItem({{ weapon.id }})'>
+                        <td>
+                            {% include 'parts/weapon.html.twig' with {'item': weapon} %}
+                        </td>
+                        <td data-type="number">
+                            {{ weapon.level }}
+                        </td>
+                        <td data-type="number">
+                            {{ weapon.buyPrice }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endfor %}
