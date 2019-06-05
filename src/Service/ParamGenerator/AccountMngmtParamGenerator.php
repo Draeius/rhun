@@ -48,7 +48,7 @@ class AccountMngmtParamGenerator extends ParamGenerator {
             'userOnline' => '', //$this->getDoctrine()->getManager()->getRepository('App:Character')->findByOnline(true),
             'skinlist' => $skinService->getSkinList()
         ]);
-        return $vars
+        return $vars;
     }
 
 }
