@@ -4,11 +4,13 @@ namespace App\Controller;
 
 use App\Controller\BasicController;
 use App\Entity\User;
+use App\Form\CreateCharacterFormType;
+use App\Form\DTO\CreateCharacterDTO;
 use App\Repository\UserRepository;
-use App\Service\AreaService;
+use App\Service\CharacterService;
 use App\Service\DateTimeService;
 use App\Service\NavbarFactory\AccountMngmtNavbarFactory;
-use App\Service\SkinService;
+use App\Service\ParamGenerator\AccountMngmtParamGenerator;
 use App\Util\Session\RhunSession;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -37,7 +39,7 @@ class AccountManagementController extends BasicController {
      * @App\Annotation\Security(needAccount=true)
      * @Route("/account", name=AccountManagementController::ACCOUNT_MANAGEMENT_ROUTE_NAME, defaults={"_fragment"="chars"})
      */
-    public function showCharmanagement(Request $request, UserRepository $userRepo) {
+    public function showCharmanagement(Request $request, UserRepository $userRepo, AccountMngmtParamGenerator $paramGenerator) {
         $session = new RhunSession();
         /* @var $user User */
         $user = $userRepo->find($session->getAccountID());
@@ -46,38 +48,15 @@ class AccountManagementController extends BasicController {
             return $this->redirectToRoute(self::DSGVO_ROUTE_NAME);
         }
 
-//
-//        $codingBroadcast = $this->getDoctrine()->getRepository('App:Broadcast')->findBy(array('codingBroadcast' => true), array('id' => 'DESC'), 1);
-//        if ($codingBroadcast) {
-//            $codingBroadcast = $codingBroadcast[0];
-//        }
-//        $broadcast = $this->getDoctrine()->getRepository('App:Broadcast')->findBy(array('codingBroadcast' => false), array('id' => 'DESC'), 1);
-//        if ($broadcast) {
-//            $broadcast = $broadcast[0];
-//        }
+        $characterDTO = new CreateCharacterDTO();
+        $form = $this->createForm(CreateCharacterFormType::class, $characterDTO);
+        $form->handleRequest($request);
 
-        $base = $this->getBaseVariables($this->navFactory->buildNavbar($user), 'Accountverwaltung');
-        $descr = $this->getDescriptions($this->getDoctrine()->getManager());
-        $skinService = new SkinService($this->get('kernel')->getRootDir());
-        $vars = array_merge($base, $descr, [
-            'page' => 'default/charmanagement',
-            'email' => $user->getEmail(),
-            'news' => '', //$broadcast,
-            'codingNews' => '', // $codingBroadcast,
-            'cities' => AreaService::getColoredCityNames(),
-            'account' => $user,
-            'chars' => $this->getDoctrine()->getRepository('App:Character')->findByAccount($user),
-            'neededGems' => CharacterService::getNeededGems($user),
-            'neededPosts' => CharacterService::getNeededPosts($user),
-            'totalPosts' => CharacterService::getTotalPosts($user),
-            'city' => $request->get('city'),
-            'newposts' => $this->hasNewPost($user),
-            'gender' => $request->get('gender'),
-            'name' => $request->get('name'),
-            'userOnline' => '', //$this->getDoctrine()->getManager()->getRepository('App:Character')->findByOnline(true),
-            'skinlist' => $skinService->getSkinList()
-        ]);
-        return $this->render($this->getSkinFile(), $vars);
+        if ($form->isSubmitted() && $form->isValid()) {
+            
+        }
+
+        return $this->render($this->getSkinFile(), $paramGenerator->getStandardParams($user, $form));
     }
 
     /**
@@ -255,29 +234,6 @@ class AccountManagementController extends BasicController {
             $this->getDoctrine()->getManager()->flush($account);
         }
         return $this->redirectToRoute(self::ACCOUNT_MANAGEMENT_ROUTE_NAME);
-    }
-
-    /**
-     * @App\Annotation\Security(needAccount=true)
-     * @Route("/account/logout", name="account_logout")
-     */
-    public function logoutAccount() {
-        $account = $this->getAccount();
-        $characters = $account->getCharacters();
-        $manager = $this->getDoctrine()->getManager();
-        foreach ($characters as $char) {
-            if ($char->getOnline()) {
-                $char->setOnline(false);
-                $char->setSafe(false);
-                $manager->persist($char);
-            }
-        }
-        $manager->flush();
-
-        $session = new RhunSession();
-        $session->clear();
-
-        return $this->redirectToRoute(PreLoginController::FRONT_PAGE_ROUTE_NAME);
     }
 
     /**

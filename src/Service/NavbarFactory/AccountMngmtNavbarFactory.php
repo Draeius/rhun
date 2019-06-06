@@ -9,6 +9,7 @@
 namespace App\Service\NavbarFactory;
 
 use App\Controller\AccountManagementController;
+use App\Controller\PreLoginController;
 use App\Entity\User;
 use App\Query\GetNewMessageCountQuery;
 use App\Service\NavbarService;
@@ -38,22 +39,22 @@ class AccountMngmtNavbarFactory {
         $this->eManager = $eManager;
     }
 
-    public function buildNavbar(User $account) {
+    public function buildNavbar(User $user) {
         $builder = $this->navbarService;
-        if ($account->isBanned() || !$account->getValidated()) {
+        if ($user->isBanned() || !$user->getValidated()) {
             $this->addBannedNavs();
         } else {
-            $this->addStandardNavs();
-            $this->addModNavs($account);
+            $this->addStandardNavs($user);
+            $this->addModNavs($user);
         }
-//        $builder->addNavhead('Sonstiges')
-//                ->addNav('Karte', 'map')
+        $builder->addNavhead('Sonstiges')
+                ->addNav('Karte', PreLoginController::PRE_LOGIN_MAP_ROUTE_NAME)
 //                ->addNav('Regeln', 'rules')
-//                ->addNav('Kämpferliste', 'list')
-//                ->addPopupLink('Discord', 'https://discord.gg/Yu8tYxF')
-//                ->addPopupLink('Wiki', 'http://www.rhun-logd.de/wiki')
-//                ->addNavhead('Abmelden')
-//                ->addNav('Abmelden', 'account_logout', []);
+                ->addNav('Kämpferliste', PreLoginController::RACE_LIST_ROUTE_NAME)
+                ->addPopupLink('Discord', 'https://discord.gg/Yu8tYxF')
+                ->addPopupLink('Wiki', 'http://www.rhun-logd.de/wiki')
+                ->addNavhead('Abmelden')
+                ->addNav('Abmelden', 'account_logout', []);
         return $builder;
     }
 
@@ -64,9 +65,9 @@ class AccountMngmtNavbarFactory {
                 ->addNav('Taubenschlag (gesperrt)', AccountManagementController::ACCOUNT_MANAGEMENT_ROUTE_NAME);
     }
 
-    private function addStandardNavs() {
+    private function addStandardNavs(User $user) {
         $query = new GetNewMessageCountQuery($this->eManager);
-        $count = $query();
+        $count = $query($user);
 
 //        $this->navbarService
 //                ->addNav('Bio Editor', 'bioEditor')

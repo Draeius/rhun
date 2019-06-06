@@ -17,7 +17,7 @@ class ParamGenerator {
      *
      * @todo move to config
      */
-    public static $JS_VERSION = '';
+    public static $JS_VERSION = '0.0.1';
 
     /**
      *

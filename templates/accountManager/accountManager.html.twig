@@ -1,0 +1,358 @@
+
+<script>
+    var motd = 0;
+
+
+    $(document).ready(function () {
+        if (!window.location.hash) {
+            window.location.hash = "news";
+        }
+        $(document.getElementById(window.location.hash.substr(1) + "_link")).trigger('click');
+        $(document.getElementById(window.location.hash.substr(1) + "_link")).addClass('active');
+    })
+
+    function earlierMotCT() {
+        motd++;
+        var con = new ajax.AjaxConnector();
+        con.getData('motd/show/' + motd, {coding: true}, function (data) {
+            if (data['error']) {
+                console.log(data['error']);
+                motd--;
+            } else {
+                document.getElementById('motct_content').innerHTML = data['content'];
+            }
+        });
+    }
+
+    function laterMotCT() {
+        if (motd <= 0) {
+            return;
+        }
+        motd--;
+        var con = new ajax.AjaxConnector();
+        con.getData('motd/show/' + motd, {coding: true}, function (data) {
+            if (data['error']) {
+                console.log(data['error']);
+                motd++;
+            } else {
+                document.getElementById('motct_content').innerHTML = data['content'];
+            }
+        });
+    }
+
+    function earlierBroadcast() {
+        motd++;
+        var con = new ajax.AjaxConnector();
+        con.getData('motd/show/' + motd, {coding: false}, function (data) {
+            if (data['error']) {
+                console.log(data['error']);
+                motd--;
+            } else {
+                document.getElementById('news_content').innerHTML = data['content'];
+            }
+        });
+    }
+
+    function laterBroadcast() {
+        if (motd <= 0) {
+            return;
+        }
+        motd--;
+        var con = new ajax.AjaxConnector();
+        con.getData('motd/show/' + motd, {coding: false}, function (data) {
+            if (data['error']) {
+                console.log(data['error']);
+                motd++;
+            } else {
+                document.getElementById('news_content').innerHTML = data['content'];
+            }
+        });
+    }
+
+    function openTab(event, id) {
+        window.location.hash = id;
+        content.ContentManager.openTab(event, id);
+    }
+
+    function getRaces() {
+        if (!city) {
+            return;
+        }
+        var cities = {
+            nelaris: "{{ path('races_for_city', { 'city': 'nelaris' }) }}",
+            lerentia: "{{ path('races_for_city', { 'city': 'lerentia' }) }}",
+            pyra: "{{ path('races_for_city', { 'city': 'pyra' }) }}",
+            manosse: "{{  path('races_for_city', { 'city': 'manosse' }) }}",
+            underworld: "{{ path('races_for_city', { 'city': 'underworld' }) }}"
+        };
+
+        $.ajax(cities[city])
+                .done(function (races) {
+                    select = document.getElementById('selectRace');
+                    select.innerHTML = "";
+                    var formatter = new formatting.Formatter();
+                    for (var key in races) {
+                        var option = document.createElement("option");
+                        $(option).attr("value", races[key]['id']).html(races[key]['name']);
+                        $(select).append($(option));
+                    }
+                })
+                .fail(function (ex) {
+                    console.error(ex);
+                })
+    }
+
+    function changeCity(value) {
+        $('div[data-descr]').each(function () {
+            if ($(this).attr("data-descr") == value) {
+                $(this).css("display", "block");
+            } else {
+                $(this).css("display", "none");
+            }
+        });
+        city = value;
+        getRaces();
+    }
+</script>
+
+<ul class="tab">
+    <li><a id="news_link" class="tablinks" onclick="openTab(event, 'news');">Die News</a></li>
+    <li><a id="chars_link" class="tablinks" onclick="openTab(event, 'chars');">Meine Charaktere</a></li>
+    <li><a id="create_link" class="tablinks" onclick="openTab(event, 'create');">Charakter erstellen</a></li>
+    <li><a id="account_link" class="tablinks" onclick="openTab(event, 'account');">Account</a></li>
+    <li><a id="coding_link" class="tablinks" onclick="openTab(event, 'coding');">Code News</a></li>
+</ul>
+
+<div id="coding" class="tabcontent">
+    {% if codingNews %}
+        <div id="motct_content" class="news">
+            {% include asset('parts/news.html.twig') with {'news': codingNews} only %}
+        </div>
+    {% else %}
+        <h1>Scheinbar hat das Codeschäfchen nichts zu sagen.</h1>
+    {% endif %}
+
+    <span class="clickable" onclick="earlierMotCT()" style="color: green;"><-- Vorherige MotCT</span> || 
+    <span class="clickable" onclick="laterMotCT()" style="color: red;">Nächste MotCT --></span>
+</div>
+
+<div id="news" class="tabcontent">
+    {% if news %}
+        <div id="news_content" class="news">
+            {% include asset('parts/news.html.twig') %}
+        </div>
+    {% else %}
+        <h1>Scheinbar haben die Götter nichts zu sagen.</h1>
+    {% endif %}
+
+    {% if chars %}
+        {% for char in chars %}
+            {% if char.isBanned() %}
+                <p class="error">
+                    Dein Charakter {{char |charName | colorize | raw}} wurde bis zum {{char.getBan() | date('d.m.Y')}} gesperrt. <br />
+                    Grund: <br />
+                    {{ char.getBanReason() | colorize | raw}}
+                </p>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    {% if account.isBanned() %}
+        Dein Account wurde bis zum {{account.getBan() | date('d.m.Y')}} gesperrt. <br />
+        Grund: <br />
+        {{ account.getBanReason() | colorize | raw}}
+    {% endif %}
+
+    {% if not account.getBirthday() %}
+        Bitte gib dein Geburtsdatum an. Es kann sonst sein, dass du bestimmte Orte nicht besuchen kannst.
+        <form action="/account/set/birthday" method="POST">
+            <input type="date" name="birthday" />
+            <input type="submit" value="Speichern" />
+        </form>
+    {% endif %}
+    <span class="clickable" onclick="earlierBroadcast()" style="color: green;"><-- Vorherige Motd</span> || 
+    <span class="clickable" onclick="laterBroadcast()" style="color: red;">Nächste Motd --></span>
+</div>
+
+<div id="chars" class="tabcontent">
+    {% if chars | length == 0 %}
+        Du hast noch keine Charaktere.
+    {% else %}
+        <p style="font-size: 1.5em; color: green;">
+            Du kannst Charaktere ausloggen indem du auf den Online-Schriftzug klickst.<br />
+            Einloggen kannst du dich, indem du auf den Namen des Charakters klickst.
+        </p>
+
+        <table class="charlist">
+            <tr>
+                <th>Name</th>
+                <th><b>&#x2642;/&#x2640;</b></th>
+                <th>Rasse</th>
+                <th>Stadt</th>
+                <th>Ort</th>
+                <th>Neuer Post</th>
+                <th>&Sigma; Posts<br /><span style="font-size: 0.75em">Total: {{ totalPosts }}</span></th>
+                <th>Status</th>
+                <th>Online</th>
+                <th>Editor</th>
+                <th>Löschen</th>
+            </tr>
+            {% for char in chars %}
+                <tr>
+                    <td>
+                        {% if char.isBanned() != true and account.isBanned() != true %}
+                            <a href="{{path('char_login', {'char': char.id})}}">
+                                {{char |charName(false) | colorize | raw}}
+                            </a>
+                        {% else %}
+                            {% if account.isBanned() %}
+                                {% if char.getGuild() %}[{{ char.getGuild().getTag() |colorize |raw }}]{% endif %} {{char | charName | colorize | raw}} <br />
+                                <span style="color: red;">gesperrt bis {{account.getBan() | date('d.m.Y')}}</span>
+                            {% else %}
+                                {% if char.getGuild() %}[{{ char.getGuild().getTag() |colorize |raw }}]{% endif %} {{char | charName | colorize | raw}} <br />
+                                <span style="color: red;">gesperrt bis {{char.getBan() | date('d.m.Y')}}</span>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ (char.getGender() ? "`9Männlich" : "`àWeiblich") | colorize | raw}}
+                    </td>
+                    <td> 
+                        {{ char.getRace().getName() | colorize | raw }}
+                    </td>
+                    <td>
+                        {{ cities[char.getRace().getCity()] | colorize | raw }}
+                    </td>
+                    <td> 
+                        {{ char.getLocation().getTitle() | colorize | raw }}
+                    </td>
+                    <td>
+                        {{ newposts[char.id] | colorize | raw }}
+                    </td>
+                    <td>
+                        {{ char.getPostCounter() }}
+                    </td>
+                    <td>
+                        {% if char.getDead() %}
+                            <span style="color: red;">tot</span>
+                        {% else %}
+                            <span style="color: green; font-style: italic;">lebendig</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if char.getOnline() %}
+                            <span class="clickable" style="color: green;" onclick="navigation.relocate('{{path('char_logout', {'char': char.id, 'safe': 'false'})}}')">online</span>
+                        {% else %}
+                            <span style="color: red; font-style: italic;">offline</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form action="{{path('bioEditor')}}">
+                            <input type="hidden" name="selectedChar" value="{{char.getId()}}" />
+                            <input type="submit" value="Bioeditor" > 
+                        </form>
+                    </td>
+                    <td>
+                        <form action="char/delete/{{char.id}}">
+                            <input type="submit" value="Löschen" onclick="return confirm(unescape('Bist du sicher, dass du {{ char.name }} l%F6schen%0A willst?'));"> 
+                        </form>
+                    </td>
+                </tr> 
+            {% endfor %}
+        </table>
+    {% endif %}
+</div>
+
+<div id="create" class="tabcontent">
+    {% if account.validated and not account.isBanned() and account.birthday() %}
+        <p style="color: blue;">
+            Du kannst noch <span style="color: lightblue;"> account.maxChars - account.getCharacters() | length </span> weitere Charaktere erstellen.
+            Einen neuen Charakterslot <a href="/account/buy_slot" style="color: lightblue;"> kaufen</a>. <br />
+            Dafür müssen alle deine Charaktere mindestens {{ neededPosts }} Posts haben und du brauchst {{ neededGems }} Edelsteine auf deinem Account.
+        </p>
+        {{ form_start(form, {'action': path('create_char')}) }}
+        <br /> <br />
+        <div>
+            Stadt: 
+            {{ form_row(form.city) }}
+            <!--<select name="city" onchange="changeCity(this.value);">-->
+
+            <div data-descr="nelaris">
+                {{nelaris.descr|colorize|raw}}
+            </div>
+            <div data-descr="lerentia">
+                {{lerentia.descr|colorize|raw}}
+            </div>
+            <div data-descr="pyra">
+                {{pyra.descr|colorize|raw}}
+            </div>
+            <div data-descr="manosse">
+                {{manosse.descr|colorize|raw}}
+            </div>
+            <div data-descr="underworld">
+                {{underworld.descr|colorize|raw}}
+            </div>
+        </div>
+        <br />
+        {{ form_row(form.name) }}
+        <br /> 
+        {{ form_errors(form.race) }}
+        <select id="selectRace" name="race">
+            <option>W&auml;hle eine Rasse</option>
+        </select>
+        <br />
+        <br />
+        <input type="submit" value="Erstellen" />
+        {{ form_end(form) }}
+        <br />
+    {% elseif account.isBanned() %}
+        <span style="color: red;">Dein Account wurde bis zum {{account.getBan() | date('d.m.Y')}} gesperrt</span>
+    {% else %}
+        <span style="color: red">
+            Du musst erst deine Emailadresse bestätigen bevor du Charaktere erstellen kannst.<br />
+            Zu diesem Zweck wurde dir eine Mail an die von dir angegebene Adresse geschickt.
+        </span>
+    {% endif %}
+</div>
+
+<div id="account" class="tabcontent">
+
+    Skin ändern<br />
+    <form method="POST" action="/skin/change">
+        <select name="skin">
+            {% for skin in skinlist %}
+                <option value="{{skin['config_file']}}" {% if skin['config_file'] == account.getTemplate() %} selected {% endif %}>{{skin['name']}}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="Ändern" />
+    </form>
+    <br />
+    <br />
+    <br />
+    Passwort ändern:<br />
+    <form method="POST" action="/account/change/password">
+        Altes Passwort:<br />
+        <input type="password" name="pass_old" /><br />
+        Neues Passwort:<br />
+        <input type="password" name="pass1" /><br />
+        Passwort Kontrolle:<br  />
+        <input type="password" name="pass2" /><br />
+        <input type="submit" value="Ändern" />
+    </form>
+    <br />
+    <br />
+    Deine jetzige Emailadresse ist <span style="color: green;">{{ email }}</span><br />
+    <form action='account/change/mail'>
+        Neue Emailadresse:<br />
+        <input type="email" name="email" /><br />
+        <input type="submit" value="Ändern" />
+    </form>
+    <br />
+    <br />
+    <br />
+    Deinen Account löschen<br />
+    <form method="POST" action="account/delete">
+        <input type="submit" value="Account löschen" onclick="return confirm('Bist du dir sicher? Du kannst deinen Account danach nicht wiederherstellen.')" />
+    </form>
+</div>
+<post-area ooc></post-area>

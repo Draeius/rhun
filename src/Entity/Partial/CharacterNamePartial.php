@@ -25,6 +25,12 @@ class CharacterNamePartial implements CharacterNameInterface {
      */
     protected $title;
 
+    /**
+     *
+     * @var GuildCharListPartial
+     */
+    protected $guild;
+
     public function getFullName(): string {
         if ($this->title->getIsInFront()) {
             return $this->title->getTitle() . ' ' . $this->name->getName();
@@ -38,6 +44,10 @@ class CharacterNamePartial implements CharacterNameInterface {
 
     public function getSelectedTitle(): Title {
         return $this->title;
+    }
+
+    function getGuild(): ?GuildCharListPartial {
+        return $this->guild;
     }
 
     public static function FROM_DATA(array $data): CharacterNamePartial {
@@ -65,6 +75,9 @@ class CharacterNamePartial implements CharacterNameInterface {
         } else {
             $this->title->setIsInFront($data['isInFront']);
             $this->title->setTitle($data['title']);
+        }
+        if (array_key_exists('guildName', $data)) {
+            $this->guild = GuildCharListPartial::fromData(['name' => $data['guildName'], 'tag' => $data['guildTag']]);
         }
         $this->title->setIsActivated(true);
     }

@@ -20,12 +20,6 @@ class CharacterListPartial extends CharacterNamePartial {
 
     /**
      *
-     * @var GuildCharListPartial
-     */
-    protected $guild;
-
-    /**
-     *
      * @var int
      */
     protected $level;
@@ -62,10 +56,6 @@ class CharacterListPartial extends CharacterNamePartial {
 
     function getGender() {
         return $this->gender;
-    }
-
-    function getGuild(): ?GuildCharListPartial {
-        return $this->guild;
     }
 
     function getLevel() {
@@ -106,9 +96,6 @@ class CharacterListPartial extends CharacterNamePartial {
         $this->online = $data['online'];
         $this->gender = $data['gender'];
 
-        if ($data['guildName']) {
-            $this->guild = GuildCharListPartial::fromData(['name' => $data['guildName'], 'tag' => $data['guildTag']]);
-        }
         $this->location = LocationNamePartial::fromData(['title' => $data['locationTitle']]);
         $this->race = RacePartial::fromData(['name' => $data['raceName'], 'city' => '', 'description' => '']);
     }

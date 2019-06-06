@@ -40,7 +40,7 @@ class AreaRepository extends ServiceEntityRepository {
     }
 
     public function getDescriptionOfMajorAreas(): array {
-        $dql = 'SELECT a FROM App\Entity\Area a WHERE a.id IN (1,2,3,4,5) ORDER BY a.id ASC';
+        $dql = 'SELECT a FROM App\Entity\Area a WHERE a.id IN (1,2,3,4,5,6) ORDER BY a.id ASC';
         $query = $this->getEntityManager()->createQuery($dql);
 
         $cities = $query->getResult();
@@ -67,6 +67,10 @@ class AreaRepository extends ServiceEntityRepository {
             'lerentia' => [
                 'name' => $data[4]->getName(),
                 'descr' => $data[4]->getDescription()
+            ],
+            'underworld' => [
+                'name' => $data[5]->getName(),
+                'descr' => $data[5]->getDescription()
         ]];
     }
 

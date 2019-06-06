@@ -39,8 +39,12 @@
                 {% include asset(page ~ '.html.twig') %}
             </td>
             <td id="infobar">
-                {% if uuid.hasIdentifier() or account %}
-                    {% include 'parts/stats.html.twig' %}
+                {% if uuid.hasIdentifier() %}
+                    {% include 'parts/characterStats.html.twig' %}
+                {% elseif account %}
+                    {% include 'parts/accountStats.html.twig' %}
+                    <br />
+                    <br />
                 {% endif %}
                 {% if charsPresent %}
                     {% include 'parts/charsPresent.html.twig' %}
