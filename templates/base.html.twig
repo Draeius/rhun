@@ -1,12 +1,31 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
+        <meta charset="UTF-8" />
+        <title>{% block title %}Rhûn Logd{% endblock %}</title>
+
+        {% block stylesheets %}
+            <link href="{{ asset('vis/vis.min.css')}}" rel="stylesheet" type="text/css">
+        {% endblock %}
+        <!-- JAVASCRIPT -->
+        {% block javascripts %}
+            {% if uuid.hasIdentifier() %}
+                <script>
+                var rhun.uuid ={{ uuid.tabIdentifier }}
+                </script>
+            {% endif %}
+            <script type="text/javascript" src="{{ asset('js/jquery.min.js')}}"></script>
+            <script type="text/javascript" src="{{ asset('js/velocity.min.js')}}"></script>
+            <script type="text/javascript" src="{{ asset('vis/vis.min.js')}}"></script>
+            <script src="{{ asset('js/webcomponents-lite.min.js')}}"></script>
+            <script type="text/javascript" src="{{ asset('js/built/' ~ jsversion ~ '/main.js')}}"></script>
+        {% endblock %}
+
+        <link rel="icon" type="image/x-icon" href="{{ asset('images/favicon.png') }}" />
     </head>
     <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
+        {% block body %}
+
+        {% endblock %}
     </body>
 </html>

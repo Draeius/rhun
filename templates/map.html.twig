@@ -2,15 +2,13 @@
 <div style="width:100%;">
     <img id="rhun_map_image" src="{{asset('images/rhun_map.jpg')}}" style="width: 100%;" usemap="#rhunmap" border="0" width="100%" />
 
-    {% if uuid is defined and uuid != '1' %}
-        <map id="rhun_map" name="rhunmap">
-            <area shape="rect" coords="600,430,690,480" href="{{path('world', {'uuid': uuid, 'locationId': '2' })}}" > <!-- Seiya -->
-            <area shape="rect" coords="900,200,960,260" href="{{path('world', {'uuid': uuid, 'locationId': '5' })}}" > <!-- Pyra -->
-            <area shape="rect" coords="1200,320,1300,470" href="{{path('world', {'uuid': uuid, 'locationId': '6' })}}" > <!-- Lerentia -->
-            <area shape="circle" coords="230,540,80" href="{{path('world', {'uuid': uuid, 'locationId': '4' })}}" > <!-- Manosse -->
-            <area shape="circle" coords="970,780,50" href="{{path('world', {'uuid': uuid, 'locationId': '3' })}}" > <!-- Nelaris -->
-        </map>
-    {% endif %}
+    <map id="rhun_map" name="rhunmap">
+        <area shape="rect" coords="600,430,690,480" href="{{path('world', {'uuid': uuid, 'locationId': '2' })}}" > <!-- Seiya -->
+        <area shape="rect" coords="900,200,960,260" href="{{path('world', {'uuid': uuid, 'locationId': '5' })}}" > <!-- Pyra -->
+        <area shape="rect" coords="1200,320,1300,470" href="{{path('world', {'uuid': uuid, 'locationId': '6' })}}" > <!-- Lerentia -->
+        <area shape="circle" coords="230,540,80" href="{{path('world', {'uuid': uuid, 'locationId': '4' })}}" > <!-- Manosse -->
+        <area shape="circle" coords="970,780,50" href="{{path('world', {'uuid': uuid, 'locationId': '3' })}}" > <!-- Nelaris -->
+    </map>
 </div>
 
 <script>
