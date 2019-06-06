@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "module": "system",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "outFile": "../public/js/built/0.0.1/main.js",
+        "sourceMap": false
+    },
+    "include": [
+        "*"
+    ],
+    "exclude": [
+    
+    ]
+}
