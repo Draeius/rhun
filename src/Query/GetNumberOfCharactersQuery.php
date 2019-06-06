@@ -3,6 +3,7 @@
 namespace App\Query;
 
 use App\Entity\User;
+use App\Util\SQLFileLoader;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -11,10 +12,6 @@ use Doctrine\ORM\EntityManagerInterface;
  * @author Matthias
  */
 class GetNumberOfCharactersQuery {
-
-    const SQL = 'SELECT COUNT(c.id) as count '
-            . 'FROM characters c '
-            . 'WHERE c.account_id = ?';
 
     /**
      *
@@ -28,7 +25,7 @@ class GetNumberOfCharactersQuery {
 
     public function __invoke(User $user) {
         $conn = $this->eManager->getConnection();
-        $q = $conn->prepare(self::SQL);
+        $q = $conn->prepare(SQLFileLoader::getSQLFileContent('numberOfCharacters'));
         $q->bindParam(1, $user->getId());
         $q->execute();
         $data = $q->fetch();

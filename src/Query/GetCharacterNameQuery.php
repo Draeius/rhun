@@ -4,7 +4,9 @@ namespace App\Query;
 
 use App\Entity\Partial\CharacterNamePartial;
 use App\Entity\Partial\Interfaces\CharacterNameInterface;
+use App\Util\SQLFileLoader;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityNotFoundException;
 
 /**
  * Description of FindNewestCharacter
@@ -12,22 +14,6 @@ use Doctrine\ORM\EntityManagerInterface;
  * @author Draeius
  */
 class GetCharacterNameQuery {
-
-    const SQL = 'SELECT r.name, r.gender, r.coloredName, r.title, r.isInFront '.
-                'FROM ('.
-                    'SELECT '.
-			'c.name,'.
-                        'c.gender,'.
-			'n.name as coloredName,'.
-                        'n.isActivated as nActivated,'.
-                        't.title,'.
-                        't.isInFront,'.
-                        't.isActivated as tActivated '.
-                    'FROM characters c LEFT JOIN character_names n ON c.id = n.owner_id LEFT JOIN character_titles t ON c.id = t.owner_id '.
-                    'WHERE c.id = ?) r '.
-                'WHERE '.
-                    '(r.coloredName IS NULL OR r.nActivated = 1)'.
-                    'AND (r.title IS NULL OR r.tActivated = 1)';
     
     /**
      *
@@ -41,7 +27,7 @@ class GetCharacterNameQuery {
     
     public function __invoke(int $id): CharacterNameInterface {
         $conn = $this->eManager->getConnection();
-        $q = $conn->prepare(self::SQL);
+        $q = $conn->prepare(SQLFileLoader::getSQLFileContent('getCharacterName'));
         $q->bindParam(1, $id);
         $q->execute();
         $data = $q->fetch();

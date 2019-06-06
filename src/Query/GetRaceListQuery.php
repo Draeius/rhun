@@ -10,6 +10,7 @@ namespace App\Query;
 
 use App\Entity\Partial\RacePartial;
 use App\Repository\AreaRepository;
+use App\Util\SQLFileLoader;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -18,10 +19,7 @@ use Doctrine\ORM\EntityManagerInterface;
  * @author Matthias
  */
 class GetRaceListQuery {
-
-    const SQL_CITIES = 'SELECT r.city FROM races r WHERE r.allowed=1 GROUP BY r.city';
-    const SQL_RACES = 'SELECT r.name, r.description, r.city FROM races r WHERE r.allowed=1 AND r.city = ?';
-
+    
     /**
      *
      * @var EntityManagerInterface
@@ -34,13 +32,13 @@ class GetRaceListQuery {
 
     public function __invoke() {
         $conn = $this->eManager->getConnection();
-        $cityQuery = $conn->prepare(self::SQL_CITIES);
+        $cityQuery = $conn->prepare(SQLFileLoader::getSQLFileContent('allowedRacesCities'));
         $cityQuery->execute();
         $result = [];
         while ($data = $cityQuery->fetch()) {
             $cityName = AreaRepository::getColoredCityName($data['city']);
             $result[$cityName] = [];
-            $racesQuery = $conn->prepare(self::SQL_RACES);
+            $racesQuery = $conn->prepare(SQLFileLoader::getSQLFileContent('allowedRacesByCity'));
             $racesQuery->bindParam(1, $data['city']);
             $racesQuery->execute();
             while ($race = $racesQuery->fetch()) {

@@ -3,6 +3,7 @@
 namespace App\Query;
 
 use App\Entity\Partial\CharacterNamePartial;
+use App\Util\SQLFileLoader;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -11,22 +12,6 @@ use Doctrine\ORM\EntityManagerInterface;
  * @author Draeius
  */
 class GetOnlineCharactersQuery {
-
-    const SQL = 'SELECT r.name, r.gender, r.coloredName, r.title, r.isInFront '.
-                'FROM ('.
-                    'SELECT '.
-			'c.name,'.
-                        'c.gender,'.
-			'n.name as coloredName,'.
-                        'n.isActivated as nActivated,'.
-                        't.title,'.
-                        't.isInFront,'.
-                        't.isActivated as tActivated '.
-                    'FROM characters c LEFT JOIN character_names n ON c.id = n.owner_id LEFT JOIN character_titles t ON c.id = t.owner_id '.
-                    'WHERE c.online = 1) r '.
-                'WHERE '.
-                    '(r.coloredName IS NULL OR r.nActivated = 1)'.
-                    'AND (r.title IS NULL OR r.tActivated = 1)';
 
     /**
      *
@@ -40,7 +25,7 @@ class GetOnlineCharactersQuery {
 
     public function __invoke() {
         $conn = $this->eManager->getConnection();
-        $q = $conn->prepare(self::SQL);
+        $q = $conn->prepare(SQLFileLoader::getSQLFileContent('onlineCharacters'));
         $q->execute();
         $result = [];
         while ($data = $q->fetch()) {

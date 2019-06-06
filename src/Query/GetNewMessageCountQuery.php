@@ -2,16 +2,16 @@
 
 namespace App\Query;
 
+use App\Entity\User;
+use App\Util\SQLFileLoader;
+use Doctrine\ORM\EntityManagerInterface;
+
 /**
  * Description of GetNewMessageCountQuery
  *
  * @author Draeius
  */
 class GetNewMessageCountQuery {
-
-    const SQL = 'SELECT COUNT(c.id) as count '
-            . 'FROM characters c JOIN messages m ON m.addressee_id = c.id '
-            . 'WHERE c.account_id = ? AND m.is_old = 0';
 
     /**
      *
@@ -25,8 +25,9 @@ class GetNewMessageCountQuery {
 
     public function __invoke(User $user) {
         $conn = $this->eManager->getConnection();
-        $q = $conn->prepare(self::SQL);
-        $q->bindParam(1, $user->getId());
+        $q = $conn->prepare(SQLFileLoader::getSQLFileContent('newMessageCount'));
+        $userId = $user->getId();
+        $q->bindParam(1, $userId);
         $q->execute();
         $data = $q->fetch();
         return $data['count'];

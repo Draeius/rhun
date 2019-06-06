@@ -5,6 +5,7 @@ namespace App\Query;
 use App\Entity\Partial\CharacterNamePartial;
 use App\Entity\Partial\Interfaces\CharacterNameInterface;
 use App\Query\TooManyRowsException;
+use App\Util\SQLFileLoader;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
 
@@ -14,22 +15,6 @@ use Doctrine\ORM\EntityNotFoundException;
  * @author Draeius
  */
 class GetNewestCharacterNameQuery {
-
-    const SQL = 'SELECT r.name, r.gender, r.coloredName, r.title, r.isInFront ' .
-            'FROM (' .
-            'SELECT ' .
-            'c.name,' .
-            'c.gender,' .
-            'n.name as coloredName,' .
-            'n.isActivated as nActivated,' .
-            't.title,' .
-            't.isInFront,' .
-            't.isActivated as tActivated ' .
-            'FROM characters c LEFT JOIN character_names n ON c.id = n.owner_id LEFT JOIN character_titles t ON c.id = t.owner_id ' .
-            'WHERE c.isNewest = 1) r ' .
-            'WHERE ' .
-            '(r.coloredName IS NULL OR r.nActivated = 1)' .
-            'AND (r.title IS NULL OR r.tActivated = 1)';
 
     /**
      *
@@ -43,7 +28,7 @@ class GetNewestCharacterNameQuery {
 
     public function __invoke(): CharacterNameInterface {
         $conn = $this->eManager->getConnection();
-        $q = $conn->prepare(self::SQL);
+        $q = $conn->prepare(SQLFileLoader::getSQLFileContent('newestCharacterName'));
         $q->execute();
         if ($q->rowCount() > 1) {
             throw new TooManyRowsException('Das Feld isNewest darf nur einen true Wert enthalten. Es wurden ' . $q->rowCount() . ' gefunden.');
