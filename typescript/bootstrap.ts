@@ -25,8 +25,10 @@ function AprilFool() {
     });
 }
 
+
 //apply formats
-document.addEventListener("ready", () => {
+$(document).ready(() => {
+    var keyNavigator = new navigation.KeyNavigator();
     var sorter = new Sorting.TableSorter();
     sorter.makeAllSortable(null);
 });

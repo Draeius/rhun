@@ -1,16 +1,3 @@
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var Util;
 (function (Util) {
     var BroadcastCanvas = (function () {
@@ -21,7 +8,7 @@ var Util;
             this.page++;
             var con = new Ajax.AjaxConnector();
             var _this = this;
-            con.getData('motd/show/' + this.page, { coding: true }, function (data) {
+            con.getData('motd/show/' + this.page, { coding: 'true' }, function (data) {
                 if (data['error']) {
                     console.debug(data['error']);
                     _this.page--;
@@ -36,9 +23,9 @@ var Util;
                 return;
             }
             this.page--;
-            var con = new ajax.AjaxConnector();
+            var con = new Ajax.AjaxConnector();
             var _this = this;
-            con.getData('motd/show/' + this.page, { coding: true }, function (data) {
+            con.getData('motd/show/' + this.page, { coding: 'true' }, function (data) {
                 if (data['error']) {
                     console.debug(data['error']);
                     _this.page++;
@@ -50,6 +37,7 @@ var Util;
         };
         return BroadcastCanvas;
     }());
+    Util.BroadcastCanvas = BroadcastCanvas;
 })(Util || (Util = {}));
 var uuid;
 var formats;
@@ -72,7 +60,8 @@ function AprilFool() {
         $(elem).remove();
     });
 }
-document.addEventListener("ready", function () {
+$(document).ready(function () {
+    var keyNavigator = new navigation.KeyNavigator();
     var sorter = new Sorting.TableSorter();
     sorter.makeAllSortable(null);
 });
@@ -403,9 +392,9 @@ var display;
         };
         Infobox.isElementInViewport = function (el) {
             if (typeof jQuery === "function" && el instanceof jQuery) {
-                el = el[0];
+                var child = el.children[0];
             }
-            var rect = el.getBoundingClientRect();
+            var rect = child.getBoundingClientRect();
             return (rect.top >= 0 &&
                 rect.left >= 0 &&
                 rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
@@ -415,96 +404,6 @@ var display;
     }());
     display.Infobox = Infobox;
 })(display || (display = {}));
-var editor;
-(function (editor) {
-    var AreaEditor = (function (_super) {
-        __extends(AreaEditor, _super);
-        function AreaEditor() {
-            return _super.call(this, "area_add", "area_edit", "area_delete") || this;
-        }
-        return AreaEditor;
-    }(editor.Editor));
-    editor.AreaEditor = AreaEditor;
-})(editor || (editor = {}));
-var editor;
-(function (editor) {
-    var Editor = (function () {
-        function Editor(addFormId, editFormId, deleteFormId) {
-            this.addForm = this.findForm(addFormId);
-            this.editForm = this.findForm(editFormId);
-            this.deleteForm = this.findForm(deleteFormId);
-        }
-        Editor.prototype.findForm = function (formId) {
-            if (formId == null || formId == "") {
-                return null;
-            }
-            var result = document.getElementById(formId);
-            if (result != null && result.tagName == "form") {
-                return result;
-            }
-            return null;
-        };
-        Editor.prototype.selectMode = function (mode) {
-            this.changeVisibility(this.addForm, mode, editor.Mode.add);
-            this.changeVisibility(this.editForm, mode, editor.Mode.edit);
-            this.changeVisibility(this.deleteForm, mode, editor.Mode["delete"]);
-        };
-        Editor.prototype.changeVisibility = function (form, newMode, formMode) {
-            if (form == null) {
-                return;
-            }
-            if (newMode == formMode) {
-                form.style.display = "block";
-                return;
-            }
-            if (this.hideOnChange) {
-                form.style.display = "none";
-            }
-        };
-        return Editor;
-    }());
-    editor.Editor = Editor;
-})(editor || (editor = {}));
-var editor;
-(function (editor) {
-    function setData(form, data) {
-        for (var key in data) {
-            if (form.elements[key]) {
-                setFieldValue(form.elements[key], data[key]);
-            }
-        }
-    }
-    editor.setData = setData;
-    function setFieldValue(field, value) {
-        if (field instanceof HTMLTextAreaElement) {
-            $(field).html(value);
-        }
-        else if (field instanceof HTMLSelectElement) {
-            $(field).find("option").each(function () {
-                $(this).prop("selected", $(this).attr("value") == value);
-            });
-        }
-        else if (field instanceof HTMLInputElement) {
-            var fieldType = field.type;
-            if (!fieldType) {
-                return;
-            }
-            if (fieldType == "text" || fieldType == "number") {
-                field.value = value;
-            }
-        }
-    }
-})(editor || (editor = {}));
-var editor;
-(function (editor) {
-    var Mode;
-    (function (Mode) {
-        Mode[Mode["add"] = 0] = "add";
-        Mode[Mode["edit"] = 1] = "edit";
-        Mode[Mode["delete"] = 2] = "delete";
-    })(Mode = editor.Mode || (editor.Mode = {}));
-    ;
-})(editor || (editor = {}));
 var formatting;
 (function (formatting) {
     formatting.formats = null;
@@ -701,7 +600,7 @@ var formatting;
             if (_this.lastText == text) {
                 return;
             }
-            var con = new ajax.AjaxConnector();
+            var con = new Ajax.AjaxConnector();
             _this.lastText = text;
             con.getData("format/preview", { text: text }, function (preview) {
                 _this.view.innerHTML = preview;
@@ -979,7 +878,7 @@ var mail;
             else {
                 target = $(event.target).parents('*[data-target]').attr('data-target');
             }
-            document.forms['messageForm']['target'].value = target;
+            document.forms.namedItem('messageForm').setAttribute('target', target);
         };
         Messenger.prototype.changeVisibility = function (event) {
             var target = $(event.target).attr("data-target");
@@ -1044,23 +943,23 @@ var mail;
                 else {
                     li.append($('<img>').attr({ src: '/images/mail_icons/mail_unread_ico.png' }).addClass('mailimage').css({ float: "left", width: "40px", height: "40px" }));
                 }
-                li.append($('<button>').html('L&ouml;schen').css('float', 'right').attr("data-target", message.id).click(function (event) {
+                li.append($('<button>').html('L&ouml;schen').css('float', 'right').attr("data-target", message.id).click(function (data, event) {
                     var id = parseInt($(event.target).attr("data-target"));
                     _this.deleteMessage(id);
                 }));
                 if (message.important) {
-                    li.append($('<button>').html('Unwichtig').css('float', 'right').attr("data-target", message.id).click(function (event) {
+                    li.append($('<button>').html('Unwichtig').css('float', 'right').attr("data-target", message.id).click(function (data, event) {
                         var id = parseInt($(event.target).attr("data-target"));
                         _this.moveToUnimportant(id);
                     }));
                 }
                 else {
-                    li.append($('<button>').html('Wichtig').css('float', 'right').attr("data-target", message.id).click(function (event) {
+                    li.append($('<button>').html('Wichtig').css('float', 'right').attr("data-target", message.id).click(function (data, event) {
                         var id = parseInt($(event.target).attr("data-target"));
                         _this.moveToImportant(id);
                     }));
                 }
-                li.append($('<button>').html('Antworten').css('float', 'right').attr("data-target", message.id).click(function (event) {
+                li.append($('<button>').html('Antworten').css('float', 'right').attr("data-target", message.id).click(function (data, event) {
                     var id = parseInt($(event.target).attr("data-target"));
                     _this.answerMessage(id);
                 }));
@@ -1072,7 +971,7 @@ var mail;
                 .attr("data-target", "msg_" + message.id)
                 .html(message.subject + (message.read || message.sent ? '' : ' (neu)'))
                 .addClass('clickable')
-                .click(function (event) {
+                .click(function (data, event) {
                 _this.changeVisibility(event);
             }))
                 .append('<br>');
@@ -1145,24 +1044,22 @@ var navigation;
             $('.nav').each(function (index, value) {
                 that.addNav(value);
             });
-            $('body').keydown(function (event) {
+            $('body').on("keydown", function (event) {
                 that.navigate(event);
             });
         }
         KeyNavigator.prototype.addNav = function (nav) {
-            var text = nav.textContent;
-            text = text.trim();
-            if (text == "") {
-                return;
-            }
-            for (var index = 0; index < text.length; index++) {
-                var char = text.charAt(index).toLowerCase();
-                var regex = /^[\u0020-\u007e\u00a0-\u00ff]*$/;
-                if (regex.test(char) && char != '`' && !(char in this.map)) {
-                    if ((index > 0 && text.charAt(index - 1) != '`' && text.charAt(index - 1) != ' ') || index == 0) {
-                        this.map[char] = nav;
-                        this.markKey(nav, index);
-                        return;
+            for (var key = 0; key < nav.children.length; key++) {
+                var text = nav.children[key].textContent;
+                if (text) {
+                    for (var index = 0; index < text.length; index++) {
+                        var char = text.charAt(index);
+                        if (!(char.toLowerCase() in this.map) && isNaN(char)) {
+                            this.map[char.toLowerCase()] = nav;
+                            nav.children[key].innerHTML = text.slice(0, index) + "<span style='text-decoration: underline;'>"
+                                + char + "</span>" + text.slice(index + 1);
+                            return;
+                        }
                     }
                 }
             }
@@ -1186,16 +1083,6 @@ var navigation;
             if (event.key in this.map) {
                 this.map[event.key].click();
             }
-        };
-        KeyNavigator.prototype.markKey = function (nav, position) {
-            var text = nav.textContent.trim();
-            nav.textContent = [
-                text.slice(0, position),
-                "`H",
-                text.slice(position, position + 1),
-                "`H",
-                text.slice(position + 1)
-            ].join('');
         };
         return KeyNavigator;
     }());

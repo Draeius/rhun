@@ -42,9 +42,9 @@ module formatting {
                 return;
             }
 
-            var con = new ajax.AjaxConnector();
+            var con = new Ajax.AjaxConnector();
             _this.lastText = text;
-            con.getData("format/preview", { text: text }, function(preview) {
+            con.getData("format/preview", { text: text }, function(preview: string) {
                 _this.view.innerHTML = preview;
             });
         }

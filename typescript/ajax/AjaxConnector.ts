@@ -1,5 +1,9 @@
 
 module Ajax {
+    export interface AjaxResponse {
+        message: string;
+    }
+
     export class AjaxConnector {
 
         private baseUrl: string;

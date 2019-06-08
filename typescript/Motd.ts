@@ -1,14 +1,14 @@
 
 module Util {
 
-    class BroadcastCanvas {
+    export class BroadcastCanvas {
         private page: number = 0;
 
         public earlierMotCT() {
             this.page++;
             var con = new Ajax.AjaxConnector();
             let _this = this;
-            con.getData('motd/show/' + this.page, {coding: true}, function (data: any) {
+            con.getData('motd/show/' + this.page, {coding: 'true'}, function (data: any) {
                 if (data['error']) {
                     console.debug(data['error']);
                     _this.page--;
@@ -23,9 +23,9 @@ module Util {
                 return;
             }
             this.page--;
-            let con = new ajax.AjaxConnector();
+            let con = new Ajax.AjaxConnector();
             let _this = this;
-            con.getData('motd/show/' + this.page, {coding: true}, function (data: any) {
+            con.getData('motd/show/' + this.page, {coding: 'true'}, function (data: any) {
                 if (data['error']) {
                     console.debug(data['error']);
                     _this.page++;

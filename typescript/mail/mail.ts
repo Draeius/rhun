@@ -87,7 +87,7 @@ module mail {
             }
             var _this = this;
             var con = new Ajax.AjaxConnector();
-            con.getData('char/search', {"attempt": attempt}, function (matches) {
+            con.getData('char/search', {"attempt": attempt}, function (matches: {name: string, label: string}[]) {
                 var formatter = new formatting.Formatter();
                 var list = document.getElementById("searchList");
                 list.innerHTML = "";
@@ -109,7 +109,7 @@ module mail {
             } else {
                 target = $(event.target).parents('*[data-target]').attr('data-target');
             }
-            document.forms['messageForm']['target'].value = target;
+            document.forms.namedItem('messageForm').setAttribute('target', target);
         }
 
         public changeVisibility(event: MouseEvent) {
@@ -119,7 +119,7 @@ module mail {
 
             element.css("display", display == "none" ? "" : "none");
             var con = new Ajax.AjaxConnector();
-            con.getData('mail/read/' + target.substring(4), {}, function (data) {
+            con.getData('mail/read/' + target.substring(4), {}, function (data: Ajax.AjaxResponse) {
                 if (data['message']) {
                     element.parent('li').find('img').attr('src', '/images/mail_icons/mail_read_ico.png');
                 }
@@ -181,22 +181,22 @@ module mail {
                 } else {
                     li.append($('<img>').attr({src: '/images/mail_icons/mail_unread_ico.png'}).addClass('mailimage').css({float: "left", width: "40px", height: "40px"}));
                 }
-                li.append($('<button>').html('L&ouml;schen').css('float', 'right').attr("data-target", message.id).click((event: MouseEvent) => {
+                li.append($('<button>').html('L&ouml;schen').css('float', 'right').attr("data-target", message.id).click((data, event: MouseEvent) => {
                     var id = parseInt($(event.target).attr("data-target"));
                     _this.deleteMessage(id);
                 }));
                 if (message.important) {
-                    li.append($('<button>').html('Unwichtig').css('float', 'right').attr("data-target", message.id).click((event: MouseEvent) => {
+                    li.append($('<button>').html('Unwichtig').css('float', 'right').attr("data-target", message.id).click((data, event: MouseEvent) => {
                         var id = parseInt($(event.target).attr("data-target"));
                         _this.moveToUnimportant(id);
                     }));
                 } else {
-                    li.append($('<button>').html('Wichtig').css('float', 'right').attr("data-target", message.id).click((event: MouseEvent) => {
+                    li.append($('<button>').html('Wichtig').css('float', 'right').attr("data-target", message.id).click((data, event: MouseEvent) => {
                         var id = parseInt($(event.target).attr("data-target"));
                         _this.moveToImportant(id);
                     }));
                 }
-                li.append($('<button>').html('Antworten').css('float', 'right').attr("data-target", message.id).click((event: MouseEvent) => {
+                li.append($('<button>').html('Antworten').css('float', 'right').attr("data-target", message.id).click((data, event: MouseEvent) => {
                     var id = parseInt($(event.target).attr("data-target"));
                     _this.answerMessage(id);
                 }));
@@ -208,7 +208,7 @@ module mail {
                     .attr("data-target", "msg_" + message.id)
                     .html(message.subject + (message.read || message.sent ? '' : ' (neu)'))
                     .addClass('clickable')
-                    .click((event: MouseEvent) => {
+                    .click((data, event: MouseEvent) => {
                         _this.changeVisibility(event);
                     }))
                 .append('<br>');

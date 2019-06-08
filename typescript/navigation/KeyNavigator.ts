@@ -3,32 +3,30 @@ module navigation {
 
     export class KeyNavigator {
 
-        private map: { [key: string]: HTMLElement } = {};
+        private map: {[key: string]: HTMLElement} = {};
 
         constructor() {
             var that = this;
             $('.nav').each((index, value) => {
-                that.addNav(<HTMLElement>value);
+                that.addNav(<HTMLElement> value);
             });
-            $('body').keydown((event: KeyboardEvent) => {
+            $('body').on("keydown", (event: any) => {
                 that.navigate(event);
-            })
+            });
         }
 
         public addNav(nav: HTMLElement) {
-            var text = nav.textContent;
-            text = text.trim();
-            if (text == "") {
-                return;
-            }
-            for (var index = 0; index < text.length; index++) {
-                var char = text.charAt(index).toLowerCase();
-                var regex = /^[\u0020-\u007e\u00a0-\u00ff]*$/;
-                if (regex.test(char) && char != '`' && !(char in this.map)) {
-                    if ((index > 0 && text.charAt(index - 1) != '`' && text.charAt(index - 1) != ' ') || index == 0) {
-                        this.map[char] = nav;
-                        this.markKey(nav, index);
-                        return;
+            for (let key = 0; key < nav.children.length; key++) {
+                let text = nav.children[key].textContent;
+                if (text) {
+                    for (let index = 0; index < text.length; index++) {
+                        let char = text.charAt(index);
+                        if (!(char.toLowerCase() in this.map) && isNaN(<any>char)) {
+                            this.map[char.toLowerCase()] = nav;
+                            nav.children[key].innerHTML = text.slice(0, index) + "<span style='text-decoration: underline;'>"
+                                + char + "</span>" + text.slice(index + 1);
+                            return;
+                        }
                     }
                 }
             }
@@ -53,17 +51,6 @@ module navigation {
             if (event.key in this.map) {
                 this.map[event.key].click();
             }
-        }
-
-        private markKey(nav: HTMLElement, position: number) {
-            var text = nav.textContent.trim();
-            nav.textContent = [
-                text.slice(0, position),
-                "`H",
-                text.slice(position, position + 1),
-                "`H",
-                text.slice(position + 1)
-            ].join('');
         }
     }
 }

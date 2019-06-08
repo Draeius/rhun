@@ -3,7 +3,7 @@ module display {
 
     export class Infobox {
         public static showInfobox(event: MouseEvent, offsetX: number, offsetY: number) {
-            var parent = (<HTMLElement>event.currentTarget);
+            var parent = (<HTMLElement> event.currentTarget);
             if (!parent) {
                 return;
             }
@@ -12,11 +12,11 @@ module display {
             infobox.css('display', 'block');
             infobox.css('left', event.pageX + offsetX);
             infobox.css('top', event.pageY + offsetY);
-            
+
         }
 
         public static hideInfobox(event: MouseEvent) {
-            var parent = (<HTMLElement>event.currentTarget);
+            var parent = (<HTMLElement> event.currentTarget);
             if (!parent) {
                 return;
             }
@@ -28,10 +28,10 @@ module display {
         private static isElementInViewport(el: HTMLElement) {
             //special bonus for those using jQuery
             if (typeof jQuery === "function" && el instanceof jQuery) {
-                el = el[0];
+                var child = el.children[0];
             }
 
-            var rect = el.getBoundingClientRect();
+            var rect = child.getBoundingClientRect();
 
             return (
                 rect.top >= 0 &&

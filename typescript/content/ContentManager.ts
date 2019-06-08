@@ -1,12 +1,12 @@
 module content {
     export class ContentManager {
-        private currentlyVisible;
+        private currentlyVisible: string;
 
-        constructor(currVisible) {
+        constructor(currVisible: string) {
             this.currentlyVisible = currVisible;
         };
 
-        public switchContent(id) {
+        public switchContent(id: string) {
             if (id === this.currentlyVisible) {
                 return;
             }
@@ -23,8 +23,8 @@ module content {
 
         public static openTab(evt: MouseEvent, tabName: string) {
             // Declare all variables
-            var tabcontent: JQuery,
-                tablinks: JQuery;
+            var tabcontent: JQuery<EventTarget>,
+                tablinks: JQuery<EventTarget>;
 
             // Get all elements with class="tabcontent" and hide them
             tabcontent = $(evt.currentTarget).closest("ul").parent().find(".tabcontent");
