@@ -19,15 +19,19 @@ class CreateCharacterFormType extends AbstractType {
                 ->add('name', TextType::class, ['label' => 'Name'])
                 ->add('city', ChoiceType::class, ['label' => 'Stadt',
                     'choices' => [
-                        'placeholder' => 'Wähle eine Stadt',
-                        'nelaris' => 'Nelaris',
-                        'lerentia' => 'Lerentia',
-                        'pyra' => 'Pyra',
-                        'manosse' => 'Manosse',
-                        'underworld' => 'Unterwelt'
+                        'Wähle eine Stadt' => 'placeholder',
+                        'Nelaris' => 'nelaris',
+                        'Lerentia' => 'lerentia',
+                        'Pyra' => 'pyra',
+                        'Manosse' => 'manosse',
+                        'Unterwelt' => 'underworld'
                     ]
                 ])
-                ->add('race', ChoiceType::class, ['label' => 'Rasse'])
+                ->add('race', ChoiceType::class, ['label' => 'Rasse',
+                    'choices' => [
+                        '----------' => 'placeholder'
+                    ]
+                ])
                 ->add('gender', ChoiceType::class, ['label' => 'Geschlecht', 'expanded' => true, 'multiple' => false,
                     'choices' => [
                         'Männlich' => true,

@@ -9,6 +9,7 @@
 namespace App\Service\NavbarFactory;
 
 use App\Controller\AccountManagementController;
+use App\Controller\LogoutController;
 use App\Controller\PreLoginController;
 use App\Entity\User;
 use App\Query\GetNewMessageCountQuery;
@@ -50,11 +51,11 @@ class AccountMngmtNavbarFactory {
         $builder->addNavhead('Sonstiges')
                 ->addNav('Karte', PreLoginController::PRE_LOGIN_MAP_ROUTE_NAME)
 //                ->addNav('Regeln', 'rules')
-                ->addNav('Kämpferliste', PreLoginController::RACE_LIST_ROUTE_NAME)
+                ->addNav('Kämpferliste', PreLoginController::FIGHTER_LIST_ROUTE_NAME)
                 ->addPopupLink('Discord', 'https://discord.gg/Yu8tYxF')
                 ->addPopupLink('Wiki', 'http://www.rhun-logd.de/wiki')
                 ->addNavhead('Abmelden')
-                ->addNav('Abmelden', 'account_logout', []);
+                ->addNav('Abmelden', LogoutController::LOGOUT_ACCOUNT_ROUTE_NAME, []);
         return $builder;
     }
 

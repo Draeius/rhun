@@ -21,9 +21,11 @@ class TestController extends BasicController {
      * @Route("/test")
      */
     public function test(EntityManagerInterface $eManager, ConfigService $configService, Stopwatch $stopwatch) {
-        $query = new GetRaceListQuery($eManager);
-        VarDumper::dump($query());
-        return $this->render('base.html.twig');
+        $repo = $eManager->getRepository('App\Entity\Location\LocationEntity');
+        $stopwatch->start('db');
+        $loc = $repo->find(1);
+        $stopwatch->stop('db');
+        return $this->render('test.html.twig');
     }
 
 }

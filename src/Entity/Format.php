@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping\Table;
  * A Format that is used to format text.
  *
  * @author Draeius
- * @Entity(repositoryClass="App\Repository\FormatRepository")
+ * @Entity(readOnly=true)
  * @Table(name="formats")
  */
 class Format {

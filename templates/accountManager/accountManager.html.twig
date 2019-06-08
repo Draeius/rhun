@@ -7,8 +7,14 @@
         if (!window.location.hash) {
             window.location.hash = "news";
         }
+        $('#create_character_form_city').on('change', function () {
+            changeCity(this.value);
+        });
+
         $(document.getElementById(window.location.hash.substr(1) + "_link")).trigger('click');
         $(document.getElementById(window.location.hash.substr(1) + "_link")).addClass('active');
+
+        changeCity();
     })
 
     function earlierMotCT() {
@@ -88,12 +94,13 @@
 
         $.ajax(cities[city])
                 .done(function (races) {
-                    select = document.getElementById('selectRace');
+                    select = document.getElementById('create_character_form_race');
                     select.innerHTML = "";
                     var formatter = new formatting.Formatter();
                     for (var key in races) {
                         var option = document.createElement("option");
-                        $(option).attr("value", races[key]['id']).html(races[key]['name']);
+                        option.value = races[key]['id'];
+                        option.innerHTML = races[key]['name'];
                         $(select).append($(option));
                     }
                 })
@@ -272,11 +279,9 @@
         </p>
         {{ form_start(form, {'action': path('create_char')}) }}
         <br /> <br />
+        {{ form_row(form.name) }}
         <div>
-            Stadt: 
             {{ form_row(form.city) }}
-            <!--<select name="city" onchange="changeCity(this.value);">-->
-
             <div data-descr="nelaris">
                 {{nelaris.descr|colorize|raw}}
             </div>
@@ -294,13 +299,10 @@
             </div>
         </div>
         <br />
-        {{ form_row(form.name) }}
         <br /> 
-        {{ form_errors(form.race) }}
-        <select id="selectRace" name="race">
-            <option>W&auml;hle eine Rasse</option>
-        </select>
+        {{ form_row(form.race) }}
         <br />
+        {{ form_row(form.gender) }}
         <br />
         <input type="submit" value="Erstellen" />
         {{ form_end(form) }}

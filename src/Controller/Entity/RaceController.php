@@ -3,6 +3,7 @@
 namespace App\Controller\Entity;
 
 use App\Query\GetRacesByCityQuery;
+use App\Service\FormatService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -19,9 +20,13 @@ class RaceController {
     /**
      * @Route("/race/by_city/{city}", name=RaceController::RACES_BY_CITY_ROUTE_NAME)
      */
-    public function getRacesByCityAction(string $city, EntityManagerInterface $eManager) {
+    public function getRacesByCityAction(string $city, EntityManagerInterface $eManager, FormatService $formatter) {
         $query = new GetRacesByCityQuery($eManager);
-        return new JsonResponse($query($city));
+        $races = $query($city);
+        foreach ($races as $key => $race) {
+            $races[$key]['name'] = $formatter->parse($race['name']);
+        }
+        return new JsonResponse($races);
     }
 
 }

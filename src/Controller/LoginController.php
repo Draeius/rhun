@@ -44,7 +44,7 @@ class LoginController extends AbstractController {
             if ($user && $pwEncoder->isPasswordValid($user, $userDTO->password)) {
                 $session = new RhunSession();
                 $session->setAccountID($user->getId());
-                return $this->redirectToRoute(AccountManagementController::ACCOUNT_MANAGEMENT_ROUTE_NAME . '#news');
+                return $this->redirectToRoute(AccountManagementController::ACCOUNT_MANAGEMENT_ROUTE_NAME, ['_fragment' => 'news']);
             }
         }
         return $this->forward(self::ACCOUNT_LOGIN_FAIL_FORWARD);

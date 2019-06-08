@@ -48,14 +48,12 @@ class FormatRepository extends ServiceEntityRepository {
                 unset($tags[$key]);
             }
         }
-        if (empty($tags)) {
-            return;
-        }
+        if (!empty($tags)) {
+            $formats = $this->findBy(['code' => $tags]);
 
-        $formats = $this->findBy(['code' => $tags]);
-
-        foreach ($formats as $format) {
-            self::$formats[$format->getCode()] = $format;
+            foreach ($formats as $format) {
+                self::$formats[$format->getCode()] = $format;
+            }
         }
     }
 

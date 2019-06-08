@@ -4,8 +4,10 @@ namespace App\Service;
 
 use App\Formatting\FormatStrategy;
 use App\Formatting\FormatStrategyFactory;
+use App\Repository\FormatRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
+
 
 /**
  * Description of FormatService
@@ -32,15 +34,22 @@ class FormatService {
      */
     private $stopwatch;
 
-    public function __construct(EntityManagerInterface $eManager, Stopwatch $stopwatch) {
+    /**
+     *
+     * @var FormatRepository
+     */
+    private $formatRepo;
+    
+    public function __construct(EntityManagerInterface $eManager, FormatRepository $formatRepo, Stopwatch $stopwatch) {
         $this->pendingStrategies = array();
         $this->entityManager = $eManager;
         $this->stopwatch = $stopwatch;
+        $this->formatRepo = $formatRepo;
     }
 
-    public function parse(string $text, bool $allowedOnly = false): string {
+    public function parse(?string $text, bool $allowedOnly = false): string {
         if ($text == '') {
-            return $text;
+            return '';
         }
 
         $this->stopwatch->start('formatting');
@@ -93,7 +102,7 @@ class FormatService {
     }
 
     private function getStrategies(array &$array, int $arraySize, bool $allowedOnly) {
-        $factory = new FormatStrategyFactory($this->entityManager);
+        $factory = new FormatStrategyFactory($this->entityManager, $this->formatRepo);
         $strategies = [];
 
         for ($index = 0; $index < $arraySize; $index++) {

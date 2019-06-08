@@ -26,8 +26,9 @@ class FormatStrategyFactory {
     private $formatRepo;
     private $tags = [];
 
-    public function __construct(EntityManager $manager) {
+    public function __construct(EntityManager $manager, FormatRepository $formatRepo) {
         $this->manager = $manager;
+        $this->formatRepo = $formatRepo;
     }
 
     public function getStrategyForText(string $text, bool $isPost) {
@@ -62,9 +63,6 @@ class FormatStrategyFactory {
     }
 
     private function getFormatRepo(): FormatRepository {
-        if (!$this->formatRepo) {
-            $this->formatRepo = $this->manager->getRepository('App:Format');
-        }
         return $this->formatRepo;
     }
 
