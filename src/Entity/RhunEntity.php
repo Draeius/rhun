@@ -22,7 +22,7 @@ abstract class RhunEntity {
      *
      * @Id
      * @Column(type="integer", options={"unsigned": true})
-     * @GeneratedValue
+     * @GeneratedValue(strategy="IDENTITY")
      */
     protected $id;
 

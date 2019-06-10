@@ -8,7 +8,9 @@ use App\Entity\Traits\EntityIdTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\OneToMany;
+use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
 
 /**
@@ -16,12 +18,21 @@ use Doctrine\ORM\Mapping\Table;
  *
  * @author Draeius
  * @Entity
+ * @HasLifecycleCallbacks
  * @Table(name="locations")
  */
 class Location extends RhunEntity {
 
     use EntityIdTrait;
     use EntityColoredNameTrait;
+
+    /**
+     * The Area in which this location is set
+     * @var Area
+     * @ManyToOne(targetEntity="Area")
+     * @JoinColumn(name="area_id", referencedColumnName="id")
+     */
+    protected $area;
 
     /**
      * The locations description in spring
@@ -76,6 +87,14 @@ class Location extends RhunEntity {
 
     function getDescriptionWinter() {
         return $this->descriptionWinter;
+    }
+
+    function getArea(): Area {
+        return $this->area;
+    }
+
+    function setArea(Area $area) {
+        $this->area = $area;
     }
 
     function getAdult() {

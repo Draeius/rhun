@@ -6,7 +6,6 @@ use App\Entity\Traits\EntityCreatedTrait;
 use App\Entity\Traits\EntityIdTrait;
 use App\Entity\Traits\EntityIsNewestTrait;
 use App\Repository\BroadcastRepository;
-use App\Service\DateTimeService;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\HasLifecycleCallbacks;

@@ -22,7 +22,7 @@ abstract class LocationBasedEntity extends RhunEntity {
      */
     protected $location;
 
-    function getLocation(): Location {
+    function getLocation(): ?Location {
         return $this->location;
     }
 

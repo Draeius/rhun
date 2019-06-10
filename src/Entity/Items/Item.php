@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\DiscriminatorColumn;
 use Doctrine\ORM\Mapping\DiscriminatorMap;
 use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
 use Doctrine\ORM\Mapping\InheritanceType;
 use Doctrine\ORM\Mapping\Table;
 
@@ -21,6 +22,7 @@ use Doctrine\ORM\Mapping\Table;
  * @Table(name="items")
  * @InheritanceType("JOINED")
  * @DiscriminatorColumn(name="discr", type="string")
+ * @HasLifecycleCallbacks
  * @DiscriminatorMap({
  *      "weapon" = "Weapon",
  *      "weapon_templ" = "WeaponTemplate",

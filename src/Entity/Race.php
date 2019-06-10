@@ -12,6 +12,10 @@ use Doctrine\ORM\Mapping\JoinTable;
 use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints\NotBlank;
+
+
 
 /**
  * Represents a race
@@ -19,21 +23,23 @@ use Doctrine\ORM\Mapping\Table;
  * @author Draeius
  * @Entity(repositoryClass="App\Repository\RaceRepository")
  * @Table(name="races")
+ * @UniqueEntity("coloredName")
  */
 class Race extends LocationBasedEntity {
 
     use EntityColoredNameTrait;
-
+    
     /**
      * The city in which this race lives
      * @var string
+     * @NotBlank
      * @Column(type="string", length=64)
      */
     protected $city;
 
     /**
      * The location where the character will get if he dies
-     * @var LocationEntity
+     * @var Location
      * @ManyToOne(targetEntity="Location", fetch="EXTRA_LAZY")
      * @JoinColumn(name="death_loc_id", referencedColumnName="id")
      */
@@ -49,7 +55,7 @@ class Race extends LocationBasedEntity {
     /**
      * The Areas which this race may visit.
      * @var Area[]
-     * @ManyToMany(targetEntity="App\Entity\Area", fetch="EXTRA_LAZY", cascade={"persist"})
+     * @ManyToMany(targetEntity="Area", fetch="EXTRA_LAZY", cascade={"persist"})
      * @JoinTable(name="race_allowed_areas",
      *      joinColumns={@JoinColumn(name="race_id", referencedColumnName="id")},
      *      inverseJoinColumns={@JoinColumn(name="area_id", referencedColumnName="id")}
@@ -97,7 +103,7 @@ class Race extends LocationBasedEntity {
         $this->allowedAreas = $allowedAreas;
     }
 
-    public function setDeathLocation(LocationEntity $deathLocation) {
+    public function setDeathLocation(Location $deathLocation) {
         $this->deathLocation = $deathLocation;
     }
 

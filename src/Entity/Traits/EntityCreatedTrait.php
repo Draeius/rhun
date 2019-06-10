@@ -3,8 +3,8 @@
 namespace App\Entity\Traits;
 
 use DateTime;
-use Doctrine\Common\EventArgs;
-use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\PrePersist;
 
 /**
  * Ein Trait, das ein created Feld enthält und es ermöglicht, nach dem creationDate zu sortieren.
@@ -16,13 +16,13 @@ use Doctrine\ORM\Mapping as ORM;
  * @author Draeius
  */
 trait EntityCreatedTrait {
-    
+
     /**
      * Gibt an, wann das Entity kreiert wurde.
      *
      * @var DateTime|null
      *
-     * @ORM\Column(type="datetime", nullable=false, name="creation_at")
+     * @Column(type="datetime", nullable=false, name="creation_at")
      */
     protected $createdAt;
 
@@ -31,10 +31,10 @@ trait EntityCreatedTrait {
     }
 
     /**
-     * @ORM\PrePersist
+     * @PrePersist
      */
     public function setCreatedAtValue(): void {
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new DateTime();
     }
 
 }

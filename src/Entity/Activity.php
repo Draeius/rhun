@@ -8,6 +8,7 @@ use App\Option\OptionPicker;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
 use Doctrine\ORM\Mapping\Table;
 
 /**
@@ -16,6 +17,7 @@ use Doctrine\ORM\Mapping\Table;
  * @author Draeius
  * @Entity
  * @Table(name="activities")
+ * @HasLifecycleCallbacks
  */
 class Activity extends LocationBasedEntity {
 
