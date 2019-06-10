@@ -18,8 +18,8 @@ class CreateCharacterFormType extends AbstractType {
         $builder
                 ->add('name', TextType::class, ['label' => 'Name'])
                 ->add('city', ChoiceType::class, ['label' => 'Stadt',
+                    'placeholder' => '',
                     'choices' => [
-                        'Wähle eine Stadt' => 'placeholder',
                         'Nelaris' => 'nelaris',
                         'Lerentia' => 'lerentia',
                         'Pyra' => 'pyra',

@@ -2,12 +2,9 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\EntityOwnerTrait;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
-use Doctrine\ORM\Mapping\JoinColumn;
-use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
 
 /**
@@ -17,24 +14,9 @@ use Doctrine\ORM\Mapping\Table;
  * @Entity
  * @Table(name="diary_entries")
  */
-class DiaryEntry {
+class DiaryEntry extends RhunEntity {
 
-    /**
-     * 
-     * @var int
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
-     */
-    protected $id;
-
-    /**
-     * 
-     * @var Character 
-     * @ManyToOne(targetEntity="Character", inversedBy="diaryEntries")
-     * @JoinColumn(name="owner_id", referencedColumnName="id")
-     */
-    protected $owner;
+    use EntityOwnerTrait;
 
     /**
      * 
@@ -57,14 +39,6 @@ class DiaryEntry {
      */
     protected $text;
 
-    public function getId() {
-        return $this->id;
-    }
-
-    public function getOwner(): Character {
-        return $this->owner;
-    }
-
     public function getTitle() {
         return $this->title;
     }
@@ -75,10 +49,6 @@ class DiaryEntry {
 
     public function getText() {
         return $this->text;
-    }
-
-    public function setOwner(Character $owner) {
-        $this->owner = $owner;
     }
 
     public function setTitle($title) {

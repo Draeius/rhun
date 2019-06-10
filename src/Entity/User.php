@@ -7,8 +7,6 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
@@ -22,16 +20,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @Entity
  * @Table(name="accounts")
  */
-class User implements UserInterface, Serializable {
-
-    /**
-     *
-     * @var int Die Id dieses Accounts
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
-     */
-    protected $id;
+class User extends RhunEntity implements UserInterface, Serializable {
 
     /**
      * @var string This account's name
@@ -114,13 +103,13 @@ class User implements UserInterface, Serializable {
 
     /**
      * @var string 
-     * @Column(type="string", length=64, unique=true, nullable=false)
+     * @Column(type="string", length=64, nullable=true)
      */
     protected $template = "";
 
     /**
      * @var string 
-     * @Column(type="string", length=255, unique=true, nullable=true)
+     * @Column(type="boolean", nullable=false)
      */
     protected $acceptTerms = false;
 
@@ -165,10 +154,6 @@ class User implements UserInterface, Serializable {
             return false;
         }
         return time() > strtotime('+18 years', $this->birthday->getTimestamp());
-    }
-
-    function getId() {
-        return $this->id;
     }
 
     function getEmail() {
@@ -232,10 +217,10 @@ class User implements UserInterface, Serializable {
         $this->acceptTerms = $acceptTerms;
     }
 
-    public function addGems(int $amount){
+    public function addGems(int $amount) {
         $this->gems += $amount;
     }
-    
+
     function setUserRole($userRole) {
         $this->userRole = $userRole;
     }

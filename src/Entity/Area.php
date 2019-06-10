@@ -2,10 +2,10 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\EntityColoredNameTrait;
+use App\Entity\Traits\EntityIdTrait;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Table;
 
 /**
@@ -15,23 +15,10 @@ use Doctrine\ORM\Mapping\Table;
  * @Entity
  * @Table(name="areas")
  */
-class Area {
+class Area extends RhunEntity {
 
-    /**
-     * This area's id
-     * @var int
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
-     */
-    protected $id;
-
-    /**
-     * The Areas name
-     * @var string
-     * @Column(type="string", length=128)
-     */
-    protected $name;
+    use EntityIdTrait;
+    use EntityColoredNameTrait;
 
     /**
      * The city this area belongs to
@@ -54,13 +41,12 @@ class Area {
      */
     protected $deadAllowed;
 
-    public function getId() {
-        return $this->id;
-    }
-
-    public function getName() {
-        return $this->name;
-    }
+    /**
+     *
+     * @var bool
+     * @Column(type="boolean")
+     */
+    protected $raceAllowed = false;
 
     public function getDescription() {
         return $this->description;
@@ -74,16 +60,20 @@ class Area {
         return $this->deadAllowed;
     }
 
-    public function setDeadAllowed($deadAllowed) {
+    function getRaceAllowed() {
+        return $this->raceAllowed;
+    }
+
+    function setRaceAllowed(bool $raceAllowed) {
+        $this->raceAllowed = $raceAllowed;
+    }
+
+    public function setDeadAllowed($deadAllowed): bool {
         $this->deadAllowed = $deadAllowed;
     }
 
     public function setCity($city) {
         $this->city = $city;
-    }
-
-    public function setName($name) {
-        $this->name = $name;
     }
 
     public function setDescription($description) {

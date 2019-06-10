@@ -1,43 +1,26 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
-use FightingBundle\Entity\BuffTemplate;
 
 /**
  * Description of GuildBuffTemplate
  *
  * @author Matthias
  * @Entity
- * @Table(name="guild_buff_templates")
+ * @Table(name="templates_guild_buff")
  */
-class GuildBuffTemplate {
-
-    /**
-     * @var int
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
-     */
-    protected $id;
+class GuildBuffTemplate extends RhunEntity {
 
     /**
      * 
      * @var BuffTemplate 
-     * @ManyToOne(targetEntity="FightingBundle\Entity\BuffTemplate")
+     * @ManyToOne(targetEntity="BuffTemplate")
      * @JoinColumn(name="template_id", referencedColumnName="id")
      */
     protected $buffTemplate;
@@ -48,10 +31,6 @@ class GuildBuffTemplate {
      * @Column(type="integer")
      */
     protected $guildLevel;
-
-    public function getId() {
-        return $this->id;
-    }
 
     public function getBuffTemplate(): BuffTemplate {
         return $this->buffTemplate;

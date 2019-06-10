@@ -1,20 +1,12 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace App\Entity;
 
+use App\Entity\Traits\EntityOwnerTrait;
+use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
-use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
-use Doctrine\ORM\Mapping\Column;
 
 /**
  * Description of ColoredName
@@ -23,21 +15,14 @@ use Doctrine\ORM\Mapping\Column;
  * @Entity
  * @Table(name="character_names")
  */
-class ColoredName {
+class ColoredName extends RhunEntity {
 
-    /**
-     * @var int
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
-     */
-    protected $id;
+    use EntityOwnerTrait;
 
     /**
      *
      * @var Character
      * @ManyToOne(targetEntity="Character", inversedBy="coloredNames")
-     * @JoinColumn(name="owner_id", referencedColumnName="id")
      */
     protected $owner;
 
@@ -52,24 +37,12 @@ class ColoredName {
      */
     protected $isActivated = true;
 
-    public function getId() {
-        return $this->id;
-    }
-
-    public function getOwner(): Character {
-        return $this->owner;
-    }
-
     public function getName() {
         return $this->name;
     }
 
     public function getIsActivated() {
         return $this->isActivated;
-    }
-
-    public function setOwner(Character $owner) {
-        $this->owner = $owner;
     }
 
     public function setName($name) {

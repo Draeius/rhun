@@ -2,12 +2,11 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\EntityOwnerTrait;
 use App\Util\Price;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
-use Doctrine\ORM\Mapping\OneToOne;
+use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
 
 /**
@@ -15,23 +14,16 @@ use Doctrine\ORM\Mapping\Table;
  *
  * @author Matthias
  * @Entity
- * @Table(name="character_wallet")
+ * @Table(name="character_wallets")
  */
-class Wallet {
+class Wallet extends RhunEntity {
+
+    use EntityOwnerTrait;
 
     /**
-     * The wallets id
-     * @var int 
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
-     */
-    protected $id;
-
-    /**
-     * The wallets owner
+     *
      * @var Character
-     * @OneToOne(targetEntity="Character", inversedBy="wallet")
+     * @ManyToOne(targetEntity="Character", inversedBy="wallet")
      */
     protected $owner;
 
@@ -161,13 +153,13 @@ class Wallet {
      * @param Price $price
      */
     public function checkPrice(Price $price) {
-        if($this->gold < $price->getGold()){
+        if ($this->gold < $price->getGold()) {
             return false;
         }
-        if($this->platin < $price->getPlatin()){
+        if ($this->platin < $price->getPlatin()) {
             return false;
         }
-        if($this->gems < $price->getGems()){
+        if ($this->gems < $price->getGems()) {
             return false;
         }
         return true;
@@ -191,14 +183,6 @@ class Wallet {
 
     public function getBankPlatin() {
         return $this->bankPlatin;
-    }
-
-    public function getOwner() {
-        return $this->owner;
-    }
-
-    public function setOwner(Character $owner) {
-        $this->owner = $owner;
     }
 
     public function setGold($gold) {

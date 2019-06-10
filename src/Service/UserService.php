@@ -9,7 +9,7 @@
 namespace App\Service;
 
 use App\Repository\UserRepository;
-use AppBundle\Entity\User;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 

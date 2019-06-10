@@ -2,12 +2,11 @@
 
 namespace App\Entity;
 
-use AppBundle\Option\Option;
+use App\Entity\Traits\EntityColoredNameTrait;
+use App\Option\Option;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Table;
 
 /**
@@ -17,27 +16,9 @@ use Doctrine\ORM\Mapping\Table;
  * @Entity
  * @Table(name="spells")
  */
-class Spell {
+class Spell extends RhunEntity {
 
-    /**
-     * @var int
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
-     */
-    protected $id;
-
-    /**
-     * @var string
-     * @Column(type="string", length=64)
-     */
-    protected $name;
-
-    /**
-     * @var string
-     * @Column(type="string", length=128)
-     */
-    protected $coloredName;
+    use EntityColoredNameTrait;
 
     /**
      * @var int
@@ -65,18 +46,6 @@ class Spell {
      */
     protected $icon;
 
-    public function getId() {
-        return $this->id;
-    }
-
-    public function getName() {
-        return $this->name;
-    }
-
-    public function getColoredName() {
-        return $this->coloredName;
-    }
-
     public function getOptions() {
         return $this->options;
     }
@@ -103,14 +72,6 @@ class Spell {
 
     public function setMpCost($mpCost) {
         $this->mpCost = $mpCost;
-    }
-
-    public function setName($name) {
-        $this->name = $name;
-    }
-
-    public function setColoredName($coloredName) {
-        $this->coloredName = $coloredName;
     }
 
     public function setOptions($options) {

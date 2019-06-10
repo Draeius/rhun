@@ -4,8 +4,6 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Table;
 
 /**
@@ -15,16 +13,7 @@ use Doctrine\ORM\Mapping\Table;
  * @Entity(readOnly=true)
  * @Table(name="formats")
  */
-class Format {
-
-    /**
-     * The id of this format
-     * @var int
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
-     */
-    protected $id;
+class Format extends RhunEntity {
 
     /**
      * The code for this format
@@ -67,10 +56,6 @@ class Format {
      * @Column(type="integer", options={"default" : 0})
      */
     protected $displayList = 0;
-
-    public function getId() {
-        return $this->id;
-    }
 
     public function getCode() {
         return $this->code;

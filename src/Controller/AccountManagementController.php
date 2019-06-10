@@ -3,9 +3,11 @@
 namespace App\Controller;
 
 use App\Controller\BasicController;
+use App\Entity\Race;
 use App\Entity\User;
 use App\Form\CreateCharacterFormType;
 use App\Form\DTO\CreateCharacterDTO;
+use App\Repository\BroadcastRepository;
 use App\Repository\UserRepository;
 use App\Service\CharacterService;
 use App\Service\DateTimeService;
@@ -39,7 +41,7 @@ class AccountManagementController extends BasicController {
      * @App\Annotation\Security(needAccount=true)
      * @Route("/account", name=AccountManagementController::ACCOUNT_MANAGEMENT_ROUTE_NAME, defaults={"_fragment"="chars"})
      */
-    public function showCharmanagement(Request $request, UserRepository $userRepo, AccountMngmtParamGenerator $paramGenerator) {
+    public function showCharmanagement(Request $request, UserRepository $userRepo, AccountMngmtParamGenerator $paramGenerator, BroadcastRepository $broadcastRepo) {
         $session = new RhunSession();
         /* @var $user User */
         $user = $userRepo->find($session->getAccountID());
@@ -56,7 +58,7 @@ class AccountManagementController extends BasicController {
             
         }
 
-        return $this->render($this->getSkinFile(), $paramGenerator->getStandardParams($user, $form));
+        return $this->render($this->getSkinFile(), $paramGenerator->getStandardParams($user, $form, $broadcastRepo));
     }
 
     /**

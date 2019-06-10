@@ -2,13 +2,9 @@
 
 namespace App\Entity;
 
-use App\Entity\Character;
+use App\Entity\Traits\EntityOwnerTrait;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
-use Doctrine\ORM\Mapping\JoinColumn;
-use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
 
 /**
@@ -18,16 +14,16 @@ use Doctrine\ORM\Mapping\Table;
  * @Entity
  * @Table(name="biographies")
  */
-class Biography {
+class Biography extends RhunEntity {
+
+    use EntityOwnerTrait;
 
     /**
-     * The biographie's id
-     * @var int
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
+     *
+     * @var Character
+     * @ManyToOne(targetEntity="Character", inversedBy="biographies")
      */
-    protected $id;
+    protected $owner;
 
     /**
      * The text name of this biography
@@ -42,14 +38,6 @@ class Biography {
      * @Column(type="text", length=128, nullable=true)
      */
     protected $alternateCharName;
-
-    /**
-     * The owner of this biography
-     * @var Character 
-     * @ManyToOne(targetEntity="Character", inversedBy="biography")
-     * @JoinColumn(name="character_id", referencedColumnName="id")
-     */
-    protected $owner;
 
     /**
      * The character's avatar
@@ -172,9 +160,77 @@ class Biography {
      */
     protected $modeledAfter;
 
-    public function getId() {
-        return $this->id;
-    }
+    /**
+     * @var string
+     * @Column(type="string", length=128, nullable=true)
+     */
+    protected $features = '';
+
+    /**
+     * @var string
+     * @Column(type="string", length=128, nullable=true)
+     */
+    protected $interests = '';
+
+    /**
+     * @var string
+     * @Column(type="string", length=64, nullable=true)
+     */
+    protected $lastName = '';
+
+    /**
+     * @var string
+     * @Column(type="string", length=64, nullable=true)
+     */
+    protected $origin = '';
+
+    /**
+     * @var string
+     * @Column(type="string", length=64, nullable=true)
+     */
+    protected $skinColor = '';
+
+    /**
+     * @var string
+     * @Column(type="string", length=64, nullable=true)
+     */
+    protected $dislikes = '';
+
+    /**
+     * @var string
+     * @Column(type="string", length=64, nullable=true)
+     */
+    protected $weaknesses = '';
+
+    /**
+     * @var string
+     * @Column(type="string", length=64, nullable=true)
+     */
+    protected $skills = '';
+
+    /**
+     * @var string
+     * @Column(type="string", length=64, nullable=true)
+     */
+    protected $parents = '';
+
+    /**
+     * @var string
+     * @Column(type="string", length=64, nullable=true)
+     */
+    protected $siblings = '';
+
+    /**
+     * @var string
+     * @Column(type="string", length=64, nullable=true)
+     */
+    protected $children = '';
+
+    /**
+     * @var string
+     * @Column(type="string", length=64, nullable=true)
+     */
+    protected $spouse = '';
 
     public function getText() {
         return $this->text;
@@ -194,10 +250,6 @@ class Biography {
 
     public function getScriptChanged() {
         return $this->scriptChanged;
-    }
-
-    public function getOwner() {
-        return $this->owner;
     }
 
     public function getAvatar() {
@@ -260,6 +312,102 @@ class Biography {
         return $this->modeledAfter;
     }
 
+    function getFeatures() {
+        return $this->features;
+    }
+
+    function getInterests() {
+        return $this->interests;
+    }
+
+    function getLastName() {
+        return $this->lastName;
+    }
+
+    function getOrigin() {
+        return $this->origin;
+    }
+
+    function getSkinColor() {
+        return $this->skinColor;
+    }
+
+    function getDislikes() {
+        return $this->dislikes;
+    }
+
+    function getWeaknesses() {
+        return $this->weaknesses;
+    }
+
+    function getSkills() {
+        return $this->skills;
+    }
+
+    function getParents() {
+        return $this->parents;
+    }
+
+    function getSiblings() {
+        return $this->siblings;
+    }
+
+    function getChildren() {
+        return $this->children;
+    }
+
+    function getSpouse() {
+        return $this->spouse;
+    }
+
+    function setFeatures($features) {
+        $this->features = $features;
+    }
+
+    function setInterests($interests) {
+        $this->interests = $interests;
+    }
+
+    function setLastName($lastName) {
+        $this->lastName = $lastName;
+    }
+
+    function setOrigin($origin) {
+        $this->origin = $origin;
+    }
+
+    function setSkinColor($skinColor) {
+        $this->skinColor = $skinColor;
+    }
+
+    function setDislikes($dislikes) {
+        $this->dislikes = $dislikes;
+    }
+
+    function setWeaknesses($weaknesses) {
+        $this->weaknesses = $weaknesses;
+    }
+
+    function setSkills($skills) {
+        $this->skills = $skills;
+    }
+
+    function setParents($parents) {
+        $this->parents = $parents;
+    }
+
+    function setSiblings($siblings) {
+        $this->siblings = $siblings;
+    }
+
+    function setChildren($children) {
+        $this->children = $children;
+    }
+
+    function setSpouse($spouse) {
+        $this->spouse = $spouse;
+    }
+
     function setModeledAfter($modeledAfter) {
         $this->modeledAfter = $modeledAfter;
     }
@@ -314,10 +462,6 @@ class Biography {
 
     public function setSelected($selected) {
         $this->selected = $selected;
-    }
-
-    public function setOwner(Character $owner) {
-        $this->owner = $owner;
     }
 
     public function setAvatar($avatar) {

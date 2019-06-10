@@ -11,8 +11,6 @@ namespace App\Entity;
 use DateTime;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Table;
 
 /**
@@ -22,16 +20,7 @@ use Doctrine\ORM\Mapping\Table;
  * @Entity
  * @Table("cron_executions")
  */
-class CronExecutions {
-
-    /**
-     *
-     * @var int 
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
-     */
-    protected $id;
+class CronExecutions extends RhunEntity {
 
     /**
      *
@@ -65,10 +54,6 @@ class CronExecutions {
                 $this->newDay = $date;
                 break;
         }
-    }
-
-    public function getId() {
-        return $this->id;
     }
 
     public function getPlayerLogout(): DateTime {

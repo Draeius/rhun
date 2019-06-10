@@ -4,8 +4,6 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Table;
 
 /**
@@ -13,18 +11,9 @@ use Doctrine\ORM\Mapping\Table;
  *
  * @author Draeius
  * @Entity
- * @Table(name="user_level")
+ * @Table(name="user_levels")
  */
-class UserRole {
-
-    /**
-     *
-     * @var int The id of this level
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
-     */
-    protected $id;
+class UserRole extends RhunEntity {
 
     /**
      *
@@ -76,10 +65,6 @@ class UserRole {
         $check &= !($this->editItems && !$role->getEditItems());
         $check &= !($this->editMonster && !$role->getEditMonster());
         return $check;
-    }
-
-    public function getId() {
-        return $this->id;
     }
 
     public function getName() {

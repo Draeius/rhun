@@ -1,19 +1,11 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace App\Entity;
 
-use AppBundle\Util\Price;
+use App\Util\Price;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
@@ -25,17 +17,9 @@ use Doctrine\ORM\Mapping\Table;
  * @Entity
  * @Table(name="guild_projects")
  */
-class GuildProject {
+class GuildProject extends RhunEntity {
 
     const BUILD_ROOM_PROJECT = 0;
-
-    /**
-     * @var int
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
-     */
-    protected $id;
 
     /**
      * 
@@ -151,10 +135,6 @@ class GuildProject {
         $this->addGold($price->getGold());
         $this->addPlatin($price->getPlatin());
         $this->addGems($price->getGems());
-    }
-
-    public function getId() {
-        return $this->id;
     }
 
     public function getGuild(): Guild {

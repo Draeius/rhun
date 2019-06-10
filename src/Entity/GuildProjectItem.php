@@ -1,18 +1,10 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace App\Entity;
 
-use AppBundle\Entity\Item;
+use App\Entity\Item;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
@@ -22,17 +14,9 @@ use Doctrine\ORM\Mapping\Table;
  *
  * @author Draeius
  * @Entity
- * @Table(name="guild_project_item")
+ * @Table(name="guild_project_items")
  */
-class GuildProjectItem {
-
-    /**
-     * @var int
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
-     */
-    protected $id;
+class GuildProjectItem extends RhunEntity {
 
     /**
      * 
@@ -45,7 +29,7 @@ class GuildProjectItem {
     /**
      * 
      * @var Item 
-     * @ManyToOne(targetEntity="AppBundle\Entity\Item")
+     * @ManyToOne(targetEntity="App\Entity\Items\Item")
      * @JoinColumn(name="item_id", referencedColumnName="id")
      */
     protected $item;
@@ -73,10 +57,6 @@ class GuildProjectItem {
         if ($this->progress > $this->neededAmount) {
             $this->progress = $this->neededAmount;
         }
-    }
-
-    public function getId() {
-        return $this->id;
     }
 
     public function getProject(): Item {

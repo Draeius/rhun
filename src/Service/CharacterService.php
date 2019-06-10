@@ -130,12 +130,12 @@ class CharacterService {
 //        $em->remove($character->getWallet());
 //        $em->remove($character->getAttributes());
 //
-//        self::deleteEntities($em, $em->getRepository('AppBundle:ShortNews')->findByCharacter($character));
-//        self::deleteEntities($em, $em->getRepository('AppBundle:Biography')->findByOwner($character));
-//        self::deleteEntities($em, $em->getRepository('AppBundle:DiaryEntry')->findByOwner($character));
-//        self::deleteEntities($em, $em->getRepository('AppBundle:ColoredName')->findByOwner($character));
-//        self::deleteEntities($em, $em->getRepository('AppBundle:Title')->findByOwner($character));
-//        $inventory = $em->getRepository('AppBundle:InventoryItem')->findByOwner($character);
+//        self::deleteEntities($em, $em->getRepository('App:ShortNews')->findByCharacter($character));
+//        self::deleteEntities($em, $em->getRepository('App:Biography')->findByOwner($character));
+//        self::deleteEntities($em, $em->getRepository('App:DiaryEntry')->findByOwner($character));
+//        self::deleteEntities($em, $em->getRepository('App:ColoredName')->findByOwner($character));
+//        self::deleteEntities($em, $em->getRepository('App:Title')->findByOwner($character));
+//        $inventory = $em->getRepository('App:InventoryItem')->findByOwner($character);
 //        foreach ($inventory as $invItem) {
 //            if ($invItem->getItem() instanceof Weapon || $invItem->getItem() instanceof Armor) {
 //                $item = $invItem->getItem();
@@ -144,14 +144,14 @@ class CharacterService {
 //            }
 //            $em->remove($invItem);
 //        }
-//        self::deleteEntities($em, $em->getRepository('AppBundle:Post')->findByAuthor($character));
-//        self::deleteEntities($em, $em->getRepository('AppBundle:Message')->findBySender($character));
-//        self::deleteEntities($em, $em->getRepository('AppBundle:Message')->findByAddressee($character));
+//        self::deleteEntities($em, $em->getRepository('App:Post')->findByAuthor($character));
+//        self::deleteEntities($em, $em->getRepository('App:Message')->findBySender($character));
+//        self::deleteEntities($em, $em->getRepository('App:Message')->findByAddressee($character));
 //        $characterHouses = $em->getRepository('HouseBundle:House')->findByOwner($character);
 //        foreach ($characterHouses as $house) {
 //            $rooms = $house->getRooms();
 //            foreach ($rooms as $room) {
-//                $chars = $em->getRepository('AppBundle:Character')->findByLocation($room->getLocation());
+//                $chars = $em->getRepository('App:Character')->findByLocation($room->getLocation());
 //                if ($chars) {
 //                    foreach ($chars as $char) {
 //                        $char->setLocation($char->getRace()->getStartingLocation());

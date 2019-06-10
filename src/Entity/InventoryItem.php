@@ -3,11 +3,10 @@
 namespace App\Entity;
 
 use App\Entity\Character;
-use App\Entity\Item;
+use App\Entity\Items\Item;
+use App\Entity\Traits\EntityOwnerTrait;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
@@ -17,31 +16,23 @@ use Doctrine\ORM\Mapping\Table;
  *
  * @author Matthias
  * @Entity
- * @Table(name="inventory_item")
+ * @Table(name="inventory_items")
  */
-class InventoryItem {
+class InventoryItem extends RhunEntity {
+
+    use EntityOwnerTrait;
 
     /**
-     * The inventorie's id
-     * @var int 
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
-     */
-    protected $id;
-
-    /**
-     * The inventories owner
-     * @var Character 
-     * @ManyToOne(targetEntity="Character", inversedBy="inventory", cascade={"persist"})
-     * @JoinColumn(name="character_id", referencedColumnName="id")
+     *
+     * @var Character
+     * @ManyToOne(targetEntity="Character", inversedBy="inventory")
      */
     protected $owner;
 
     /**
      * The item that is wrapped by this InventoryItem
      * @var Item 
-     * @ManyToOne(targetEntity="Item", cascade={"persist"})
+     * @ManyToOne(targetEntity="App\Entity\Items\Item")
      * @JoinColumn(name="item_id", referencedColumnName="id")
      */
     protected $item;
@@ -60,24 +51,12 @@ class InventoryItem {
         }
     }
 
-    public function getId() {
-        return $this->id;
-    }
-
-    public function getOwner() {
-        return $this->owner;
-    }
-
     public function getItem() {
         return $this->item;
     }
 
     public function getAmount() {
         return $this->amount;
-    }
-
-    public function setOwner(Character $owner) {
-        $this->owner = $owner;
     }
 
     public function setItem(Item $item) {

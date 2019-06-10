@@ -2,17 +2,13 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\EntityIdTrait;
 use App\Option\Option;
 use App\Option\OptionPicker;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
-use Doctrine\ORM\Mapping\JoinColumn;
-use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
-use App\Entity\Location\LocationEntity;
 
 /**
  * Description of Activity
@@ -21,15 +17,9 @@ use App\Entity\Location\LocationEntity;
  * @Entity
  * @Table(name="activities")
  */
-class Activity {
+class Activity extends LocationBasedEntity {
 
-    /**
-     * @var int 
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
-     */
-    protected $id;
+    use EntityIdTrait;
 
     /**
      *
@@ -37,13 +27,6 @@ class Activity {
      * @Column(type="text", length=64)
      */
     protected $navLabel;
-
-    /**
-     * @var LocationEntity 
-     * @ManyToOne(targetEntity="LocationEntity")
-     * @JoinColumn(name="location_id", referencedColumnName="id")
-     */
-    protected $location;
 
     /**
      *
@@ -58,14 +41,6 @@ class Activity {
      * @Column(type="text")
      */
     protected $options;
-
-    public function getId() {
-        return $this->id;
-    }
-
-    public function getLocation() {
-        return $this->location;
-    }
 
     public function getStaminaDrain() {
         return $this->staminaDrain;
@@ -83,10 +58,6 @@ class Activity {
         $this->navLabel = $navLabel;
     }
 
-    public function setLocation(LocationEntity $location) {
-        $this->location = $location;
-    }
-
     public function setStaminaDrain($staminaDrain) {
         $this->staminaDrain = $staminaDrain;
     }
@@ -98,7 +69,7 @@ class Activity {
     public function prepareOptions(EntityManager $manager, $uuid): OptionPicker {
         $optionPicker = new OptionPicker();
         $optionArray = json_decode($this->options, true);
-        if(!is_array($optionArray)){
+        if (!is_array($optionArray)) {
             return $optionPicker;
         }
         foreach ($optionArray as $params) {

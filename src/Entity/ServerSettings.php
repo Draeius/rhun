@@ -6,8 +6,6 @@ use App\Service\DateTimeService;
 use DateTime;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Table;
 
 /**
@@ -17,15 +15,7 @@ use Doctrine\ORM\Mapping\Table;
  * @Entity
  * @Table(name="server_settings")
  */
-class ServerSettings {
-
-    /**
-     * @var int 
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
-     */
-    protected $id;
+class ServerSettings extends RhunEntity {
 
     /**
      * The last time a meteor hit
@@ -82,10 +72,6 @@ class ServerSettings {
      * @Column(type="boolean", nullable=false)
      */
     protected $sugarDay = false;
-
-    public function getId() {
-        return $this->id;
-    }
 
     public function getLastMeteor() {
         return $this->lastMeteor;

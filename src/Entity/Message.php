@@ -2,11 +2,10 @@
 
 namespace App\Entity;
 
-use DateTime;
+use App\Entity\Traits\EntityCreatedTrait;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
@@ -18,18 +17,12 @@ use Doctrine\ORM\Mapping\Table;
  * @Entity
  * @Entity(repositoryClass="App\Repository\MessageRepository")
  * @Table(name="messages")
+ * @HasLifecycleCallbacks
  */
-class Message {
+class Message extends RhunEntity {
 
-    /**
-     * The messages's id
-     * @var int
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
-     */
-    protected $id;
-
+    use EntityCreatedTrait;
+    
     /**
      * The sender of this message
      * @var Character 
@@ -68,22 +61,11 @@ class Message {
     protected $important = false;
 
     /**
-     * When this message has been created
-     * @var DateTime
-     * @Column(type="datetime")
-     */
-    protected $created;
-
-    /**
      * The content of this message
      * @var string
      * @Column(type="text")
      */
     protected $content;
-
-    public function getId() {
-        return $this->id;
-    }
 
     public function getSender() {
         return $this->sender;
@@ -135,10 +117,6 @@ class Message {
 
     public function setRead($read) {
         $this->read = $read;
-    }
-
-    public function setCreated(DateTime $created) {
-        $this->created = $created;
     }
 
 }

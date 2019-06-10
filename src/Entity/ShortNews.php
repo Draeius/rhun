@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\EntityCreatedTrait;
 use DateTime;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
@@ -17,24 +17,11 @@ use Doctrine\ORM\Mapping\Table;
  * @author Draeius
  * @Entity
  * @Table(name="short_news")
+ * @HasLifecycleCallbacks
  */
-class ShortNews {
+class ShortNews extends RhunEntity {
 
-    /**
-     *
-     * @var int 
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
-     */
-    protected $id;
-
-    /**
-     *
-     * @var DateTime
-     * @Column(type="datetime")
-     */
-    protected $created;
+    use EntityCreatedTrait;
 
     /**
      * @var Character
@@ -50,24 +37,12 @@ class ShortNews {
      */
     protected $content;
 
-    public function getId() {
-        return $this->id;
-    }
-
-    public function getCreated(): DateTime {
-        return $this->created;
-    }
-
     public function getCharacter(): Character {
         return $this->character;
     }
 
     public function getContent() {
         return $this->content;
-    }
-
-    public function setCreated(DateTime $created) {
-        $this->created = $created;
     }
 
     public function setCharacter(Character $character) {

@@ -29,4 +29,8 @@ class RaceController {
         return new JsonResponse($races);
     }
 
+    public function showEditor() {
+        
+    }
+
 }

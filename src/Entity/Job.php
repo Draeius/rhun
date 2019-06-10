@@ -2,14 +2,13 @@
 
 namespace App\Entity;
 
-use app\model\repositories\RepositoryFactory;
+use App\Entity\Traits\EntityColoredNameTrait;
+use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\OneToOne;
 use Doctrine\ORM\Mapping\Table;
-use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Repository\RepositoryFactory;
 
 /**
  * Description of Job
@@ -18,22 +17,9 @@ use Doctrine\ORM\Mapping\Column;
  * @Entity
  * @Table(name="jobs")
  */
-class Job {
+class Job extends RhunEntity {
 
-    /**
-     * @var int
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
-     */
-    protected $id;
-
-    /**
-     *
-     * @var string
-     * @Column(type="string", length=64)
-     */
-    protected $name;
+    use EntityColoredNameTrait;
 
     /**
      * @var int
@@ -84,10 +70,6 @@ class Job {
      * @Column(type="integer")
      */
     protected $staminaDrain;
-
-    public function getId() {
-        return $this->id;
-    }
 
     public function isSuitable(Character $char) {
         if ($char->getAgility() < $this->agiRequirement) {
@@ -149,14 +131,6 @@ class Job {
 
     public function getStaminaDrain() {
         return $this->staminaDrain;
-    }
-
-    public function getName() {
-        return $this->name;
-    }
-
-    public function setName($name) {
-        $this->name = $name;
     }
 
     public function setStaminaDrain($staminaDrain) {

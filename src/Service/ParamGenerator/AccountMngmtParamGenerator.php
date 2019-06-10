@@ -8,6 +8,7 @@ use App\Query\GetOnlineCharactersQuery;
 use App\Query\GetRaceListQuery;
 use App\Query\GetTotalNumberOfPostsQuery;
 use App\Repository\AreaRepository;
+use App\Repository\BroadcastRepository;
 use App\Service\CharacterService;
 use App\Service\DateTimeService;
 use App\Service\NavbarFactory\AccountMngmtNavbarFactory;
@@ -49,17 +50,11 @@ class AccountMngmtParamGenerator extends ParamGenerator {
         $this->eManager = $eManager;
     }
 
-    public function getStandardParams(User $user, FormInterface $form) {
+    public function getStandardParams(User $user, FormInterface $form, BroadcastRepository $repo) {
 
-//        $codingBroadcast = $this->getDoctrine()->getRepository('App:Broadcast')->findBy(array('codingBroadcast' => true), array('id' => 'DESC'), 1);
-//        if ($codingBroadcast) {
-//            $codingBroadcast = $codingBroadcast[0];
-//        }
-//        $broadcast = $this->getDoctrine()->getRepository('App:Broadcast')->findBy(array('codingBroadcast' => false), array('id' => 'DESC'), 1);
-//        if ($broadcast) {
-//            $broadcast = $broadcast[0];
-//        }
-        
+        $codingBroadcast = $repo->findNewestBroadcast(true);
+        $broadcast = $repo->findNewestBroadcast(false);
+
         $userOnlineQuery = new GetOnlineCharactersQuery($this->eManager);
         $totalPostsQuery = new GetTotalNumberOfPostsQuery($this->eManager);
         $answeredPostsQuery = new GetIsPostAnsweredQuery($this->eManager);
@@ -67,8 +62,8 @@ class AccountMngmtParamGenerator extends ParamGenerator {
         $vars = array_merge($this->getBaseParams('Accountverwaltung', $this->navFactory->buildNavbar($user)), $this->areaRepo->getDescriptionOfMajorAreas(), [
             'page' => 'accountManager/accountManager',
             'email' => $user->getEmail(),
-            'news' => '', //$broadcast,
-            'codingNews' => '', // $codingBroadcast,
+            'news' => $broadcast,
+            'codingNews' => $codingBroadcast,
             'cities' => AreaRepository::findColoredCityNames(),
             'races' => $getRaceListQuery(),
             'account' => $user,

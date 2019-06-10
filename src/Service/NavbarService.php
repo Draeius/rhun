@@ -87,7 +87,7 @@ class NavbarService {
 //        return $this;
 //    }
 //    private function addActivityNavs(EntityManager $manager, $location, $uuid) {
-//        $activityArray = $manager->getRepository('AppBundle:Activity')->findByLocation($location);
+//        $activityArray = $manager->getRepository('App:Activity')->findByLocation($location);
 //        foreach ($activityArray as $key => $value) {
 //            $activityArray[$key] = [];
 //            $activityArray[$key]['activity'] = $value;
@@ -100,7 +100,7 @@ class NavbarService {
 //        $this->addInteractionNavs($activityArray, 'Aktivitäten');
 //    }
 //    private function addQuestNavs(EntityManager $manager, $location, Character $character, $uuid) {
-//        $questArray = $manager->getRepository('AppBundle:Quest')->findByLocation($location);
+//        $questArray = $manager->getRepository('App:Quest')->findByLocation($location);
 //        if (!is_array($questArray)) {
 //            $questArray = array($questArray);
 //        }

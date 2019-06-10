@@ -5,12 +5,9 @@ namespace App\Entity;
 use App\Entity\Item;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
-use App\Entity\Location\LocationEntity;
 
 /**
  * Description of Quest
@@ -19,16 +16,7 @@ use App\Entity\Location\LocationEntity;
  * @Entity
  * @Table(name="quests")
  */
-class Quest {
-
-    /**
-     *
-     * @var int The id of this quest
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
-     */
-    protected $id;
+class Quest extends LocationBasedEntity {
 
     /**
      *
@@ -36,14 +24,6 @@ class Quest {
      * @Column(type="text", length=64)
      */
     protected $navLabel;
-
-    /**
-     *
-     * @var LocationEntity
-     * @ManyToOne(targetEntity="App\Entity\Location\LocationEntity")
-     * @JoinColumn(name="location_id", referencedColumnName="id")
-     */
-    protected $location;
 
     /**
      *
@@ -69,7 +49,7 @@ class Quest {
     /**
      *
      * @var Item
-     * @ManyToOne(targetEntity="App\Entity\Item")
+     * @ManyToOne(targetEntity="App\Entity\Items\Item")
      * @JoinColumn(name="needed_item_id", referencedColumnName="id")
      */
     protected $neededItem;
@@ -119,7 +99,7 @@ class Quest {
     /**
      *
      * @var Item;
-     * @ManyToOne(targetEntity="App\Entity\Item")
+     * @ManyToOne(targetEntity="App\Entity\Items\Item")
      * @JoinColumn(name="reward_item_id", referencedColumnName="id", nullable=true)
      */
     protected $rewardItem;
@@ -137,14 +117,6 @@ class Quest {
      * @Column(type="boolean")
      */
     protected $available;
-
-    public function getId() {
-        return $this->id;
-    }
-
-    public function getLocation() {
-        return $this->location;
-    }
 
     public function getTextIntroduction() {
         return $this->textIntroduction;
@@ -248,10 +220,6 @@ class Quest {
 
     public function setTextFail($textFail) {
         $this->textFail = $textFail;
-    }
-
-    public function setLocation(LocationEntity $location) {
-        $this->location = $location;
     }
 
     public function setTextIntroduction($textIntroduction) {

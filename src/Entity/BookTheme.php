@@ -10,8 +10,6 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\Table;
 
@@ -22,15 +20,7 @@ use Doctrine\ORM\Mapping\Table;
  * @Entity
  * @Table(name="book_themes")
  */
-class BookTheme {
-
-    /**
-     * @var int
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
-     */
-    protected $id;
+class BookTheme extends RhunEntity {
 
     /**
      *
@@ -52,10 +42,6 @@ class BookTheme {
      * @OneToMany(targetEntity="Book", mappedBy="theme", fetch="EXTRA_LAZY")
      */
     protected $books;
-
-    public function getId() {
-        return $this->id;
-    }
 
     public function getTheme() {
         return $this->theme;

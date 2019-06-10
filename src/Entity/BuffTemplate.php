@@ -2,10 +2,9 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\EntityColoredNameTrait;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Table;
 
 /**
@@ -13,24 +12,11 @@ use Doctrine\ORM\Mapping\Table;
  *
  * @author Draeius
  * @Entity
- * @Table(name="buff_templates")
+ * @Table(name="templates_buff")
  */
-class BuffTemplate {
+class BuffTemplate extends RhunEntity {
 
-    /**
-     * @var int
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
-     */
-    protected $id;
-
-    /**
-     * 
-     * @var string 
-     * @Column(type="string", length=64)
-     */
-    protected $name;
+    use EntityColoredNameTrait;
 
     /**
      * 
@@ -66,13 +52,6 @@ class BuffTemplate {
      * @Column(type="string", length=64)
      */
     protected $icon;
-
-    /**
-     * 
-     * @var array 
-     * @Column(type="json_array")
-     */
-    protected $statBuff = [];
 
     /**
      * 
@@ -143,18 +122,6 @@ class BuffTemplate {
      * @Column(type="integer")
      */
     protected $staminaUsageCap = -1;
-
-    public function __construct() {
-        
-    }
-
-    public function getId() {
-        return $this->id;
-    }
-
-    public function getName() {
-        return $this->name;
-    }
 
     public function getDescription() {
         return $this->description;
@@ -244,10 +211,6 @@ class BuffTemplate {
         $this->staminaRegen = $staminaRegen;
     }
 
-    public function setName($name) {
-        $this->name = $name;
-    }
-
     public function setDescription($description) {
         $this->description = $description;
     }
@@ -262,10 +225,6 @@ class BuffTemplate {
 
     public function setIcon($icon) {
         $this->icon = $icon;
-    }
-
-    public function setStatBuff($statBuff) {
-        $this->statBuff = $statBuff;
     }
 
     public function setHpBuff($hpBuff) {

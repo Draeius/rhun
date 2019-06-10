@@ -3,6 +3,7 @@
 namespace App\Entity\Traits;
 
 use DateTime;
+use Doctrine\Common\EventArgs;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -15,31 +16,18 @@ use Doctrine\ORM\Mapping as ORM;
  * @author Draeius
  */
 trait EntityCreatedTrait {
-
+    
     /**
-     * The internal primary identity key.
+     * Gibt an, wann das Entity kreiert wurde.
      *
      * @var DateTime|null
      *
-     * @ORM\Column(type="dateTime", nullable=false, name="creation_at")
+     * @ORM\Column(type="datetime", nullable=false, name="creation_at")
      */
     protected $createdAt;
 
-    /**
-     * The internal primary identity key.
-     *
-     * @var bool
-     *
-     * @ORM\Column(type="boolean", nullable=false, name="is_current")
-     */
-    protected $current = false;
-
     function getCreationDate(): ?DateTime {
         return $this->createdAt;
-    }
-
-    function getCurrent(): bool {
-        return $this->current;
     }
 
     /**

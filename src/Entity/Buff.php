@@ -8,12 +8,10 @@
 
 namespace App\Entity;
 
-use AppBundle\Entity\Character;
+use App\Entity\Character;
 use DateTime;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
@@ -25,20 +23,12 @@ use Doctrine\ORM\Mapping\Table;
  * @Entity
  * @Table(name="buffs")
  */
-class Buff {
-
-    /**
-     * @var int
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
-     */
-    protected $id;
+class Buff extends RhunEntity {
 
     /**
      * 
      * @var Character
-     * @ManyToOne(targetEntity="AppBundle\Entity\Character", inversedBy="buffs")
+     * @ManyToOne(targetEntity="Character", inversedBy="buffs")
      * @JoinColumn(name="owner_id", referencedColumnName="id")
      */
     protected $owner;
@@ -65,12 +55,28 @@ class Buff {
      */
     protected $maxRounds;
 
-    public function __construct() {
-        
+    public function isHigherTier(Buff $other): bool {
+        return $this->template->getLevel() > $other->getTemplate()->getLevel();
     }
 
-    public function getId() {
-        return $this->id;
+    public function isSameTier(Buff $other): bool {
+        return $this->template->getLevel() == $other->getTemplate()->getLevel();
+    }
+
+    public function isLowerTier(Buff $other): bool {
+        return $this->template->getLevel() < $other->getTemplate()->getLevel();
+    }
+
+    public function isPercentageHPBuff(): bool {
+        return $this->template->getHPBuff() > -1 && $this->template->getHPBuff() < 1;
+    }
+
+    public function isPercentageStaminaBuff(): bool {
+        return $this->template->getStaminaBuff() > -1 && $this->template->getStaminaBuff() < 1;
+    }
+
+    public function isPercentageMPBuff(): bool {
+        return $this->template->getMPBuff() > -1 && $this->template->getMPBuff() < 1;
     }
 
     public function getOwner() {

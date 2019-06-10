@@ -3,34 +3,25 @@
 namespace App\Entity;
 
 use App\Entity\Character;
-use App\Service\DateTimeService;
-use DateTime;
+use App\Entity\Traits\EntityCreatedTrait;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
-use App\Entity\Location\BulletinLocationEntity;
-use App\Entity\Location\PostableLocationEntity;
 
 /**
  * Description of Bulletin
  *
  * @author Matthias
  * @Entity
- * @Table(name="bulletin")
+ * @HasLifecycleCallbacks
+ * @Table(name="bulletins")
  */
-class Bulletin {
+class Bulletin extends LocationBasedEntity {
 
-    /**
-     * @var int 
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
-     */
-    protected $id;
+    use EntityCreatedTrait;
 
     /**
      * 
@@ -47,29 +38,6 @@ class Bulletin {
      */
     protected $content;
 
-    /**
-     * 
-     * @var BulletinLocationEntity
-     * @ManyToOne(targetEntity="App\Entity\Location\BulletinLocationEntity", inversedBy="bulletins")
-     * @JoinColumn(name="location_id", referencedColumnName="id")
-     */
-    protected $location;
-
-    /**
-     * 
-     * @var DateTime
-     * @Column(type="datetime")
-     */
-    protected $creationDate;
-
-    public function __construct() {
-        $this->creationDate = DateTimeService::getDateTime("now");
-    }
-
-    public function getId() {
-        return $this->id;
-    }
-
     public function getAuthor(): Character {
         return $this->author;
     }
@@ -78,28 +46,12 @@ class Bulletin {
         return $this->content;
     }
 
-    public function getLocation(): PostableLocationEntity {
-        return $this->location;
-    }
-
-    public function getCreationDate(): DateTime {
-        return $this->creationDate;
-    }
-
     public function setAuthor(Character $author) {
         $this->author = $author;
     }
 
     public function setContent($content) {
         $this->content = $content;
-    }
-
-    public function setLocation(PostableLocationEntity $location) {
-        $this->location = $location;
-    }
-
-    public function setCreationDate(DateTime $creationDate) {
-        $this->creationDate = $creationDate;
     }
 
 }

@@ -2,17 +2,14 @@
 
 namespace App\Entity;
 
+use App\Entity\Location;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\JoinTable;
 use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\OneToOne;
 use Doctrine\ORM\Mapping\Table;
-use App\Entity\Location\LocationEntity;
 
 /**
  * Description of GuildHall
@@ -21,20 +18,12 @@ use App\Entity\Location\LocationEntity;
  * @Entity
  * @Table(name="guild_halls")
  */
-class GuildHall {
-
-    /**
-     * @var int
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
-     */
-    protected $id;
+class GuildHall extends RhunEntity {
 
     /**
      *
      * @var LocationEntity[] 
-     * @ManyToMany(targetEntity="App\Entity\Location\LocationEntity", cascade={"remove"})
+     * @ManyToMany(targetEntity="Location", cascade={"remove"}, fetch="EXTRA_LAZY")
      * @JoinTable(name="guild_rooms",
      *      joinColumns={@JoinColumn(name="guild_id", referencedColumnName="id")},
      *      inverseJoinColumns={@JoinColumn(name="location_id", referencedColumnName="id", unique=true)}
@@ -45,7 +34,7 @@ class GuildHall {
     /**
      * 
      * @var LocationEntity
-     * @OneToOne(targetEntity="App\Entity\Location\LocationEntity", cascade={"remove"}, fetch="EXTRA_LAZY")
+     * @OneToOne(targetEntity="Location", cascade={"remove"}, fetch="EXTRA_LAZY")
      * @JoinColumn(name="location_id", referencedColumnName="id", unique=true)
      */
     protected $entrance;
@@ -54,17 +43,13 @@ class GuildHall {
         $this->locations = new ArrayCollection();
     }
 
-    public function getId() {
-        return $this->id;
-    }
-
-    public function addLocation(LocationEntity $location) {
-        if(!$this->hasLocation($location)){
+    public function addLocation(Location $location) {
+        if (!$this->hasLocation($location)) {
             $this->locations[] = $location;
         }
     }
 
-    public function hasLocation(LocationEntity $check) {
+    public function hasLocation(Location $check) {
         foreach ($this->locations as $location) {
             if ($location->getId() == $check->getId()) {
                 return true;
@@ -77,7 +62,7 @@ class GuildHall {
         return $this->locations;
     }
 
-    public function getEntrance(): LocationEntity {
+    public function getEntrance(): Location {
         return $this->entrance;
     }
 
@@ -85,7 +70,7 @@ class GuildHall {
         $this->locations = $locations;
     }
 
-    public function setEntrance(LocationEntity $entrance) {
+    public function setEntrance(Location $entrance) {
         $this->entrance = $entrance;
     }
 

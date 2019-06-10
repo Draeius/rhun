@@ -2,37 +2,29 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\EntityCreatedTrait;
+use App\Entity\Traits\EntityIdTrait;
+use App\Entity\Traits\EntityIsNewestTrait;
+use App\Repository\BroadcastRepository;
 use App\Service\DateTimeService;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
 use Doctrine\ORM\Mapping\Table;
 
 /**
  * Represents a message that is distributed to all accounts by the admins
  * 
  * @author Draeius
- * @Entity(repositoryClass="App\Repository\BroadcastRepository")
+ * @Entity(repositoryClass="BroadcastRepository")
+ * @HasLifecycleCallbacks
  * @Table(name="broadcasts")
  */
-class Broadcast {
+class Broadcast extends RhunEntity {
 
-    /**
-     *
-     * @var int The id of this broadcast
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
-     */
-    protected $id;
-
-    /**
-     *
-     * @var DateTime The date this broadcast was created
-     * @Column(type="datetime", name="creation_date")
-     */
-    protected $creationDate;
+    use EntityIdTrait;
+    use EntityCreatedTrait;
+    use EntityIsNewestTrait;
 
     /**
      * 
@@ -48,18 +40,6 @@ class Broadcast {
      */
     protected $codingBroadcast;
 
-    public function __construct() {
-        $this->creationDate = DateTimeService::getDateTime("NOW");
-    }
-
-    public function getId() {
-        return $this->id;
-    }
-
-    public function getCreationDate() {
-        return $this->creationDate;
-    }
-
     public function getContent() {
         return $this->content;
     }
@@ -70,10 +50,6 @@ class Broadcast {
 
     public function setCodingBroadcast($codingBroadcast) {
         $this->codingBroadcast = $codingBroadcast;
-    }
-
-    public function setCreationDate(DateTime $creationDate) {
-        $this->creationDate = $creationDate;
     }
 
     public function setContent($content) {

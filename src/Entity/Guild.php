@@ -2,12 +2,10 @@
 
 namespace App\Entity;
 
-use AppBundle\Entity\Character;
+use App\Entity\Character;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\OneToOne;
@@ -20,20 +18,12 @@ use Doctrine\ORM\Mapping\Table;
  * @Entity
  * @Table(name="guilds")
  */
-class Guild {
-
-    /**
-     * @var int
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
-     */
-    protected $id;
+class Guild extends RhunEntity {
 
     /**
      * 
      * @var Character
-     * @OneToOne(targetEntity="AppBundle\Entity\Character")
+     * @OneToOne(targetEntity="Character")
      * @JoinColumn(name="master_id", referencedColumnName="id")
      */
     protected $master;
@@ -41,7 +31,7 @@ class Guild {
     /**
      *
      * @var Character[]
-     * @OneToMany(targetEntity="AppBundle\Entity\Character", mappedBy="guild", fetch="EXTRA_LAZY")
+     * @OneToMany(targetEntity="Character", mappedBy="guild", fetch="EXTRA_LAZY")
      */
     protected $members;
 
@@ -113,10 +103,6 @@ class Guild {
         $this->members = new ArrayCollection();
         $this->buffs = new ArrayCollection();
         $this->projects = new ArrayCollection();
-    }
-
-    public function getId() {
-        return $this->id;
     }
 
     public function getMaster(): Character {

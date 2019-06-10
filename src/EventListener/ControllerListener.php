@@ -92,7 +92,7 @@ class ControllerListener {
     private function checkAccess(FilterControllerEvent &$event) {
 //        $controller = explode('::', $event->getRequest()->attributes->get('_controller'));
 //        /* @var $annotation Security */
-//        $annotation = $this->annotationReader->getMethodAnnotation(new ReflectionMethod($controller[0], $controller[1]), 'AppBundle\Security\Annotation\Security');
+//        $annotation = $this->annotationReader->getMethodAnnotation(new ReflectionMethod($controller[0], $controller[1]), 'App\Security\Annotation\Security');
 //
 //        if (!$annotation) {
 //            return true;
@@ -103,7 +103,7 @@ class ControllerListener {
     }
 
     private function changeController(FilterControllerEvent $event) {
-//        $fakeRequest = $event->getRequest()->duplicate(null, null, array('_controller' => 'AppBundle\Controller\PreLoginController::indexAction'));
+//        $fakeRequest = $event->getRequest()->duplicate(null, null, array('_controller' => 'App\Controller\PreLoginController::indexAction'));
 //        $controller = $this->resolver->getController($fakeRequest);
 //        $event->setController($controller);
     }

@@ -8,8 +8,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\JoinTable;
 use Doctrine\ORM\Mapping\ManyToMany;
@@ -23,21 +21,12 @@ use Doctrine\ORM\Mapping\Table;
  * @Entity(repositoryClass="App\Repository\RecipeRepository")
  * @Table(name="craft_recipes")
  */
-class CraftRecipe {
-
-    /**
-     *
-     * @var int 
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
-     */
-    protected $id;
+class CraftRecipe extends RhunEntity {
 
     /**
      * The items this recipe needs to be crafted
      * @var Item[]
-     * @ManyToMany(targetEntity="Item", fetch="EXTRA_LAZY")
+     * @ManyToMany(targetEntity="App\Entity\Items\Item", fetch="EXTRA_LAZY")
      * @JoinTable(name="ingredients",
      *      joinColumns={@JoinColumn(name="recipe_id", referencedColumnName="id")},
      *      inverseJoinColumns={@JoinColumn(name="item_id", referencedColumnName="id")}
@@ -47,7 +36,7 @@ class CraftRecipe {
 
     /**
      * @var Item
-     * @ManyToOne(targetEntity="Item")
+     * @ManyToOne(targetEntity="App\Entity\Items\Item")
      * @JoinColumn(name="result_id", referencedColumnName="id")
      */
     protected $result;
@@ -96,10 +85,6 @@ class CraftRecipe {
             }
         }
         return false;
-    }
-
-    public function getId() {
-        return $this->id;
     }
 
     public function getIngredients() {

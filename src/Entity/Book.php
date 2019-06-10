@@ -4,8 +4,6 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
@@ -17,15 +15,7 @@ use Doctrine\ORM\Mapping\Table;
  * @Entity
  * @Table(name="books")
  */
-class Book {
-
-    /**
-     * @var int
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
-     */
-    protected $id;
+class Book extends RhunEntity {
 
     /**
      *
@@ -47,10 +37,6 @@ class Book {
      *
      * @var string
      * @Column(type="text", length=64)
-     * @Assert\Length(
-     *      max = 64,
-     *      maxMessage = "Der {{ value }}  darf nicht länger als {{ limit }} Zeichen sein."
-     * )
      */
     protected $title;
 
@@ -58,7 +44,6 @@ class Book {
      *
      * @var string
      * @Column(type="text")
-     * @Assert\NotBlank(message="Du willst ein leeres Buch schreiben? Sowas will doch Keiner lesen.")
      */
     protected $content;
 
@@ -75,10 +60,6 @@ class Book {
      * @Column(type="integer")
      */
     protected $listOrder = 0;
-
-    public function getId() {
-        return $this->id;
-    }
 
     public function getAuthor() {
         return $this->author;

@@ -2,11 +2,9 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\EntityOwnerTrait;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
-use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
 
@@ -17,24 +15,17 @@ use Doctrine\ORM\Mapping\Table;
  * @Entity
  * @Table(name="character_titles")
  */
-class Title {
+class Title extends RhunEntity {
 
     const STANDARD_MALE = 'Fremder';
     const STANDARD_FEMALE = 'Fremde';
 
-    /**
-     * @var int
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue
-     */
-    protected $id;
-
+    use EntityOwnerTrait;
+    
     /**
      *
      * @var Character
      * @ManyToOne(targetEntity="Character", inversedBy="titles")
-     * @JoinColumn(name="owner_id", referencedColumnName="id")
      */
     protected $owner;
 
@@ -55,14 +46,6 @@ class Title {
      */
     protected $isInFront = true;
 
-    public function getId() {
-        return $this->id;
-    }
-
-    public function getOwner(): Character {
-        return $this->owner;
-    }
-
     public function getTitle() {
         return $this->title;
     }
@@ -73,10 +56,6 @@ class Title {
 
     public function getIsInFront() {
         return $this->isInFront;
-    }
-
-    public function setOwner(Character $owner) {
-        $this->owner = $owner;
     }
 
     public function setTitle($title) {

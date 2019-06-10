@@ -20,6 +20,10 @@ class AreaRepository extends ServiceEntityRepository {
         parent::__construct($managerRegistry, Area::class);
     }
 
+    public function getAreasAllowingRaces() {
+        return $this->findBy(['raceAllowed' => true]);
+    }
+
     public static function findColoredCityNames(): array {
         return array(
             'pyra' => '`JPyra',
