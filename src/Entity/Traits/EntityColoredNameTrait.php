@@ -2,6 +2,8 @@
 
 namespace App\Entity\Traits;
 
+use Doctrine\ORM\Mapping\Column;
+
 /**
  * Description of EntityColoredNameTrait
  *
@@ -37,7 +39,7 @@ trait EntityColoredNameTrait {
 
     function setName(string $name) {
         if ($name == null || trim($name) == '') {
-            throw new InvalidArgumentException('Der Name darf nicht leer oder Null sein.');
+            $name = 'Leerer Name';
         }
         $this->name = $name;
     }

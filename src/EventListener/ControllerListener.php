@@ -2,11 +2,16 @@
 
 namespace App\EventListener;
 
+use App\Annotation\Security;
 use App\Controller\BasicController;
+use App\Util\RouteSecurityChecker;
 use App\Util\Session\RhunSession;
 use App\Util\TabIdentification\TabIdentifier;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\EntityManagerInterface;
+use ReflectionClass;
+use ReflectionMethod;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\Stopwatch\Stopwatch;
@@ -58,9 +63,9 @@ class ControllerListener {
         if ($event->getController()[0] instanceof BasicController) {
             $this->initializeTabIdentifier($event);
 //            $this->updateLastActive($event->getController()[0]);
-//            if (!$this->checkAccess($event)) {
-//                $this->changeController($event);
-//            }
+            if (!$this->checkAccess($event)) {
+                $this->changeController($event);
+            }
         }
 //        $this->manager->flush();
         $this->stopwatch->stop('onKernelController');
@@ -90,22 +95,24 @@ class ControllerListener {
     }
 
     private function checkAccess(FilterControllerEvent &$event) {
-//        $controller = explode('::', $event->getRequest()->attributes->get('_controller'));
-//        /* @var $annotation Security */
-//        $annotation = $this->annotationReader->getMethodAnnotation(new ReflectionMethod($controller[0], $controller[1]), 'App\Security\Annotation\Security');
-//
-//        if (!$annotation) {
-//            return true;
-//        }
-//        $securityChecker = new RouteSecurityChecker($event->getController()[0], $annotation->getNeedAccount(), $annotation->getNeedCharacter(), $annotation->getUserRole());
-//
-//        return $securityChecker->checkSecurity();
+        $controller = explode('::', $event->getRequest()->attributes->get('_controller'));
+        /* @var $annotation Security */
+        $annotation = new Security();
+        $annotation->merge($this->annotationReader->getClassAnnotation(new ReflectionClass($controller[0]), Security::class));
+        /* @var $methodAnnotation Security */
+        $annotation->merge($this->annotationReader->getMethodAnnotation(new ReflectionMethod($controller[0], $controller[1]), Security::class));
+
+        if ($annotation) {
+            $securityChecker = new RouteSecurityChecker($this->manager, $annotation);
+            $success = $securityChecker->checkSecurity();
+        }
+        return $success;
     }
 
     private function changeController(FilterControllerEvent $event) {
-//        $fakeRequest = $event->getRequest()->duplicate(null, null, array('_controller' => 'App\Controller\PreLoginController::indexAction'));
-//        $controller = $this->resolver->getController($fakeRequest);
-//        $event->setController($controller);
+        $event->setController(function () {
+            return new RedirectResponse('/');
+        });
     }
 
 }

@@ -1,0 +1,49 @@
+<h1>User index</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Password</th>
+            <th>Email</th>
+            <th>Gems</th>
+            <th>MaxChars</th>
+            <th>ValidationCode</th>
+            <th>Validated</th>
+            <th>Birthday</th>
+            <th>Ban</th>
+            <th>BanReason</th>
+            <th>Template</th>
+            <th>AcceptTerms</th>
+            <th>Id</th>
+            <th>actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.gems }}</td>
+                <td>{{ user.maxChars }}</td>
+                <td>{{ user.validationCode }}</td>
+                <td>{{ user.validated ? 'Yes' : 'No' }}</td>
+                <td>{{ user.birthday ? user.birthday|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ user.ban ? user.ban|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ user.banReason }}</td>
+                <td>{{ user.template }}</td>
+                <td>{{ user.acceptTerms ? 'Yes' : 'No' }}</td>
+                <td>{{ user.id }}</td>
+                <td>
+                    <a href="{{ path('user_show', {'id': user.id}) }}">show</a>
+                    <a href="{{ path('user_edit', {'id': user.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="14">no records found</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

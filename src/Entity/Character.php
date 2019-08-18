@@ -96,7 +96,7 @@ class Character extends FighterCharacter {
         $this->wallet = new Wallet();
     }
 
-    public function hasFinishedQuest(Quest $quest) {
+    public function didFinishQuest(Quest $quest) {
         foreach ($this->finishedQuests as $finished) {
             if ($finished->getId() == $quest->getId()) {
                 return true;
@@ -117,7 +117,7 @@ class Character extends FighterCharacter {
         return true;
     }
 
-    public function hasKnownRecipe(CraftRecipe $recipe) {
+    public function knowsRecipe(CraftRecipe $recipe) {
         foreach ($this->knownRecipes as $knownRecipe) {
             if ($knownRecipe->getId() == $recipe->getId()) {
                 return true;
@@ -133,6 +133,71 @@ class Character extends FighterCharacter {
         $this->currentHP = $this->getMaxHPWithBuff();
 
         $this->s($this->attributes->getSkillPoints() + 6);
+    }
+
+    function getWallet(): Wallet {
+        return $this->wallet;
+    }
+
+    function getJob(): ?Job {
+        return $this->job;
+    }
+
+    function getSafe() {
+        return $this->safe;
+    }
+
+    function getFinishedQuests() {
+        return $this->finishedQuests;
+    }
+
+    function getHasPreied() {
+        return $this->hasPreied;
+    }
+
+    function getStaminaHealed() {
+        return $this->staminaHealed;
+    }
+
+    function getPartner(): Character {
+        return $this->partner;
+    }
+
+    function getKnownRecipes(): array {
+        return $this->knownRecipes;
+    }
+
+    function setWallet(Wallet $wallet) {
+        $this->wallet = $wallet;
+        $wallet->setOwner($this);
+    }
+
+    function setJob(?Job $job) {
+        $this->job = $job;
+    }
+
+    function setSafe($safe) {
+        $this->safe = $safe;
+    }
+
+    function setFinishedQuests($finishedQuests) {
+        $this->finishedQuests = $finishedQuests;
+    }
+
+    function setHasPreied($hasPreied) {
+        $this->hasPreied = $hasPreied;
+    }
+
+    function setStaminaHealed($staminaHealed) {
+        $this->staminaHealed = $staminaHealed;
+    }
+
+    function setPartner(Character $partner) {
+        $this->partner = $partner;
+    }
+
+    function setKnownRecipes(array $knownRecipes) {
+        $this->knownRecipes = $knownRecipes;
     }
 
 }

@@ -24,6 +24,10 @@ class AreaRepository extends ServiceEntityRepository {
         return $this->findBy(['raceAllowed' => true]);
     }
 
+    /**
+     * @deprecated since version number
+     * @return array
+     */
     public static function findColoredCityNames(): array {
         return array(
             'pyra' => '`JPyra',
@@ -44,7 +48,7 @@ class AreaRepository extends ServiceEntityRepository {
     }
 
     public function getDescriptionOfMajorAreas(): array {
-        $dql = 'SELECT a FROM App\Entity\Area a WHERE a.id IN (1,2,3,4,5,6) ORDER BY a.id ASC';
+        $dql = 'SELECT a FROM ' . Area::class . ' a WHERE a.id IN (1,2,3,4,5,6) ORDER BY a.id ASC';
         $query = $this->getEntityManager()->createQuery($dql);
 
         $cities = $query->getResult();

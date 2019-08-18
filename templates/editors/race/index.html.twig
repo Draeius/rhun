@@ -1,0 +1,37 @@
+<h1>Race index</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Bunter Name</th>
+            <th>Stadt</th>
+            <th>Beschreibung</th>
+            <th>Erlaubt</th>
+            <th>Aktionen</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for race in races %}
+            <tr>
+                <td>{{ race.id }}</td>
+                <td>{{ race.name }}</td>
+                <td>{{ race.coloredName |colorize|raw}}</td>
+                <td>{{ race.city |colorize|raw}}</td>
+                <td>{{ (race.description [:50] ~ '...') |colorize|raw}}</td>
+                <td>{{ race.allowed ? 'Ja' : 'Nein' }}</td>
+                <td>
+                    <a href="{{ path('race_show', {'id': race.id}) }}">anzeigen</a>
+                    <a href="{{ path('race_edit', {'id': race.id}) }}">bearbeiten</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">Keine Rassen gefunden</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{{ path('race_new') }}">Neue Rasse</a>

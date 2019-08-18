@@ -14,6 +14,7 @@ class CreateCharacterDTO {
     /**
      * @Assert\NotBlank
      * @Assert\Length(min=3, max=32)
+     * @App\Form\Validator\UniqueCharacter
      * @var string
      */
     public $name;

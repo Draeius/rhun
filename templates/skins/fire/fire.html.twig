@@ -17,10 +17,10 @@
         {% if showLinks %}
             &Diamond; <a href="https://discord.gg/Yu8tYxF" target="_blank">Discord</a> &Diamond;
             <a href="http://www.rhun-logd.de/wiki" target="_blank">Wiki</a> &Diamond;
-            <a href="{{path('charmanagement', {'_fragment': 'news'})}}" target="_blank"> MotD </a> &Diamond;<!-- echo($this->motdlink)  echo($this->petition) -->
+            <a href="{{path('acct_mnmgt', {'_fragment': 'news'})}}" target="_blank"> MotD </a> &Diamond;<!-- echo($this->motdlink)  echo($this->petition) -->
         {% endif %}
         {% if showMails %}
-            <a href="{{path(mail_link)}}" target="_blank">
+            <a href="{{ path(mail_link) }}" target="_blank">
                 {% if new_mails is defined and new_mails < 1 %}Mails
                 {% endif %}
                 {% if new_mails is defined and new_mails > 0 %}<b><font color="FFFF00">Mails (Neu: {{ new_mails }})</font></b>

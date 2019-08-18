@@ -2,22 +2,22 @@
 -- Fragt den Namen und Titel des neuesten Charakters ab
 
 SELECT 
-    r.name, r.gender, r.coloredName, r.title, r.isInFront
+    r.name, r.gender, r.coloredName, r.title, r.is_in_front
 FROM
     (SELECT 
         c.name,
             c.gender,
             n.name AS coloredName,
-            n.isActivated AS nActivated,
+            n.is_activated AS nActivated,
             t.title,
-            t.isInFront,
-            t.isActivated AS tActivated
+            t.is_in_front,
+            t.is_activated AS tActivated
     FROM
         characters c
     LEFT JOIN character_names n ON c.id = n.owner_id
     LEFT JOIN character_titles t ON c.id = t.owner_id
     WHERE
-        c.isNewest = 1) r
+        c.newest = 1) r
 WHERE
     (r.coloredName IS NULL
         OR r.nActivated = 1)

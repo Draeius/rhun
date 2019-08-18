@@ -1,0 +1,41 @@
+<h1>Area index</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Uuid</th>
+            <th>Name</th>
+            <th>bunter Name</th>
+            <th>Stadt</th>
+            <th>Beschreibung</th>
+            <th>für Tote</th>
+            <th>Rassen erlaubt</th>
+            <th>Aktionen</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for area in areas %}
+            <tr>
+                <td>{{ area.id }}</td>
+                <td>{{ area.uuid }}</td>
+                <td>{{ area.name }}</td>
+                <td>{{ area.coloredName |colorize|raw}}</td>
+                <td>{{ area.city |colorize|raw}}</td>
+                <td>{{ (area.description  [:50] ~ '...') |colorize|raw}}</td>
+                <td>{{ area.deadAllowed ? 'Ja' : 'Nein' }}</td>
+                <td>{{ area.raceAllowed ? 'Ja' : 'Nein' }}</td>
+                <td>
+                    <a href="{{ path('area_show', {'id': area.id}) }}">anzeigen</a>
+                    <a href="{{ path('area_edit', {'id': area.id}) }}">bearbeiten</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="9">no records found</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{{ path('area_new') }}">Neues Areal</a>

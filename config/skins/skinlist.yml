@@ -1,0 +1,7 @@
+fire:
+    name: fire
+    config_file: fire
+
+yarbrough:
+    name: yarbrough (WIP)
+    config_file: yarbrough

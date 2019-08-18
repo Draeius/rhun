@@ -7,7 +7,6 @@ use Doctrine\Common\Annotations\Annotation;
 
 /**
  * @Annotation
- * @Target("METHOD")
  */
 class Security {
 
@@ -56,6 +55,16 @@ class Security {
 
     public function getNeedCharacter() {
         return $this->needCharacter;
+    }
+
+    public function merge(?Security $other) {
+        if ($other == null) {
+            return;
+        }
+        $a = get_object_vars($this);
+        foreach ($a as $key => $value) {
+            $this->$key |= $other->$key;
+        }
     }
 
     public function getUserRole(): UserRole {

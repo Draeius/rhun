@@ -3,9 +3,21 @@
 namespace App\Controller;
 
 use App\Controller\BasicController;
+use App\Entity\Area;
+use App\Entity\ArmorType;
+use App\Entity\Attribute;
+use App\Entity\Items\ArmorTemplate;
+use App\Entity\Items\WeaponTemplate;
+use App\Entity\Location;
+use App\Entity\Navigation;
 use App\Entity\Race;
-use App\Form\PersistRaceForm;
+use App\Entity\WeaponType;
+use App\Repository\AreaRepository;
+use App\Repository\ArmorTemplateRepository;
+use App\Repository\LocationRepository;
+use App\Repository\WeaponTemplateRepository;
 use App\Service\ConfigService;
+use App\Util\Price;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,46 +34,25 @@ class TestController extends BasicController {
     /**
      * @Route("/test")
      */
-    public function test(Request $request, EntityManagerInterface $eManager, ConfigService $configService, Stopwatch $stopwatch) {
-//        $area = new Area();
-//        $area->setCity('seiya');
-//        $area->setName('TestAreal');
-//        $area->setColoredName('TestFarbigerName');
-//        $area->setDeadAllowed(false);
-//        $area->setDescription('Tolle Beschreibung');
-//        $area->setRaceAllowed(true);
-//        
-//        $eManager->persist($area);
-//        
-//        $location = new Location();
-//        $location->setAdult(false);
-//        $location->setArea($area);
-//        $location->setColoredName('Farbiger Name 1');
-//        $location->setName('Name 1');
-//        $location->setDescriptionSpring('Beschreibung 1');
-//        $eManager->persist($location);
-//        
-//        $location2 = new Location();
-//        $location2->setAdult(true);
-//        $location2->setArea($area);
-//        $location2->setColoredName('Farbiger Name 2');
-//        $location2->setName('Name 2');
-//        $location2->setDescriptionSpring('Beschreibung 2');
-//        $eManager->persist($location2);
-//        
+    public function test(Request $request, EntityManagerInterface $eManager, LocationRepository $locRepo, AreaRepository $areaRepo, WeaponTemplateRepository $wepRepo,
+            ArmorTemplateRepository $armRepo, ConfigService $configService, Stopwatch $stopwatch) {
+
+//        $data = $this->getData();
+//        $this->populateAreas($data['areas'], $eManager);
+//        $eManager->flush();
+//        $this->populateLocations($data['location'], $eManager, $areaRepo);
+//        $eManager->flush();
+//        $this->populateItems($data['items'], $eManager);
+//        $eManager->flush();
+//        $this->populateRaces($data['races'], $locRepo, $wepRepo, $armRepo, $eManager);
+//        $eManager->flush();
+//        $this->populateNavs($data['navigation'], $locRepo, $eManager);
 //        $eManager->flush();
 
+        $location = new Location();
+        VarDumper::dump($location->getDataArray());
 
-        $race = new Race();
-        $form = $this->createForm(PersistRaceForm::class, $race);
-        VarDumper::dump($race);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $eManager->persist($race);
-            $eManager->flush();
-        }
-
-        return $this->render('test.html.twig', ['form' => $form->createView()]);
+        return $this->render('test.html.twig');
     }
 
     private function getData(): array {
@@ -73,6 +64,107 @@ class TestController extends BasicController {
             }
         }
         return $resultSet;
+    }
+
+    private function populateNavs(array $dataSet, LocationRepository $locRepo, EntityManagerInterface $eManager) {
+        foreach ($dataSet as $data) {
+            if ($locRepo->find($data['location_id'])) {
+                $nav = new Navigation();
+                $nav->setName(htmlspecialchars(preg_replace('/`./', '', $data['label'])));
+                $nav->setColoredName(htmlspecialchars($data['label']));
+                $nav->setHref($data['href']);
+                $nav->setNavbarIndex($data['navbarIndex']);
+                $nav->setLocation($locRepo->find($data['location_id']));
+                if ($data['target_location_id'] && $locRepo->find($data['target_location_id'])) {
+                    $nav->setTargetLocation($locRepo->find($data['target_location_id']));
+                }
+                $nav->setPopup($data['popup']);
+                $eManager->persist($nav);
+            }
+        }
+    }
+
+    private function populateLocations(array $dataSet, EntityManagerInterface $eManager, AreaRepository $areaRepo) {
+        foreach ($dataSet as $data) {
+            if (array_search($data['area_id'], [10, 11, 12, 13, 14, 15, 16, 17]) === false) {
+                $loc = new Location();
+                $loc->setAdult($data['adult']);
+                $loc->setArea($areaRepo->find($data['area_id']));
+                if (strpos($data['title'], '`') === false) {
+                    $loc->setName(htmlspecialchars($data['title']));
+                } else {
+                    $loc->setName(htmlspecialchars(substr($data['title'], 2)));
+                }
+                $loc->setColoredName(htmlspecialchars($data['title']));
+                $loc->setDescriptionSpring($data['descriptionSpring']);
+                $loc->setDescriptionSummer($data['descriptionSummer']);
+                $loc->setDescriptionFall($data['descriptionFall']);
+                $loc->setDescriptionWinter($data['descriptionWinter']);
+                $eManager->persist($loc);
+            }
+        }
+    }
+
+    private function populateRaces(array $dataSet, LocationRepository $locRepo, WeaponTemplateRepository $wepRepo,
+            ArmorTemplateRepository $armRepo, EntityManagerInterface $eManager) {
+        foreach ($dataSet as $data) {
+            $race = new Race();
+            $race->setCity($data['city']);
+            $race->setName(htmlspecialchars(preg_replace('/`./', '', $data['name'])));
+            $race->setColoredName(htmlspecialchars($data['name']));
+            $race->setCity($data['city']);
+            $race->setAllowed($data['allowed']);
+            $race->setDescription($data['description']);
+            $race->setLocation($locRepo->find($data['start_loc_id']));
+            $race->setDeathLocation($locRepo->find($data['death_loc_id']));
+            $race->setDefaultArmor($armRepo->find(1));
+            $race->setDefaultWeapon($wepRepo->find(2));
+            $eManager->persist($race);
+        }
+    }
+
+    private function populateAreas(array $dataSet, EntityManagerInterface $eManager) {
+        foreach ($dataSet as $areaData) {
+            $area = new Area();
+            $area->setCity($areaData['city']);
+            $area->setName(substr($areaData['name'], 2));
+            $area->setColoredName($areaData['name']);
+            $area->setDeadAllowed($areaData['deadAllowed']);
+            $area->setDescription($areaData['description'] ? $areaData['description'] : '');
+            $area->setRaceAllowed(false);
+            $eManager->persist($area);
+        }
+    }
+
+    private function populateItems(array $dataSet, EntityManagerInterface $eManager) {
+        $weapon = new WeaponTemplate();
+        $weapon->setAttribute(Attribute::AGILITY);
+        $weapon->setBaseDamage(5);
+        $weapon->setPrice(new Price(100, 0, 0));
+        $weapon->setColoredName('TestWaffe');
+        $weapon->setDescription('Ein kleiner Test');
+        $weapon->setLevel(1);
+        $weapon->setMadeByPlayer(false);
+        $weapon->setMinAttribute(10);
+        $weapon->setName('TestWaffe');
+        $weapon->setStaminaDrain(1);
+        $weapon->setWeaponType(WeaponType::DAGGER);
+        $eManager->persist($weapon);
+
+        $armor = new ArmorTemplate();
+        $armor->setArmorType(ArmorType::LIGHT);
+        $armor->setAttribute(Attribute::AGILITY);
+        $armor->setSecondAttribute(-1);
+        $armor->setMinSecondAttr(0);
+        $armor->setPrice(new Price(100, 0, 0));
+        $armor->setColoredName('TestRüstung');
+        $armor->setDescription('Ein kleiner Test');
+        $armor->setLevel(1);
+        $armor->setMadeByPlayer(false);
+        $armor->setMinAttribute(10);
+        $armor->setName('TestRüstung');
+        $armor->setStaminaDrain(1);
+        $eManager->persist($armor);
     }
 
 }

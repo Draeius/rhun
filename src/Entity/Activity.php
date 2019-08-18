@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\EntityColoredNameTrait;
 use App\Entity\Traits\EntityIdTrait;
 use App\Option\Option;
 use App\Option\OptionPicker;
@@ -22,13 +23,7 @@ use Doctrine\ORM\Mapping\Table;
 class Activity extends LocationBasedEntity {
 
     use EntityIdTrait;
-
-    /**
-     *
-     * @var string
-     * @Column(type="text", length=64)
-     */
-    protected $navLabel;
+    use EntityColoredNameTrait;
 
     /**
      *
@@ -50,14 +45,6 @@ class Activity extends LocationBasedEntity {
 
     public function getOptions() {
         return $this->options;
-    }
-
-    public function getNavLabel() {
-        return $this->navLabel;
-    }
-
-    public function setNavLabel($navLabel) {
-        $this->navLabel = $navLabel;
     }
 
     public function setStaminaDrain($staminaDrain) {

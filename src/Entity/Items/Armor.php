@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping\Table;
  * @Entity
  * @Table(name="armors")
  */
-class Armor extends Item {
+class Armor extends Item{
 
     /**
      *

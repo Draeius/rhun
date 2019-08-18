@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\Util\RhunSession;
+use App\Util\Session\RhunSession;
 use App\Util\TabIdentification\TabIdentifier;
 
 /**

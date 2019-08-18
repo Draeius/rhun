@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Entity\Area;
+use App\Entity\Items\ArmorTemplate;
+use App\Entity\Items\WeaponTemplate;
 use App\Entity\Traits\EntityColoredNameTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\Column;
@@ -15,8 +17,6 @@ use Doctrine\ORM\Mapping\Table;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-
-
 /**
  * Represents a race
  *
@@ -28,7 +28,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 class Race extends LocationBasedEntity {
 
     use EntityColoredNameTrait;
-    
+
     /**
      * The city in which this race lives
      * @var string
@@ -64,6 +64,22 @@ class Race extends LocationBasedEntity {
     protected $allowedAreas;
 
     /**
+     * 
+     * @var WeaponTemplate
+     * @ManyToOne(targetEntity="App\Entity\Items\WeaponTemplate", fetch="EXTRA_LAZY")
+     * @JoinColumn(name="weapon_id", referencedColumnName="id")
+     */
+    protected $defaultWeapon;
+
+    /**
+     * 
+     * @var ArmorTemplate
+     * @ManyToOne(targetEntity="App\Entity\Items\ArmorTemplate", fetch="EXTRA_LAZY")
+     * @JoinColumn(name="armor_id", referencedColumnName="id")
+     */
+    protected $defaultArmor;
+
+    /**
      *
      * @var boolean
      * @Column(type="boolean", nullable=false, options={"default":0})
@@ -93,6 +109,22 @@ class Race extends LocationBasedEntity {
 
     public function getAllowed() {
         return $this->allowed;
+    }
+
+    function getDefaultWeapon(): WeaponTemplate {
+        return $this->defaultWeapon;
+    }
+
+    function getDefaultArmor(): ArmorTemplate {
+        return $this->defaultArmor;
+    }
+
+    function setDefaultWeapon(WeaponTemplate $defaultWeapon) {
+        $this->defaultWeapon = $defaultWeapon;
+    }
+
+    function setDefaultArmor(ArmorTemplate $defaultArmor) {
+        $this->defaultArmor = $defaultArmor;
     }
 
     public function setAllowed($allowed) {

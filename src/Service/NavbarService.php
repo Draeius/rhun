@@ -133,7 +133,12 @@ class NavbarService {
 //        }
 //    }
 
-    private function addNavbarElement(NavbarElement $nav): NavbarService {
+    public function addNavbarElement(NavbarElement $nav): NavbarService {
+        if ($nav->getOrder()) {
+            $this->order = $nav->getOrder();
+        } else {
+            $nav->setOrder($this->order);
+        }
         $this->navbar->addNav($nav);
         $this->order++;
         return $this;

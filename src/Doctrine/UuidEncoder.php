@@ -4,6 +4,7 @@ namespace App\Doctrine;
 
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
+use Throwable;
 
 /**
  * Eine Encoderklasse, die Uuids zur besseren Lesbarkeit von URLs in base32 encoded.
@@ -40,7 +41,7 @@ class UuidEncoder {
                                             STR_PAD_LEFT
                                     )
             ));
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return null;
         }
     }

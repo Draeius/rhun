@@ -71,7 +71,7 @@ class PreLoginParamGenerator extends ParamGenerator {
                     'yearAfterMetroid' => $this->timeService->getYearAfterMetroid(),
                     'kuuTime' => Moon::getKuu()->getMoonPhaseString(),
                     'kunTime' => Moon::getKun()->getMoonPhaseString(),
-                    'lastNewPlayer' => $query(),
+//                    'lastNewPlayer' => $query(),
                     'form' => $form->createView(),
                     'userOnline' => $onlineQuery(),
                     'form_path' => LoginController::ACCOUNT_LOGIN_ROUTE_NAME

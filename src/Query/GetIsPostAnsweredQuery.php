@@ -22,10 +22,10 @@ class GetIsPostAnsweredQuery {
         $this->eManager = $eManager;
     }
 
-    public function __invoke(int $charId) {
+    public function __invoke(int $accountId) {
         $conn = $this->eManager->getConnection();
         $q = $conn->prepare(SQLFileLoader::getSQLFileContent('isPostAnswered'));
-        $q->bindParam(1, $charId);
+        $q->bindParam(1, $accountId);
         $q->execute();
         $result = [];
         while ($data = $q->fetch()) {

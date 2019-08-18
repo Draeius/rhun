@@ -77,14 +77,16 @@ class AccountMngmtNavbarFactory {
     }
 
     private function addModNavs(User $account) {
-//        $builder = $this->navbarService;
+        $builder = $this->navbarService;
 //        if ($account->getUserRole()->getWriteMotd()) {
 //            $builder->addNavhead('Motd')
 //                    ->addNav('Motd-Creator', 'motd_editor', []);
 //        }
-//        if ($account->getUserRole()->getEditWorld()) {
-//            $builder->addNav('Einstellungen', 'settingsEditor');
-//        }
+        if ($account->getUserRole()->getEditWorld()) {
+            $builder->addNavhead('Editoren')
+                    ->addNav('Areale', 'area_index')
+                    ->addNav('Rassen', 'race_index');
+        }
 //        if ($account->getUserRole()->getEditMonster()) {
 //            $builder->addNavhead('Editoren')
 //                    ->addNav('Monster', 'admin_monster', [])

@@ -41,13 +41,13 @@ class SkinService {
     }
 
     public function getSkinList() {
-        $configDirectories = array($this->rootDir . '/skins');
+        $configDirectories = array($this->rootDir);
 
         $fileLocator = new FileLocator($configDirectories);
         try {
             $yamlSkinFile = $fileLocator->locate('skinlist.yml');
         } catch (FileLocatorFileNotFoundException $ex) {
-            VarDumper::dump('SkinList not found. Please make sure it exists in app/skins/');
+            VarDumper::dump('skinlist.yml not found. Please make sure it exists in ' . $this->rootDir);
             return [];
         }
 
@@ -63,7 +63,7 @@ class SkinService {
     }
 
     private function getSkinYaml(string $name) {
-        $configDirectories = array($this->rootDir . '/skins');
+        $configDirectories = array($this->rootDir);
 
         $fileLocator = new FileLocator($configDirectories);
         try {

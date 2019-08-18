@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Util\Season;
 use DateTime;
 use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
@@ -186,28 +187,11 @@ class DateTimeService {
     /**
      * Get the current season. 1 = Winter, 2 = Spring, 3 = Summer, 4 = Fall
      * @return int
+     * @deprecated since version number;
      */
     public function getSeason() {
-        $date = self::getDateTime('now');
-        $compare = $date->format("nd");
-        if ($compare < 320) {
-            //date is smaller than 320. Thus it is before march 20, thus it is winter.
-            return 1;
-        }
-        if ($compare < 621) {
-            //date smaller than june 21 => spring
-            return 2;
-        }
-        if ($compare < 922) {
-            //date smaller than september 22 => summer
-            return 3;
-        }
-        if ($compare < 1221) {
-            //date smaller than december 22 => fall
-            return 4;
-        }
-        //date greater than december 21 => winter
-        return 1;
+        
+        return Season::getSeasonByDate();
     }
 
     public function isSameIngameDay(DateTime $now, DateTime $last) {

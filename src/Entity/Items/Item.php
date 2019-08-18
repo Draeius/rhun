@@ -4,14 +4,15 @@ namespace App\Entity\Items;
 
 use App\Entity\RhunEntity;
 use App\Entity\Traits\EntityColoredNameTrait;
+use App\Entity\Traits\EntityDescriptionTrait;
 use App\Entity\Traits\EntityIdTrait;
+use App\Entity\Traits\PriceTrait;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\DiscriminatorColumn;
 use Doctrine\ORM\Mapping\DiscriminatorMap;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
 use Doctrine\ORM\Mapping\InheritanceType;
-use Doctrine\ORM\Mapping\Table;
 
 /**
  * An item that a Character can possess and carry around in his inventory
@@ -19,46 +20,25 @@ use Doctrine\ORM\Mapping\Table;
  * @author Draeius
  * 
  * @Entity
- * @Table(name="items")
+ * @HasLifecycleCallbacks
  * @InheritanceType("JOINED")
  * @DiscriminatorColumn(name="discr", type="string")
- * @HasLifecycleCallbacks
  * @DiscriminatorMap({
- *      "weapon" = "Weapon",
- *      "weapon_templ" = "WeaponTemplate",
  *      "armor" = "Armor",
- *      "armor_templ" = "ArmorTemplate",
- *      "potion" = "HealthPotion",
- *      "item" = "Item",
- *      "sav_box" = "SavingsBox",
- *      "title_storage" = "TitleStorage"
+ *      "armTempl" = "ArmorTemplate",
+ *      "healthPot" = "HealthPotion",
+ *      "savBox" = "SavingsBox",
+ *      "titleStorg" = "TitleStorage",
+ *      "weapon" = "Weapon",
+ *      "wpnTempl" = "WeaponTemplate"
  * })
  */
-class Item extends RhunEntity {
+abstract class Item extends RhunEntity {
 
     use EntityColoredNameTrait;
+    use EntityDescriptionTrait;
     use EntityIdTrait;
-
-    /**
-     *
-     * @var integer The price at which this item can be bought
-     * @Column(type="integer", nullable=false)
-     */
-    protected $buyPrice;
-
-    /**
-     *
-     * @var int The price at which this item can be sold
-     * @Column(type="integer", nullable=false) 
-     */
-    protected $sellPrice;
-
-    /**
-     *
-     * @var string A description of this item
-     * @Column(type="text") 
-     */
-    protected $description;
+    use PriceTrait;
 
     /**
      *
@@ -85,10 +65,6 @@ class Item extends RhunEntity {
         return $this->sellPrice;
     }
 
-    public function getDescription() {
-        return $this->description;
-    }
-
     public function getMadeByPlayer() {
         return $this->madeByPlayer;
     }
@@ -107,10 +83,6 @@ class Item extends RhunEntity {
 
     public function setSellPrice($sellPrice) {
         $this->sellPrice = $sellPrice;
-    }
-
-    public function setDescription($description) {
-        $this->description = $description;
     }
 
     public function setMadeByPlayer($madeByPlayer) {

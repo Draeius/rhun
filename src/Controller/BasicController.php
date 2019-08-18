@@ -2,6 +2,10 @@
 
 namespace App\Controller;
 
+use App\Doctrine\UuidEncoder;
+use App\Entity\Character;
+use App\Service\SkinService;
+use App\Util\Skin;
 use App\Util\TabIdentification\TabIdentifier;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -53,6 +57,15 @@ class BasicController extends AbstractController {
 
     public function getSkinFile() {
         return 'skins/fire/fire.html.twig';
+    }
+
+    public function redirectToWorld(Character $char) {
+        if (!$this->tabIdentifier || !$this->tabIdentifier->hasIdentifier()) {
+            return $this->redirectToRoute(AccountManagementController::ACCOUNT_MANAGEMENT_ROUTE_NAME);
+        }
+        $encoder = new UuidEncoder();
+        return $this->redirectToRoute(WorldController::STANDARD_WORLD_ROUTE_NAME,
+                        ['uuid' => $this->tabIdentifier->getIdentifier(), 'locationId' => $encoder->encode($char->getLocation()->getUuid())]);
     }
 
 }

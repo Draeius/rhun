@@ -38,11 +38,11 @@ class CharacterNamePartial implements CharacterNameInterface {
         return $this->name->getName() . ' ' . $this->title->getTitle();
     }
 
-    public function getSelectedName(): ColoredName {
+    public function getSelectedName(): ?ColoredName {
         return $this->name;
     }
 
-    public function getSelectedTitle(): Title {
+    public function getSelectedTitle(): ?Title {
         return $this->title;
     }
 

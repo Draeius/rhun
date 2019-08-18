@@ -3,7 +3,6 @@
 namespace App\Entity\Fauna;
 
 use App\Entity\Biography;
-use App\Entity\DiaryEntry;
 use App\Entity\Guild;
 use App\Entity\Message;
 use App\Entity\Race;
@@ -114,7 +113,7 @@ class RPCharacter extends CharacterBase {
         $this->lastActive = DateTimeService::getDateTime('NOW');
     }
 
-    public function getRace(): Race {
+    public function getRace(): ?Race {
         return $this->race;
     }
 
@@ -130,7 +129,7 @@ class RPCharacter extends CharacterBase {
         return $this->receivedMessages;
     }
 
-    public function getGuild(): Guild {
+    public function getGuild(): ?Guild {
         return $this->guild;
     }
 

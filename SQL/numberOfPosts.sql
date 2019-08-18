@@ -4,4 +4,4 @@ SELECT
 FROM
     posts p
 WHERE
-    p.author_id = ''
+    p.owner_id = ''

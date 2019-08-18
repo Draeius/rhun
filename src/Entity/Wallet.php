@@ -6,7 +6,7 @@ use App\Entity\Traits\EntityOwnerTrait;
 use App\Util\Price;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\OneToOne;
 use Doctrine\ORM\Mapping\Table;
 
 /**
@@ -23,7 +23,7 @@ class Wallet extends RhunEntity {
     /**
      *
      * @var Character
-     * @ManyToOne(targetEntity="Character", inversedBy="wallet")
+     * @OneToOne(targetEntity="Character", inversedBy="wallet")
      */
     protected $owner;
 

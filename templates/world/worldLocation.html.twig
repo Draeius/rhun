@@ -1,0 +1,13 @@
+<h3 id="locationtitle">{{locationtitle | colorize | raw}}</h3>
+
+<div>
+    {{ description |command(character) |colorize |raw}}
+</div>
+
+{% for addIn, isActive in addIns %}
+    {% if isActive %}
+        {% include 'world/locations/' ~ addIn ~ '.html.twig' %}
+    {% endif %}
+{% endfor %}
+
+{% include 'parts/logs.html.twig' %}

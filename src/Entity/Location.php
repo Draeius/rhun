@@ -2,13 +2,8 @@
 
 namespace App\Entity;
 
-use App\Entity\Navigation;
-use App\Entity\Traits\EntityColoredNameTrait;
-use App\Entity\Traits\EntityIdTrait;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
@@ -18,13 +13,9 @@ use Doctrine\ORM\Mapping\Table;
  *
  * @author Draeius
  * @Entity
- * @HasLifecycleCallbacks
  * @Table(name="locations")
  */
-class Location extends RhunEntity {
-
-    use EntityIdTrait;
-    use EntityColoredNameTrait;
+class Location extends LocationBase {
 
     /**
      * The Area in which this location is set
@@ -35,95 +26,261 @@ class Location extends RhunEntity {
     protected $area;
 
     /**
-     * The locations description in spring
-     * @var string
-     * @Column(type="text", nullable=false)
-     */
-    protected $descriptionSpring;
-
-    /**
-     * The locations description in summer
-     * @var string
-     * @Column(type="text", nullable=true)
-     */
-    protected $descriptionSummer;
-
-    /**
-     * The locations description in fall
-     * @var string
-     * @Column(type="text", nullable=true)
-     */
-    protected $descriptionFall;
-
-    /**
-     * The locations description in winter
-     * @var string
-     * @Column(type="text", nullable=true)
-     */
-    protected $descriptionWinter;
-
-    /**
-     * If this location is for adults only
+     *
      * @var bool
      * @Column(type="boolean")
      */
-    protected $adult;
+    protected $cityCenter = false;
 
-    public function __construct() {
-        $this->navs = new ArrayCollection();
-    }
+    /**
+     *
+     * @var bool
+     * @Column(type="boolean")
+     */
+    protected $bulletin = false;
 
-    function getDescriptionSpring() {
-        return $this->descriptionSpring;
-    }
+    /**
+     *
+     * @var bool
+     * @Column(type="boolean")
+     */
+    protected $shop = false;
 
-    function getDescriptionSummer() {
-        return $this->descriptionSummer;
-    }
+    /**
+     *
+     * @var bool
+     * @Column(type="boolean")
+     */
+    protected $bank = false;
 
-    function getDescriptionFall() {
-        return $this->descriptionFall;
-    }
+    /**
+     *
+     * @var bool
+     * @Column(type="boolean")
+     */
+    protected $library = false;
 
-    function getDescriptionWinter() {
-        return $this->descriptionWinter;
-    }
+    /**
+     *
+     * @var bool
+     * @Column(type="boolean")
+     */
+    protected $crafting = false;
+
+    /**
+     *
+     * @var bool
+     * @Column(type="boolean")
+     */
+    protected $fighting = false;
+
+    /**
+     *
+     * @var bool
+     * @Column(type="boolean")
+     */
+    protected $gemShop = false;
+
+    /**
+     *
+     * @var bool
+     * @Column(type="boolean")
+     */
+    protected $graveyard = false;
+
+    /**
+     *
+     * @var bool
+     * @Column(type="boolean")
+     */
+    protected $guildList = false;
+
+    /**
+     *
+     * @var bool
+     * @Column(type="boolean")
+     */
+    protected $houseList = false;
+
+    /**
+     *
+     * @var bool
+     * @Column(type="boolean")
+     */
+    protected $jobLocation = false;
+
+    /**
+     *
+     * @var bool
+     * @Column(type="boolean")
+     */
+    protected $postOffice = false;
+
+    /**
+     *
+     * @var bool
+     * @Column(type="boolean")
+     */
+    protected $respawn = false;
+
+    /**
+     *
+     * @var bool
+     * @Column(type="boolean")
+     */
+    protected $school = false;
+
+    /**
+     *
+     * @var bool
+     * @Column(type="boolean")
+     */
+    protected $post = false;
 
     function getArea(): Area {
         return $this->area;
+    }
+
+    function getCityCenter() {
+        return $this->cityCenter;
+    }
+
+    function getShop() {
+        return $this->shop;
+    }
+
+    function getBank() {
+        return $this->bank;
+    }
+
+    function getLibrary() {
+        return $this->library;
+    }
+
+    function getBulletin() {
+        return $this->bulletin;
+    }
+
+    function getCrafting() {
+        return $this->crafting;
+    }
+
+    function getDungeon() {
+        return $this->dungeon;
+    }
+
+    function getFighting() {
+        return $this->fighting;
+    }
+
+    function getGemShop() {
+        return $this->gemShop;
+    }
+
+    function getGraveyard() {
+        return $this->graveyard;
+    }
+
+    function getGuildList() {
+        return $this->guildList;
+    }
+
+    function getHouseList() {
+        return $this->houseList;
+    }
+
+    function getJobLocation() {
+        return $this->jobLocation;
+    }
+
+    function getPostOffice() {
+        return $this->postOffice;
+    }
+
+    function getRespawn() {
+        return $this->respawn;
+    }
+
+    function getSchool() {
+        return $this->school;
     }
 
     function setArea(Area $area) {
         $this->area = $area;
     }
 
-    function getAdult() {
-        return $this->adult;
+    function setCityCenter($cityCenter) {
+        $this->cityCenter = $cityCenter;
     }
 
-    function addNav(Navigation &$nav) {
-        $nav->setLocation($this); //update the nav
-        $this->navs[] = $nav;
+    function setShop($shop) {
+        $this->shop = $shop;
     }
 
-    function setDescriptionSpring($descriptionSpring) {
-        $this->descriptionSpring = $descriptionSpring;
+    function setBank($bank) {
+        $this->bank = $bank;
     }
 
-    function setDescriptionSummer($descriptionSummer) {
-        $this->descriptionSummer = $descriptionSummer;
+    function setLibrary($library) {
+        $this->library = $library;
     }
 
-    function setDescriptionFall($descriptionFall) {
-        $this->descriptionFall = $descriptionFall;
+    function setBulletin($bulletin) {
+        $this->bulletin = $bulletin;
     }
 
-    function setDescriptionWinter($descriptionWinter) {
-        $this->descriptionWinter = $descriptionWinter;
+    function setCrafting($crafting) {
+        $this->crafting = $crafting;
     }
 
-    function setAdult($adult) {
-        $this->adult = $adult;
+    function setDungeon($dungeon) {
+        $this->dungeon = $dungeon;
+    }
+
+    function setFighting($fighting) {
+        $this->fighting = $fighting;
+    }
+
+    function setGemShop($gemShop) {
+        $this->gemShop = $gemShop;
+    }
+
+    function setGraveyard($graveyard) {
+        $this->graveyard = $graveyard;
+    }
+
+    function setGuildList($guildList) {
+        $this->guildList = $guildList;
+    }
+
+    function setHouseList($houseList) {
+        $this->houseList = $houseList;
+    }
+
+    function setJobLocation($jobLocation) {
+        $this->jobLocation = $jobLocation;
+    }
+
+    function setPostOffice($postOffice) {
+        $this->postOffice = $postOffice;
+    }
+
+    function setRespawn($respawn) {
+        $this->respawn = $respawn;
+    }
+
+    function setSchool($school) {
+        $this->school = $school;
+    }
+
+    public function getDataArray(): array {
+        $fields = parent::getDataArray();
+        unset($fields['area']);
+        return $fields;
+    }
+    
+    protected function getClassName(): string {
+        return 'App\Entity\Location';
     }
 
 }

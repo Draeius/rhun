@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
+use Symfony\Component\VarDumper\VarDumper;
 
 /**
  * Defines the user levels and which administrative rights they have.
@@ -59,11 +60,11 @@ class UserRole extends RhunEntity {
 
     public function checkUserRole(UserRole $role) {
         $check = true;
-        $check &= !($this->reviewPosts && !$role->getReviewPosts());
-        $check &= !($this->editWorld && !$role->getEditWorld());
-        $check &= !($this->writeMotd && !$role->getWriteMotd());
-        $check &= !($this->editItems && !$role->getEditItems());
-        $check &= !($this->editMonster && !$role->getEditMonster());
+        $check &= !$this->reviewPosts || $role->getReviewPosts();
+        $check &= !$this->editWorld || $role->getEditWorld();
+        $check &= !$this->writeMotd || $role->getWriteMotd();
+        $check &= !$this->editItems || $role->getEditItems();
+        $check &= !$this->editMonster || $role->getEditMonster();
         return $check;
     }
 

@@ -11,12 +11,14 @@
         {% block javascripts %}
             {% if uuid.hasIdentifier() %}
                 <script>
-                var rhun.uuid ={{ uuid.tabIdentifier }}
+                    var rhun = {};
+                    rhun.uuid = "{{ uuid.getIdentifier() }}";
                 </script>
             {% endif %}
             <script type="text/javascript" src="{{ asset('js/jquery.min.js')}}"></script>
             <script type="text/javascript" src="{{ asset('js/velocity.min.js')}}"></script>
             <script type="text/javascript" src="{{ asset('vis/vis.min.js')}}"></script>
+            <!--<script src="{{ asset('js/webcomponents-lite.min.js')}}"></script>-->
             <script type="text/javascript" src="{{ asset('js/built/' ~ jsversion ~ '/main.js')}}"></script>
         {% endblock %}
 

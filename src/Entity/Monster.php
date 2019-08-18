@@ -61,7 +61,7 @@ class Monster extends RhunEntity {
      * @var string
      * @Column(type="integer")
      */
-    protected $rank;
+    protected $monsterRank;
 
     /**
      * @var string
@@ -161,8 +161,8 @@ class Monster extends RhunEntity {
         return $this->defense;
     }
 
-    public function getRank() {
-        return $this->rank;
+    public function getMonsterRank() {
+        return $this->monsterRank;
     }
 
     public function getWeaponName() {
@@ -233,8 +233,8 @@ class Monster extends RhunEntity {
         $this->defense = $defense;
     }
 
-    public function setRank($rank) {
-        $this->rank = $rank;
+    public function setMonsterRank($rank) {
+        $this->monsterRank = $rank;
     }
 
     public function setWeaponName($weaponName) {

@@ -4,6 +4,7 @@ namespace App\Entity\Fauna;
 
 use App\Entity\ColoredName;
 use App\Entity\LocationBasedEntity;
+use App\Entity\Partial\Interfaces\CharacterNameInterface;
 use App\Entity\Title;
 use App\Entity\Traits\EntityCreatedTrait;
 use App\Entity\Traits\EntityIdTrait;
@@ -29,7 +30,7 @@ use Doctrine\ORM\Mapping\Table;
  * @HasLifecycleCallbacks
  * @Table(indexes={@Index(name="newest_idx", columns={"newest"}), @Index(name="uuid_idx", columns={"uuid"})})
  */
-abstract class CharacterBase extends LocationBasedEntity {
+abstract class CharacterBase extends LocationBasedEntity implements CharacterNameInterface {
 
     use EntityIdTrait;
     use EntityIsNewestTrait;
@@ -38,7 +39,7 @@ abstract class CharacterBase extends LocationBasedEntity {
     /**
      * The character's owning account
      * @var User 
-     * @ManyToOne(targetEntity="User", inversedBy="characters")
+     * @ManyToOne(targetEntity="User")
      * @JoinColumn(name="account_id", referencedColumnName="id")
      */
     protected $account;
@@ -163,15 +164,14 @@ abstract class CharacterBase extends LocationBasedEntity {
      * @return ColoredName|null Null, wenn kein farbiger Name gewählt wurde.
      */
     public function getSelectedName(): ?ColoredName {
-        if (empty($this->coloredNames)) {
-            return null;
-        }
         foreach ($this->coloredNames as $name) {
             if ($name->getIsActivated()) {
                 return $name;
             }
         }
-        return null;
+        $name = new ColoredName();
+        $name->setName($this->name);
+        return $name;
     }
 
     /**
@@ -179,15 +179,27 @@ abstract class CharacterBase extends LocationBasedEntity {
      * @return Title|null Null, wenn kein Titel ausgewählt wurde.
      */
     public function getSelectedTitle(): ?Title {
-        if (empty($this->titles)) {
-            return null;
-        }
         foreach ($this->titles as $title) {
             if ($title->getIsActivated()) {
                 return $title;
             }
         }
-        return null;
+        $title = new Title();
+        $title->setIsInFront(true);
+        $title->setTitle($this->gender ? Title::STANDARD_MALE : Title::STANDARD_FEMALE);
+        return $title;
+    }
+
+    public function getFullName(): string {
+        if ($this->getSelectedTitle()->getIsInFront()) {
+            return $this->getSelectedTitle()->getTitle() . ' ' . $this->getSelectedName()->getName();
+        }
+        return $this->getSelectedName()->getName() . ' ' . $this->getSelectedTitle()->getTitle();
+    }
+
+    public function getDisplayName(bool $useMasked): string {
+        @trigger_error('Not fully implemented yet', E_USER_WARNING);
+        return $this->getFullName();
     }
 
     /**
@@ -223,6 +235,10 @@ abstract class CharacterBase extends LocationBasedEntity {
         return $current;
     }
 
+    public function getName(): ?string {
+        return $this->name;
+    }
+
     public function getColoredNames(): ArrayCollection {
         return $this->coloredNames;
     }
@@ -231,7 +247,7 @@ abstract class CharacterBase extends LocationBasedEntity {
         return $this->titles;
     }
 
-    public function getGender(): bool {
+    public function getGender(): ?bool {
         return $this->gender;
     }
 
@@ -241,6 +257,10 @@ abstract class CharacterBase extends LocationBasedEntity {
 
     public function getBanReason() {
         return $this->banReason;
+    }
+
+    function getAccount(): User {
+        return $this->account;
     }
 
     public function setAccount(User $account) {

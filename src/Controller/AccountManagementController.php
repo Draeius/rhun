@@ -5,8 +5,9 @@ namespace App\Controller;
 use App\Controller\BasicController;
 use App\Entity\Race;
 use App\Entity\User;
-use App\Form\CreateCharacterFormType;
+use App\Form\CreateCharacterType;
 use App\Form\DTO\CreateCharacterDTO;
+use App\Form\Facade\CreateCharacterFacade;
 use App\Repository\BroadcastRepository;
 use App\Repository\UserRepository;
 use App\Service\CharacterService;
@@ -16,11 +17,13 @@ use App\Service\ParamGenerator\AccountMngmtParamGenerator;
 use App\Util\Session\RhunSession;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Stopwatch\Stopwatch;
 
 /**
  * Description of AccountManagementController
  *
  * @author Draeius
+ * @App\Annotation\Security(needAccount=true)
  */
 class AccountManagementController extends BasicController {
 
@@ -33,15 +36,22 @@ class AccountManagementController extends BasicController {
      */
     private $navFactory;
 
-    function __construct(AccountMngmtNavbarFactory $navFactory) {
+    /**
+     *
+     * @var Stopwatch
+     */
+    private $stopwatch;
+
+    function __construct(AccountMngmtNavbarFactory $navFactory, Stopwatch $stopwatch) {
         $this->navFactory = $navFactory;
+        $this->stopwatch = $stopwatch;
     }
 
     /**
-     * @App\Annotation\Security(needAccount=true)
      * @Route("/account", name=AccountManagementController::ACCOUNT_MANAGEMENT_ROUTE_NAME, defaults={"_fragment"="chars"})
      */
-    public function showCharmanagement(Request $request, UserRepository $userRepo, AccountMngmtParamGenerator $paramGenerator, BroadcastRepository $broadcastRepo) {
+    public function showCharmanagement(Request $request, UserRepository $userRepo, AccountMngmtParamGenerator $paramGenerator, BroadcastRepository $broadcastRepo,
+            CreateCharacterFacade $characterFacade) {
         $session = new RhunSession();
         /* @var $user User */
         $user = $userRepo->find($session->getAccountID());
@@ -50,12 +60,14 @@ class AccountManagementController extends BasicController {
             return $this->redirectToRoute(self::DSGVO_ROUTE_NAME);
         }
 
-        $characterDTO = new CreateCharacterDTO();
-        $form = $this->createForm(CreateCharacterFormType::class, $characterDTO);
+        $this->stopwatch->start('form handling');
+        $character = new CreateCharacterDTO();
+        $form = $this->createForm(CreateCharacterType::class, $character);
         $form->handleRequest($request);
+        $this->stopwatch->stop('form handling');
 
         if ($form->isSubmitted() && $form->isValid()) {
-            
+            $characterFacade->createUser($character);
         }
 
         return $this->render($this->getSkinFile(), $paramGenerator->getStandardParams($user, $form, $broadcastRepo));
@@ -94,6 +106,7 @@ class AccountManagementController extends BasicController {
     /**
      * @App\Annotation\Security(needAccount=true)
      * @Route("/createchar", name="create_char")
+     * @deprecated since version number
      */
     public function createCharacter(Request $request) {
         $this->cleanSession();

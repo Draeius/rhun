@@ -1,0 +1,31 @@
+<h1>Rassen</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Bunter Name</th>
+            <th>Stadt</th>
+            <th>Beschreibung</th>
+            <th>Erlaubt</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{ race.id }}</td>
+            <td>{{ race.name }}</td>
+            <td>{{ race.coloredName |colorize|raw}}</td>
+            <td>{{ race.city |colorize|raw}}</td>
+            <td>{{ race.description |colorize|raw}}</td>
+            <td>{{ race.allowed ? 'Ja' : 'Nein' }}</td>
+        </tr>
+    </tbody>
+</table>
+
+<a href="{{ path('race_index') }}">Zurück zur Liste</a>
+
+<a href="{{ path('race_edit', {'id': race.id}) }}">bearbeiten</a>
+<br />
+<br />
+{{ include('editors/race/_delete_form.html.twig') }}

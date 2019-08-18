@@ -2,6 +2,7 @@
 
 namespace App\Util\Session;
 
+use App\Entity\Character;
 use App\Util\TabIdentification\NoTabIdentifierSetException;
 use App\Util\TabIdentification\TabIdentifier;
 use Symfony\Component\HttpFoundation\Session\Session;

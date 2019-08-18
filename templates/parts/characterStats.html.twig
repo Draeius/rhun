@@ -62,17 +62,17 @@
                 <span style="font-size: 1.5em;">
                     XP:
                 </span>
-                {% set percentage = (character.getExp() / -levelUpExp) %}
+                {% set percentage = (character.getExp() / -character.getExpForNextLevel()) %}
                 <div style="
                      display: inline-block; 
-                     width: 200px; 
+                     width: 200px;
                      height: 10px;
                      border: 1px solid grey;
                      background-image: url({{asset('/images/vitalinfo/XPBar.png')}});
                      background-position: {{200 - percentage * 200}}px 0px;">
                 </div><br />
                 <div style="text-align: left; margin-left: 40px;">
-                    {{character.getExp()}}/{{levelUpExp}}
+                    {{character.getExp()}}/{{character.getExpForNextLevel()}}
                 </div>
             </td>
         </tr>
@@ -217,7 +217,7 @@
                 Reputation:
             </td>
             <td>
-                {{ ((character.getAttributes().getReputation() < 0 ? "`e" : "`d") ~ character.getAttributes().getReputation()) |colorize |raw }}
+                {{ ((character.getReputation() < 0 ? "`e" : "`d") ~ character.getReputation()) |colorize |raw }}
             </td>
         </tr>
         <tr>
@@ -225,7 +225,7 @@
                 Charme:
             </td>
             <td>
-                {{ ((character.getAttributes().getCharme() < 0 ? "`e" : "`d") ~ character.getAttributes().getCharme()) |colorize |raw }}
+                {{ ((character.getCharme() < 0 ? "`e" : "`d") ~ character.getCharme()) |colorize |raw }}
             </td>
         </tr>
         <tr>
@@ -281,7 +281,7 @@
                 Skillpunkte:
             </td>
             <td>
-                {{ character.getAttributes().getSkillpoints() }}
+                {{ character.getSkillpoints() }}
             </td>
         </tr>
         <tr>

@@ -1,16 +1,16 @@
 
 -- Fragt den aktuell ausgewählten Namen und Titel eines Charakters ab
 SELECT 
-    r.name, r.gender, r.coloredName, r.title, r.isInFront, r.guildTag, r.guildName
+    r.name, r.gender, r.coloredName, r.title, r.is_in_front, r.guildTag, r.guildName
 FROM
     (SELECT 
         c.name,
             c.gender,
             n.name AS coloredName,
-            n.isActivated AS nActivated,
+            n.is_activated AS nActivated,
             t.title,
-            t.isInFront,
-            t.isActivated AS tActivated,
+            t.is_in_front,
+            t.is_activated AS tActivated,
             g.name AS guildName,
             g.tag AS guildTag
     FROM

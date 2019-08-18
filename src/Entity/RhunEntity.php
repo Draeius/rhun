@@ -30,4 +30,16 @@ abstract class RhunEntity {
         return $this->id;
     }
 
+    public function equals($other): bool {
+        if (!$other instanceof RhunEntity) {
+            return false;
+        }
+
+        if ($this->id != $other->getId()) {
+            return false;
+        }
+
+        return true;
+    }
+
 }

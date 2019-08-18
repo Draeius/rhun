@@ -18,7 +18,7 @@ interface CharacterNameInterface {
      * 
      * @return ColoredName
      */
-    public function getSelectedName(): ColoredName;
+    public function getSelectedName(): ?ColoredName;
 
     /**
      * Gibt den aktuell ausgewählten und eingefärbten Titel zurück.
@@ -26,7 +26,7 @@ interface CharacterNameInterface {
      * 
      * @return Title
      */
-    public function getSelectedTitle(): Title;
+    public function getSelectedTitle(): ?Title;
 
     /**
      * Gibt den kompletten Namen des Charakters als String zurück.

@@ -19,6 +19,7 @@ use Doctrine\ORM\Mapping\Table;
 class Navigation extends LocationBasedEntity {
 
     use EntityColoredNameTrait;
+//    use EntityIdTrait;
 
     /**
      * The target of this nav
@@ -69,7 +70,7 @@ class Navigation extends LocationBasedEntity {
         $this->navbarIndex = $navbarIndex;
     }
 
-    public function setTargetLocation(LocationEntity $targetLocation) {
+    public function setTargetLocation(Location $targetLocation) {
         $this->targetLocation = $targetLocation;
     }
 

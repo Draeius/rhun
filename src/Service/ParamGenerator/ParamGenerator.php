@@ -17,7 +17,8 @@ class ParamGenerator {
      *
      * @todo move to config
      */
-    public static $JS_VERSION = '0.0.1';
+    const JS_VERSION = '0.0.1';
+    const LOGD_VERSION = 'rhun-0.9.7';
 
     /**
      *
@@ -38,8 +39,8 @@ class ParamGenerator {
 
     public function getBaseParams(string $pageTitle, NavbarService $navbar) {
         return [
-            'jsversion' => self::$JS_VERSION,
-            'logd_version' => 'rhun-0.9.7',
+            'jsversion' => self::JS_VERSION,
+            'logd_version' => self::LOGD_VERSION,
             'uuid' => $this->session->getTabIdentifier(),
             'account' => null,
             'character' => null,
@@ -56,6 +57,10 @@ class ParamGenerator {
             'wiki_link' => 'rhun-logd.de/wiki',
             'mail_link' => 'mail_show'
         ];
+    }
+
+    function getDtService(): DateTimeService {
+        return $this->dtService;
     }
 
 }

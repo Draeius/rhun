@@ -1,0 +1,46 @@
+<h1>Area</h1>
+
+<table class="table">
+    <tbody>
+        <tr>
+            <th>Id</th>
+            <td>{{ area.id }}</td>
+        </tr>
+        <tr>
+            <th>Uuid</th>
+            <td>{{ area.uuid }}</td>
+        </tr>
+        <tr>
+            <th>Name</th>
+            <td>{{ area.name }}</td>
+        </tr>
+        <tr>
+            <th>ColoredName</th>
+            <td>{{ area.coloredName  |colorize|raw}}</td>
+        </tr>
+        <tr>
+            <th>City</th>
+            <td>{{ area.city }}</td>
+        </tr>
+        <tr>
+            <th>Description</th>
+            <td>{{ area.description |colorize|raw}}</td>
+        </tr>
+        <tr>
+            <th>DeadAllowed</th>
+            <td>{{ area.deadAllowed ? 'Yes' : 'No' }}</td>
+        </tr>
+        <tr>
+            <th>RaceAllowed</th>
+            <td>{{ area.raceAllowed ? 'Yes' : 'No' }}</td>
+        </tr>
+    </tbody>
+</table>
+
+<a href="{{ path('area_index') }}">Zurück zur Liste</a>
+
+<a href="{{ path('area_edit', {'id': area.id}) }}">bearbeiten</a>
+<br />
+<br />
+{{ include('editors/area/_delete_form.html.twig') }}
+

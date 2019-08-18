@@ -1,0 +1,38 @@
+
+<br />
+<!-- Datum -->
+<div>
+    {{('`*Wir schreiben den `g' ~ date ~ ' im Jahre ' ~ year ~' nach dem letzten Meteoriteneinschlag.') |colorize|raw}}
+</div>
+
+<!-- Zeit bis zur nächsten Phase -->
+<div>
+    {{('`*Die Uhr an der Kapelle in weiter Ferne zeigt `g' ~ time ~ '`* Uhr, demnach ist es `g' ~ timeString ~ '`*.') |colorize | raw }}
+</div>
+
+<!-- Das Wetter -->
+<div>
+    {{ '`*Das heutige Wetter: `gWie immer `*.'| colorize | raw }}
+</div>
+<br />
+
+<!-- Mondphasen -->
+<div>
+    {{ ('`*Am Himmel sind außerdem die beiden Monde, Kuu und Kun zu sehen. Kuu ist `g'~ phaseKuu ~'`*, Kun ist `g'~ phaseKun ~ '`*.') | colorize | raw }}
+</div>
+<br />
+
+<!-- Mondphasen -->
+<div style="width: 100%; text-align: center;">
+    {% if shortNews %}
+        {% for news in shortNews %}
+            <p>
+                {{ news.getCharacter |charName |colorize |raw }} {{ news.getContent() |colorize |raw }}
+            </p>
+        {% endfor %}
+    {% else %}
+        Scheinbar ist in letzter Zeit nichts Interessantes passiert.
+    {% endif %}
+</div>
+
+

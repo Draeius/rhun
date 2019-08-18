@@ -44,5 +44,13 @@ trait EntityLevelTrait {
         return round(pow($this->level + 4, 2.7) * 3);
     }
 
+    public function getExp(): int {
+        return $this->exp;
+    }
+
+    public function getLevel(): int {
+        return $this->level;
+    }
+
     abstract function levelUp(): void;
 }

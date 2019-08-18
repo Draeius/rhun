@@ -1,0 +1,14 @@
+<div>
+    <p id="error_log">
+        {{ error |colorize |raw}}
+    </p>
+    <br />
+    <br />
+    <p id="log">
+        {%if player_char is defined %}
+            {{ log  |command(player_char) |colorize |raw}}
+        {% else %}
+            {{ log  |colorize |raw}}
+        {% endif %}
+    </p>
+</div>

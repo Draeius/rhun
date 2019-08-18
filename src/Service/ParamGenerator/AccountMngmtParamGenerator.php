@@ -2,6 +2,8 @@
 
 namespace App\Service\ParamGenerator;
 
+use App\Controller\LoginController;
+use App\Controller\LogoutController;
 use App\Entity\User;
 use App\Query\GetIsPostAnsweredQuery;
 use App\Query\GetOnlineCharactersQuery;
@@ -9,6 +11,7 @@ use App\Query\GetRaceListQuery;
 use App\Query\GetTotalNumberOfPostsQuery;
 use App\Repository\AreaRepository;
 use App\Repository\BroadcastRepository;
+use App\Repository\CharacterRepository;
 use App\Service\CharacterService;
 use App\Service\DateTimeService;
 use App\Service\NavbarFactory\AccountMngmtNavbarFactory;
@@ -37,15 +40,28 @@ class AccountMngmtParamGenerator extends ParamGenerator {
 
     /**
      *
+     * @var CharacterRepository
+     */
+    private $charRepo;
+
+    /**
+     *
+     * @var AccountMngmtNavbarFactory
+     */
+    private $navFactory;
+
+    /**
+     *
      * @var EntityManagerInterface
      */
     private $eManager;
 
-    function __construct(DateTimeService $dtService, AreaRepository $areaRepo, SkinService $skinService, AccountMngmtNavbarFactory $navFactory,
-            EntityManagerInterface $eManager) {
+    function __construct(DateTimeService $dtService, AreaRepository $areaRepo, SkinService $skinService, CharacterRepository $charRepo,
+            AccountMngmtNavbarFactory $navFactory, EntityManagerInterface $eManager) {
         parent::__construct($dtService);
         $this->areaRepo = $areaRepo;
         $this->skinService = $skinService;
+        $this->charRepo = $charRepo;
         $this->navFactory = $navFactory;
         $this->eManager = $eManager;
     }
@@ -68,12 +84,14 @@ class AccountMngmtParamGenerator extends ParamGenerator {
             'races' => $getRaceListQuery(),
             'account' => $user,
             'form' => $form->createView(),
-            'chars' => [], //$this->getDoctrine()->getRepository('App:Character')->findByAccount($user),
+            'chars' => $this->charRepo->findByAccount($user),
             'neededGems' => CharacterService::getNeededGems($user),
             'neededPosts' => CharacterService::getNeededPosts($user),
             'totalPosts' => $totalPostsQuery($user->getId()),
             'newposts' => $answeredPostsQuery($user->getId()),
             'userOnline' => $userOnlineQuery(),
+            'loginRouteName' => LoginController::CHARACTER_LOGIN_ROUTE_NAME,
+            'charLogoutRouteName' => LogoutController::LOGOUT_CHARACTER_ROUTE_NAME,
             'skinlist' => $this->skinService->getSkinList()
         ]);
         return $vars;

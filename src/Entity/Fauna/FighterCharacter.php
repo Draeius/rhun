@@ -11,6 +11,7 @@ use App\Entity\Spell;
 use App\Entity\Traits\EntityAttributesTrait;
 use App\Entity\Traits\EntityHealthTrait;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\JoinTable;
@@ -103,21 +104,10 @@ class FighterCharacter extends RPCharacter {
      */
     protected $spells;
 
-    /**
-     *
-     * @var StatBuff[]
-     */
-    private $buffList = null;
-
     public function __construct() {
         parent::__construct();
         $this->buffs = new ArrayCollection();
         $this->spells = new ArrayCollection();
-        $this->buildBuffList();
-    }
-
-    public function buildBuffList(): void {
-        $this->buffList = BuffFactory::BUFF_LIST_FACTORY(BuffFactory::STAT_BUFFS, $this->buffs);
     }
 
     public function getMaxHPWithBuff() {
@@ -137,12 +127,12 @@ class FighterCharacter extends RPCharacter {
     }
 
     private function calculateBuffedStat(int $value, int $attribute): int {
-        if ($this->buffList == null) {
-            $this->buildBuffList();
-        }
-        $calculator = new StatCalculator($this->buffList);
+//        if ($this->buffList == null) {
+//            $this->buildBuffList();
+//        }
+//        $calculator = new StatCalculator($this->buffList);
 
-        return $calculator->calculateAttribute($attribute, $value);
+        return $value;// $calculator->calculateAttribute($attribute, $value);
     }
 
     /**
@@ -151,14 +141,14 @@ class FighterCharacter extends RPCharacter {
      * @return bool true, wenn der Zauber hinzugefügt wurde.
      */
     public function addSpell(Spell $spell): bool {
-        if (!$this->hasSpell($spell)) {
+        if (!$this->knowsSpell($spell)) {
             $this->spells[] = $spell;
             return true;
         }
         return false;
     }
 
-    public function hasSpell(Spell $spell) {
+    public function knowsSpell(Spell $spell) {
         foreach ($this->spells as $known) {
             if ($spell->getId() == $known->getId()) {
                 return true;
@@ -250,7 +240,7 @@ class FighterCharacter extends RPCharacter {
         $this->buildBuffList();
     }
 
-    function getBuffs(): array {
+    function getBuffs(): Collection {
         return $this->buffs;
     }
 
@@ -288,10 +278,6 @@ class FighterCharacter extends RPCharacter {
 
     function getSpells(): array {
         return $this->spells;
-    }
-
-    function getBuffList(): array {
-        return $this->buffList;
     }
 
     function setBuffs(array $buffs) {
@@ -332,10 +318,6 @@ class FighterCharacter extends RPCharacter {
 
     function setSpells(array $spells) {
         $this->spells = $spells;
-    }
-
-    function setBuffList(array $buffList) {
-        $this->buffList = $buffList;
     }
 
 }

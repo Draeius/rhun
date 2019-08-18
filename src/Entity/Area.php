@@ -3,7 +3,9 @@
 namespace App\Entity;
 
 use App\Entity\Traits\EntityColoredNameTrait;
+use App\Entity\Traits\EntityDescriptionTrait;
 use App\Entity\Traits\EntityIdTrait;
+use App\Repository\AreaRepository;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
@@ -13,7 +15,7 @@ use Doctrine\ORM\Mapping\Table;
  * Describes an Area. An Area is a collection of Locations
  *
  * @author Draeius
- * @Entity
+ * @Entity(repositoryClass="AreaRepository")
  * @Table(name="areas")
  * @HasLifecycleCallbacks
  */
@@ -21,6 +23,7 @@ class Area extends RhunEntity {
 
     use EntityIdTrait;
     use EntityColoredNameTrait;
+    use EntityDescriptionTrait;
 
     /**
      * The city this area belongs to
@@ -28,13 +31,6 @@ class Area extends RhunEntity {
      * @Column(type="string", length=64)
      */
     protected $city;
-
-    /**
-     * A description of this area
-     * @var string
-     * @Column(type="text", nullable=true)
-     */
-    protected $description;
 
     /**
      *
@@ -49,10 +45,6 @@ class Area extends RhunEntity {
      * @Column(type="boolean")
      */
     protected $raceAllowed = false;
-
-    public function getDescription() {
-        return $this->description;
-    }
 
     public function getCity() {
         return $this->city;
@@ -76,10 +68,6 @@ class Area extends RhunEntity {
 
     public function setCity($city) {
         $this->city = $city;
-    }
-
-    public function setDescription($description) {
-        $this->description = $description;
     }
 
 }

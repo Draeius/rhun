@@ -367,6 +367,57 @@ var content;
     content.ContentManager = ContentManager;
     ;
 })(content || (content = {}));
+var Content;
+(function (Content) {
+    var FormHelper = (function () {
+        function FormHelper(elementId, replaceIds) {
+            this.observedElement = $('#' + elementId);
+            this.replaceIds = replaceIds;
+            if (this.checkIds()) {
+                this.getForm();
+            }
+        }
+        FormHelper.prototype.action = function (html) {
+            var parsed = $(html);
+            for (var _i = 0, _a = this.replaceIds; _i < _a.length; _i++) {
+                var id = _a[_i];
+                $('#' + id).replaceWith(parsed.find('#' + id));
+            }
+        };
+        FormHelper.prototype.init = function () {
+            var _this = this;
+            var _this = this;
+            this.observedElement.change(function () {
+                var data = _this.form.serialize();
+                $.ajax({
+                    url: _this.form.attr('action'),
+                    type: _this.form.attr('method'),
+                    data: data,
+                    success: function (data) {
+                        _this.action(data);
+                    }
+                });
+            });
+        };
+        FormHelper.prototype.getForm = function () {
+            this.form = this.observedElement.closest('form');
+        };
+        FormHelper.prototype.checkIds = function () {
+            if (!this.observedElement) {
+                console.error("ObservedElement " + this.observedElement + " does not exist.");
+                return false;
+            }
+            if (!this.replaceIds) {
+                console.error("Replace Ids is empty.");
+                console.error(this.replaceIds);
+                return false;
+            }
+            return true;
+        };
+        return FormHelper;
+    }());
+    Content.FormHelper = FormHelper;
+})(Content || (Content = {}));
 var display;
 (function (display) {
     var Infobox = (function () {
@@ -1049,20 +1100,32 @@ var navigation;
             });
         }
         KeyNavigator.prototype.addNav = function (nav) {
-            for (var key = 0; key < nav.children.length; key++) {
-                var text = nav.children[key].textContent;
-                if (text) {
-                    for (var index = 0; index < text.length; index++) {
-                        var char = text.charAt(index);
-                        if (!(char.toLowerCase() in this.map) && isNaN(char)) {
-                            this.map[char.toLowerCase()] = nav;
-                            nav.children[key].innerHTML = text.slice(0, index) + "<span style='text-decoration: underline;'>"
-                                + char + "</span>" + text.slice(index + 1);
-                            return;
-                        }
+            if (nav.children.length === 0) {
+                nav.innerHTML = this.prepareNav(nav);
+            }
+            else {
+                for (var key = 0; key < nav.children.length; key++) {
+                    var html = this.prepareNav(nav.children[key]);
+                    if (html !== null) {
+                        nav.children[key].innerHTML = html;
+                        return;
                     }
                 }
             }
+        };
+        KeyNavigator.prototype.prepareNav = function (nav) {
+            var text = nav.textContent;
+            if (text) {
+                for (var index = 0; index < text.length; index++) {
+                    var char = text.charAt(index);
+                    if (!(char.toLowerCase() in this.map) && isNaN(char)) {
+                        this.map[char.toLowerCase()] = nav;
+                        return text.slice(0, index) + "<span style='text-decoration: underline;'>"
+                            + char + "</span>" + text.slice(index + 1);
+                    }
+                }
+            }
+            return null;
         };
         KeyNavigator.prototype.navigate = function (event) {
             if (event.altKey) {
@@ -1208,7 +1271,10 @@ var Sorting;
         function StandardSortPolicy() {
         }
         StandardSortPolicy.prototype.sort = function (value, compare, reverse) {
-            return reverse * value.localeCompare(compare);
+            if (isNaN(Number(value)) || isNaN(Number(value))) {
+                return reverse * value.localeCompare(compare);
+            }
+            return reverse * Number(value) - Number(compare);
         };
         return StandardSortPolicy;
     }());

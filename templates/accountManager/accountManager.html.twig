@@ -7,7 +7,7 @@
         if (!window.location.hash) {
             window.location.hash = "news";
         }
-        $('#create_character_form_city').on('change', function () {
+        $('#create_character_city').on('change', function () {
             changeCity(this.value);
         });
 
@@ -80,35 +80,6 @@
         content.ContentManager.openTab(event, id);
     }
 
-    function getRaces() {
-        if (!city) {
-            return;
-        }
-        var cities = {
-            nelaris: "{{ path('races_for_city', { 'city': 'nelaris' }) }}",
-            lerentia: "{{ path('races_for_city', { 'city': 'lerentia' }) }}",
-            pyra: "{{ path('races_for_city', { 'city': 'pyra' }) }}",
-            manosse: "{{  path('races_for_city', { 'city': 'manosse' }) }}",
-            underworld: "{{ path('races_for_city', { 'city': 'underworld' }) }}"
-        };
-
-        $.ajax(cities[city])
-                .done(function (races) {
-                    select = document.getElementById('create_character_form_race');
-                    select.innerHTML = "";
-                    var formatter = new formatting.Formatter();
-                    for (var key in races) {
-                        var option = document.createElement("option");
-                        option.value = races[key]['id'];
-                        option.innerHTML = races[key]['name'];
-                        $(select).append($(option));
-                    }
-                })
-                .fail(function (ex) {
-                    console.error(ex);
-                })
-    }
-
     function changeCity(value) {
         $('div[data-descr]').each(function () {
             if ($(this).attr("data-descr") == value) {
@@ -118,8 +89,12 @@
             }
         });
         city = value;
-        getRaces();
     }
+    var formHelper;
+    $(document).ready(function () {
+        formHelper = new Content.FormHelper('create_character_city', ['create_character_race']);
+        formHelper.init();
+    })
 </script>
 
 <ul class="tab">
@@ -208,7 +183,7 @@
                 <tr>
                     <td>
                         {% if char.isBanned() != true and account.isBanned() != true %}
-                            <a href="{{path('char_login', {'char': char.id})}}">
+                            <a href="{{path(loginRouteName, {'charUuid': uuid_encode(char.uuid)})}}">
                                 {{char |charName(false) | colorize | raw}}
                             </a>
                         {% else %}
@@ -231,10 +206,14 @@
                         {{ cities[char.getRace().getCity()] | colorize | raw }}
                     </td>
                     <td> 
-                        {{ char.getLocation().getTitle() | colorize | raw }}
+                        {{ char.getLocation().getColoredName() | colorize | raw }}
                     </td>
                     <td>
-                        {{ newposts[char.id] | colorize | raw }}
+                        {% if newposts[char.id] is defined %}
+                            {{ newposts[char.id] | colorize | raw }}
+                        {% else %}
+                            Keine Posts 
+                        {% endif %}
                     </td>
                     <td>
                         {{ char.getPostCounter() }}
@@ -248,13 +227,14 @@
                     </td>
                     <td>
                         {% if char.getOnline() %}
-                            <span class="clickable" style="color: green;" onclick="navigation.relocate('{{path('char_logout', {'char': char.id, 'safe': 'false'})}}')">online</span>
+                            <span class="clickable" style="color: green;" 
+                                  onclick="navigation.relocate('{{path(charLogoutRouteName, {'charUuid': uuid_encode(char.uuid), 'safe': 'false'})}}');">online</span>
                         {% else %}
                             <span style="color: red; font-style: italic;">offline</span>
                         {% endif %}
                     </td>
                     <td>
-                        <form action="{{path('bioEditor')}}">
+                        <form action="{{ path('bioEditor')}}">
                             <input type="hidden" name="selectedChar" value="{{char.getId()}}" />
                             <input type="submit" value="Bioeditor" > 
                         </form>
@@ -277,34 +257,9 @@
             Einen neuen Charakterslot <a href="/account/buy_slot" style="color: lightblue;"> kaufen</a>. <br />
             Dafür müssen alle deine Charaktere mindestens {{ neededPosts }} Posts haben und du brauchst {{ neededGems }} Edelsteine auf deinem Account.
         </p>
-        {{ form_start(form, {'action': path('create_char')}) }}
-        <br /> <br />
-        {{ form_row(form.name) }}
-        <div>
-            {{ form_row(form.city) }}
-            <div data-descr="nelaris">
-                {{nelaris.descr|colorize|raw}}
-            </div>
-            <div data-descr="lerentia">
-                {{lerentia.descr|colorize|raw}}
-            </div>
-            <div data-descr="pyra">
-                {{pyra.descr|colorize|raw}}
-            </div>
-            <div data-descr="manosse">
-                {{manosse.descr|colorize|raw}}
-            </div>
-            <div data-descr="underworld">
-                {{underworld.descr|colorize|raw}}
-            </div>
-        </div>
-        <br />
-        <br /> 
-        {{ form_row(form.race) }}
-        <br />
-        {{ form_row(form.gender) }}
-        <br />
-        <input type="submit" value="Erstellen" />
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn">{{ button_label|default('Erstellen') }}</button>
         {{ form_end(form) }}
         <br />
     {% elseif account.isBanned() %}
