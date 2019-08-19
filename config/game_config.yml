@@ -20,6 +20,11 @@ role_play:
             gold: 0
             platin: 0
             gems: 500
+    stat_reset: #Preis um die Stats eines Charakters zurück zu setzen
+        price:
+            gold: 0
+            platin: 0
+            gems: 500
          
 house:
     price:

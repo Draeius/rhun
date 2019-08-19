@@ -1,14 +1,10 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace App\Service\ParamGenerator\Location;
 
+use App\Entity\Character;
 use App\Entity\LocationBase;
+use App\Service\ConfigService;
 use App\Service\DateTimeService;
 use App\Service\ParamGenerator\ParamGenerator;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,7 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 /**
  * Description of LocationParamGeneratorBase
  *
- * @author Matthias
+ * @author Draeius
  */
 abstract class LocationParamGeneratorBase extends ParamGenerator {
 
@@ -26,13 +22,35 @@ abstract class LocationParamGeneratorBase extends ParamGenerator {
      */
     private $eManager;
 
-    public function __construct(DateTimeService $dtService, EntityManagerInterface $eManager) {
+    /**
+     *
+     * @var Character
+     */
+    private $character;
+
+    /**
+     *
+     * @var ConfigService
+     */
+    private $config;
+
+    public function __construct(Character $character, DateTimeService $dtService, EntityManagerInterface $eManager, ConfigService $config) {
         parent::__construct($dtService);
         $this->eManager = $eManager;
+        $this->character = $character;
+        $this->config = $config;
     }
 
     protected function getEntityManager(): EntityManagerInterface {
         return $this->eManager;
+    }
+
+    protected function getCharacter(): Character {
+        return $this->character;
+    }
+
+    protected function getConfig(): ConfigService {
+        return $this->config;
     }
 
     public abstract function getParams(LocationBase $location): array;

@@ -1,0 +1,26 @@
+<script>
+    var previewName, previewTitle;
+    $(document).ready(function () {
+        previewName = new formatting.Preview(document.getElementById("nameInput"), document.getElementById("namePreview"));
+        previewTitle = new formatting.Preview(document.getElementById("titleInput"), document.getElementById("titlePreview"));
+
+    })
+
+</script>
+
+{{ ('`dEinen bunten Namen kaufen: ' ~ priceColoredName) | colorize | raw }}<br />
+<form action="{{path('buy_name', {'uuid': uuid})}}" method="POST">
+    <input id="nameInput" name="name" size="40" /> Sieht dann so aus: <span id="namePreview"> </span><br />
+    <input type="submit" value="Einfärben" />
+</form>
+<br />
+<br />
+
+{{ ('`dEinen bunten Titel kaufen: ' ~ priceColoredTitle) | colorize | raw }}<br />
+<form action="{{path('buy_title', {'uuid': uuid})}}" method="POST">
+    <input id="titleInput" name="title" size="40" /> Sieht dann so aus: <span id="titlePreview"> </span><br />
+    <input type="checkbox" name="front" value="true" checked/> Den Titel vor dem Namen anzeigen?<br />
+    <input type="submit" value="Einfärben" />
+</form>
+<br />
+<br />

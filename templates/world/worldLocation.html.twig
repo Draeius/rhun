@@ -4,10 +4,24 @@
     {{ description |command(character) |colorize |raw}}
 </div>
 
+{% if addIns['cityCenter'] %}
+    {% include 'world/locations/cityCenter.html.twig' %}
+{% endif %}
+
 {% for addIn, isActive in addIns %}
     {% if isActive %}
-        {% include 'world/locations/' ~ addIn ~ '.html.twig' %}
+        {% if addIn != 'post' and addIn != 'cityCenter' %}
+            <div>
+                {% include 'world/locations/' ~ addIn ~ '.html.twig' %}
+            </div>
+        {% endif %}
     {% endif %}
 {% endfor %}
 
 {% include 'parts/logs.html.twig' %}
+
+{% if addIns['post'] %}
+    {% include 'world/locations/post.html.twig' %}
+{% endif %}
+
+{% include 'world/locations/ooc.html.twig' %}

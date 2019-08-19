@@ -33,7 +33,7 @@ class WorldNavbarFactory {
      * @var NavbarService
      */
     private $navbarService;
-    
+
     /**
      *
      * @var LocationResolveService
@@ -92,6 +92,22 @@ class WorldNavbarFactory {
             return;
         }
         $this->navbarService->addNavhead($nav->getColoredName());
+    }
+
+    private function getNavbarModifierClass(string $index) {
+        return 'App\\Service\\NavbarFactory\\Location\\' . ucfirst($index) . 'Generator';
+    }
+
+    private function createNavbarModifier(string $index, Character $character) {
+        $class = $this->getNavbarModifierClass($index);
+        if (!class_exists($class)) {
+            throw new Exception('Class ' . $class . ' not found.');
+        }
+        $generator = new $class($character, $this->getDtService(), $this->eManager, $this->config);
+        if (!$generator instanceof LocationParamGeneratorBase) {
+            throw new Exception($class . ' is no valid ParamGenerator. Must be subclass of LocationParamGenerator');
+        }
+        return $generator;
     }
 
 }

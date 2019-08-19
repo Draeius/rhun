@@ -42,11 +42,11 @@ class ConfigService {
     }
 
     public function getHouseConfig(): HouseConfig {
-        return new RolePlayConfig($this->getConfig()['house']);
+        return new HouseConfig($this->getConfig()['house']);
     }
 
     public function getGuildConfig(): GuildConfig {
-        return new RolePlayConfig($this->getConfig()['guild']);
+        return new GuildConfig($this->getConfig()['guild']);
     }
 
     public function getSettings(): Settings {

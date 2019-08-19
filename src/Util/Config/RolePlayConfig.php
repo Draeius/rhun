@@ -64,5 +64,11 @@ class RolePlayConfig extends Config {
 
         return $this->getPrice('price', $data);
     }
+    
+    public function getStatResetPrice(): Price {
+        $data = $this->getData('stat_reset');
+
+        return $this->getPrice('price', $data);
+    }
 
 }

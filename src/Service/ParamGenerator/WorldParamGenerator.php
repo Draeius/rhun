@@ -8,6 +8,7 @@ use App\Entity\HouseLocation;
 use App\Entity\Location;
 use App\Entity\LocationBase;
 use App\Repository\NavigationRepository;
+use App\Service\ConfigService;
 use App\Service\DateTimeService;
 use App\Service\NavbarFactory\WorldNavbarFactory;
 use App\Service\ParamGenerator\Location\LocationParamGeneratorBase;
@@ -20,7 +21,7 @@ use Exception;
  * @author Draeius
  */
 class WorldParamGenerator extends ParamGenerator {
-    
+
     /**
      *
      * @var EntityManagerInterface
@@ -32,11 +33,19 @@ class WorldParamGenerator extends ParamGenerator {
      * @var WorldNavbarFactory
      */
     private $navFactory;
+    
+    /**
+     *
+     * @var ConfigService
+     */
+    private $config;
 
-    function __construct(DateTimeService $dtService, EntityManagerInterface $eManager, WorldNavbarFactory $navFactory) {
+    function __construct(DateTimeService $dtService, EntityManagerInterface $eManager, WorldNavbarFactory $navFactory, ConfigService $config) {
         parent::__construct($dtService);
         $this->eManager = $eManager;
         $this->navFactory = $navFactory;
+        $this->config = $config;
+        
     }
 
     public function getWorldParams(LocationBase $location, Character $character, NavigationRepository $navRepo): array {
@@ -57,7 +66,7 @@ class WorldParamGenerator extends ParamGenerator {
 
         foreach ($addIns as $key => $active) {
             if ($active) {
-                $generator = $this->createParamGenerator($key);
+                $generator = $this->createParamGenerator($key, $character);
                 $params = array_merge($params, $generator->getParams($location));
             }
         }
@@ -86,12 +95,12 @@ class WorldParamGenerator extends ParamGenerator {
         return 'App\\Service\\ParamGenerator\\Location\\' . ucfirst($index) . 'Generator';
     }
 
-    private function createParamGenerator(string $index) {
+    private function createParamGenerator(string $index, Character $character) {
         $class = $this->getParamGeneratorClass($index);
         if (!class_exists($class)) {
             throw new Exception('Class ' . $class . ' not found.');
         }
-        $generator = new $class($this->getDtService(), $this->eManager);
+        $generator = new $class($character, $this->getDtService(), $this->eManager, $this->config);
         if (!$generator instanceof LocationParamGeneratorBase) {
             throw new Exception($class . ' is no valid ParamGenerator. Must be subclass of LocationParamGenerator');
         }
