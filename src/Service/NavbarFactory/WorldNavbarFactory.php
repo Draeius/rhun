@@ -10,16 +10,16 @@ namespace App\Service\NavbarFactory;
 
 use App\Controller\WorldController;
 use App\Entity\Character;
-use App\Entity\GuildLocation;
-use App\Entity\HouseLocation;
 use App\Entity\Location;
 use App\Entity\LocationBase;
 use App\Entity\Navigation;
 use App\Repository\NavigationRepository;
 use App\Service\LocationResolveService;
+use App\Service\NavbarFactory\Location\NavbarModifierBase;
 use App\Service\NavbarService;
 use App\Util\Session\RhunSession;
 use App\Util\TabIdentification\TabIdentifier;
+use Exception;
 
 /**
  * Description of WorldNavbarFactory
@@ -47,13 +47,7 @@ class WorldNavbarFactory {
 
     public function buildNavbar(LocationBase $location, Character $character, NavigationRepository $navRepo) {
         $session = new RhunSession();
-        if ($location instanceof Location) {
-            $this->buildStandardNavbar($location, $character, $navRepo);
-        } elseif ($location instanceof HouseLocation) {
-            $this->buildHouseNavbar($location);
-        } elseif ($location instanceof GuildLocation) {
-            $this->buildGuildNavbar($location);
-        }
+        $this->buildStandardNavbar($location, $character, $navRepo);
 //        $this->navbarService->addNavhead('Karte')
 //                ->addNav('Karte', 'map', ['uuid' => $session->getTabIdentifier()->getIdentifier()]);
         return $this->navbarService;
@@ -67,14 +61,13 @@ class WorldNavbarFactory {
                 $this->addNav($entry, $session->getTabIdentifier());
             }
         }
-    }
 
-    public function buildGuildNavbar(GuildLocation $location) {
-        
-    }
-
-    public function buildHouseNavbar(HouseLocation $location) {
-        
+        $addIns = $location->getDataArray();
+        foreach ($addIns as $key => $active) {
+            if ($active && $modifier = $this->createNavbarModifier($key, $character)) {
+                $modifier->modifyNavbar($this->navbarService, $location);
+            }
+        }
     }
 
     private function addNav(Navigation $nav, TabIdentifier $tabIdentifier) {
@@ -95,16 +88,16 @@ class WorldNavbarFactory {
     }
 
     private function getNavbarModifierClass(string $index) {
-        return 'App\\Service\\NavbarFactory\\Location\\' . ucfirst($index) . 'Generator';
+        return 'App\\Service\\NavbarFactory\\Location\\' . ucfirst($index) . 'Modifier';
     }
 
-    private function createNavbarModifier(string $index, Character $character) {
+    private function createNavbarModifier(string $index, Character $character): ?NavbarModifierBase {
         $class = $this->getNavbarModifierClass($index);
         if (!class_exists($class)) {
-            throw new Exception('Class ' . $class . ' not found.');
+            return null;
         }
         $generator = new $class($character, $this->getDtService(), $this->eManager, $this->config);
-        if (!$generator instanceof LocationParamGeneratorBase) {
+        if (!$generator instanceof NavbarModifierBase) {
             throw new Exception($class . ' is no valid ParamGenerator. Must be subclass of LocationParamGenerator');
         }
         return $generator;

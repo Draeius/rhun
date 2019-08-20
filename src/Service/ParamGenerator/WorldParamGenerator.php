@@ -3,8 +3,6 @@
 namespace App\Service\ParamGenerator;
 
 use App\Entity\Character;
-use App\Entity\GuildLocation;
-use App\Entity\HouseLocation;
 use App\Entity\Location;
 use App\Entity\LocationBase;
 use App\Repository\NavigationRepository;
@@ -49,13 +47,7 @@ class WorldParamGenerator extends ParamGenerator {
     }
 
     public function getWorldParams(LocationBase $location, Character $character, NavigationRepository $navRepo): array {
-//        if ($location instanceof Location) {
         $params = $this->getLocationParams($location, $character, $navRepo);
-//        } elseif ($location instanceof HouseLocation) {
-//            $params = $this->getHouseParams($location);
-//        } elseif ($location instanceof GuildLocation) {
-//            $params = $this->getGuildParams($location);
-//        }
         return $params;
     }
 
@@ -81,14 +73,6 @@ class WorldParamGenerator extends ParamGenerator {
             'description' => $location->currentDescription(),
             'character' => $character
         ]);
-    }
-
-    public function getHouseParams(HouseLocation $location) {
-        
-    }
-
-    public function getGuildParams(GuildLocation $location) {
-        
     }
 
     private function getParamGeneratorClass(string $index) {
