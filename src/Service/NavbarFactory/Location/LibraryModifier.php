@@ -26,13 +26,16 @@ class LibraryModifier extends NavbarModifierBase {
 
         $themes = $this->getEntityManager()->getRepository('App:BookTheme')->findBy([], ['listOrder' => 'ASC']);
 
-        $service->addNavhead('Bibliothek');
+        $service->addNavhead('Bibliothek')
+                ->addNav('Buch schreiben', 'change_display_theme', [
+                    'uuid' => $session->getTabIdentifier()->getIdentifier(),
+                    'theme' => 0
+        ]);
         foreach ($themes as $theme) {
             if ($theme->getId() != $selected) {
-                $service->addNav($theme->getTheme(), 'change_display_theme',
-                        [
-                            'uuid' => $session->getTabIdentifier()->getIdentifier(),
-                            'theme' => $theme->getId()
+                $service->addNav($theme->getTheme(), 'change_display_theme', [
+                    'uuid' => $session->getTabIdentifier()->getIdentifier(),
+                    'theme' => $theme->getId()
                 ]);
             }
         }
