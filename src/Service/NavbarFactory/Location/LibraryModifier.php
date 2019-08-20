@@ -19,12 +19,12 @@ use App\Util\Session\RhunSession;
  */
 class LibraryModifier extends NavbarModifierBase {
 
-    public function modifyNavbar(NavbarService $service, Location $location): array {
+    public function modifyNavbar(NavbarService $service, Location $location) {
         $session = new RhunSession();
         $selected = $session->get('bookTheme');
         $session->remove('bookTheme');
 
-        $themes = $this->getManager()->getRepository('App:BookTheme')->findBy([], ['listOrder' => 'ASC']);
+        $themes = $this->getEntityManager()->getRepository('App:BookTheme')->findBy([], ['listOrder' => 'ASC']);
 
         $service->addNavhead('Bibliothek');
         foreach ($themes as $theme) {

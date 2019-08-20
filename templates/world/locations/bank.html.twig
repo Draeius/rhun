@@ -1,0 +1,36 @@
+
+<table style="padding:5px;">
+    <tr>
+        <td style="padding:10px;">
+            <h3>Auftrag</h3>
+            <form name='bank_form' action="{{path('money_bank', {'uuid': uuid})}}" method="POST">
+                Art der Interaktion: <br />
+                <select onchange='App.Location.Bank.changeInteraction(this.value)'>
+                    <option value="{{path('money_bank', {'uuid': uuid})}}" selected>Einzahlen</option>
+                    <option value="{{path('money_draw', {'uuid': uuid})}}">Abheben</option>
+                </select><br />
+                Gold: <br />
+                <input name="gold" type="number" value="0" max="{{wallet.getGold()}}" /><br />
+                Platin:<br />
+                <input name="platin" type="number" value="0" max="{{wallet.getPlatin()}}"/><br />
+                <input type="submit" value="Abschicken" />
+            </form>
+            <br />
+            <br />
+
+            <form action="{{ path('money_bank', {'uuid': uuid}) }}" method="POST">
+                <input type="hidden" name="platin" value="-1" />
+                <input type="hidden" name="gold" value="-1" />
+                <input type="submit" value="Alles einzahlen" />
+            </form>
+
+        </td>
+        <td style="padding:5px;">
+            <form  action="{{ path('gems_transfer', {'uuid': uuid}) }}">
+                Edelsteine zum Account transferieren:<br />
+                <input name="gems" type="number" value="0" max="{{wallet.getGems()}}" /> <br />
+                <input type="submit" value="Transferieren" />
+            </form> 
+        </td>
+    </tr>
+</table>

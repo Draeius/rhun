@@ -38,8 +38,8 @@ class FormatRepository extends ServiceEntityRepository {
                 return $format;
             }
         }
-        self::$formats[code] = Format();
-        return new Format();
+        self::$formats[$code] = new Format();
+        return self::$formats[$code];
     }
 
     public function loadFormats(array $tags) {

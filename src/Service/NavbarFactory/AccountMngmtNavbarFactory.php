@@ -85,6 +85,8 @@ class AccountMngmtNavbarFactory {
         if ($account->getUserRole()->getEditWorld()) {
             $builder->addNavhead('Editoren')
                     ->addNav('Areale', 'area_index')
+                    ->addNav('Buchthemen', 'book_theme_index')
+                    ->addNav('Bücher', 'book_index')
                     ->addNav('Rassen', 'race_index');
         }
 //        if ($account->getUserRole()->getEditMonster()) {

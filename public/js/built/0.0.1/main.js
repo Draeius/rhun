@@ -60,10 +60,20 @@ function AprilFool() {
         $(elem).remove();
     });
 }
+function initPreview() {
+    $('[data-preview]').each(function () {
+        var previewId = $(this).attr('data-preview');
+        var element = document.getElementById(previewId);
+        if (element) {
+            new formatting.Preview(this, element);
+        }
+    });
+}
 $(document).ready(function () {
     var keyNavigator = new navigation.KeyNavigator();
     var sorter = new Sorting.TableSorter();
     sorter.makeAllSortable(null);
+    initPreview();
 });
 var Util;
 (function (Util) {
@@ -385,13 +395,13 @@ var Content;
             }
         };
         FormHelper.prototype.init = function () {
-            var _this = this;
+            var _this_1 = this;
             var _this = this;
             this.observedElement.change(function () {
-                var data = _this.form.serialize();
+                var data = _this_1.form.serialize();
                 $.ajax({
-                    url: _this.form.attr('action'),
-                    type: _this.form.attr('method'),
+                    url: _this_1.form.attr('action'),
+                    type: _this_1.form.attr('method'),
                     data: data,
                     success: function (data) {
                         _this.action(data);
@@ -810,6 +820,55 @@ var formatting;
     }());
     formatting.TextTree = TextTree;
 })(formatting || (formatting = {}));
+var App;
+(function (App) {
+    var Location;
+    (function (Location) {
+        var Bank = (function () {
+            function Bank() {
+            }
+            Bank.changeInteraction = function (path) {
+                this.draw = !this.draw;
+                $(document.forms.namedItem("bank_form")).attr("action", path);
+            };
+            Bank.draw = true;
+            return Bank;
+        }());
+        Location.Bank = Bank;
+    })(Location = App.Location || (App.Location = {}));
+})(App || (App = {}));
+var App;
+(function (App) {
+    var Location;
+    (function (Location) {
+        var Library = (function () {
+            function Library() {
+            }
+            Library.selectBook = function (element) {
+                var id = $(element).attr('data-book');
+                if (!id) {
+                    return;
+                }
+                var target = document.getElementById(id);
+                target.style.display = target.style.display === "block" ? "none" : "block";
+            };
+            Library.getBookFromServer = function (element) {
+                if (element.value == '0') {
+                    return;
+                }
+                var connection = new Ajax.AjaxConnector();
+                connection.getData("book/get", { bookId: element.value }, function (book) {
+                    var form = document.forms.namedItem('book_edit');
+                    form.elements.namedItem('theme').value = book.theme;
+                    form.elements.namedItem('title').value = book.title;
+                    form.elements.namedItem('content').value = book.content;
+                });
+            };
+            return Library;
+        }());
+        Location.Library = Library;
+    })(Location = App.Location || (App.Location = {}));
+})(App || (App = {}));
 var Logging;
 (function (Logging) {
     Logging.SHOW_DEBUG = true;

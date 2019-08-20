@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New BookTheme{% endblock %}
+
+{% block body %}
+    <h1>Create new BookTheme</h1>
+
+    {{ include('editors/book_theme/_form.html.twig') }}
+
+    <a href="{{ path('book_theme_index') }}">back to list</a>
+{% endblock %}

@@ -25,10 +25,20 @@ function AprilFool() {
     });
 }
 
+function initPreview() {
+    $('[data-preview]').each(function () {
+        let previewId = $(this).attr('data-preview');
+        let element = document.getElementById(previewId);
+        if (element) {
+            new formatting.Preview(this, element);
+        }
+    });
+}
 
 //apply formats
 $(document).ready(() => {
     var keyNavigator = new navigation.KeyNavigator();
     var sorter = new Sorting.TableSorter();
     sorter.makeAllSortable(null);
+    initPreview();
 });

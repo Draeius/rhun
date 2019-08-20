@@ -3,6 +3,7 @@
 namespace App\Service\NavbarFactory\Location;
 
 use App\Entity\Character;
+use App\Entity\Location;
 use App\Service\ConfigService;
 use App\Service\DateTimeService;
 use App\Service\NavbarService;
@@ -39,11 +40,21 @@ abstract class NavbarModifierBase {
      */
     private $config;
 
+    /**
+     *
+     * @var DateTimeService
+     */
+    private $dtService;
+
     public function __construct(Character $character, DateTimeService $dtService, EntityManagerInterface $eManager, ConfigService $config) {
-        parent::__construct($dtService);
+        $this->dtService = $dtService;
         $this->eManager = $eManager;
         $this->character = $character;
         $this->config = $config;
+    }
+
+    public function getDtService(): DateTimeService {
+        return $this->dtService;
     }
 
     protected function getEntityManager(): EntityManagerInterface {
@@ -58,5 +69,5 @@ abstract class NavbarModifierBase {
         return $this->config;
     }
 
-    public abstract function modifyNavbar(NavbarService $service, Location $location): array;
+    public abstract function modifyNavbar(NavbarService $service, Location $location);
 }

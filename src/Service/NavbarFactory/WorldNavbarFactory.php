@@ -14,11 +14,14 @@ use App\Entity\Location;
 use App\Entity\LocationBase;
 use App\Entity\Navigation;
 use App\Repository\NavigationRepository;
+use App\Service\ConfigService;
+use App\Service\DateTimeService;
 use App\Service\LocationResolveService;
 use App\Service\NavbarFactory\Location\NavbarModifierBase;
 use App\Service\NavbarService;
 use App\Util\Session\RhunSession;
 use App\Util\TabIdentification\TabIdentifier;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
 /**
@@ -40,9 +43,31 @@ class WorldNavbarFactory {
      */
     private $locResolveService;
 
-    function __construct(NavbarService $navbarService, LocationResolveService $locResolveService) {
+    /**
+     *
+     * @var DateTimeService
+     */
+    private $dtService;
+
+    /**
+     *
+     * @var ConfigService;
+     */
+    private $config;
+    
+    /**
+     *
+     * @var EntityManagerInterface
+     */
+    private $eManager;
+
+    function __construct(EntityManagerInterface $eManager, NavbarService $navbarService, DateTimeService $dtService,
+            LocationResolveService $locResolveService, ConfigService $config) {
+        $this->eManager = $eManager;
         $this->navbarService = $navbarService;
         $this->locResolveService = $locResolveService;
+        $this->dtService = $dtService;
+        $this->config = $config;
     }
 
     public function buildNavbar(LocationBase $location, Character $character, NavigationRepository $navRepo) {
@@ -96,7 +121,7 @@ class WorldNavbarFactory {
         if (!class_exists($class)) {
             return null;
         }
-        $generator = new $class($character, $this->getDtService(), $this->eManager, $this->config);
+        $generator = new $class($character, $this->dtService, $this->eManager, $this->config);
         if (!$generator instanceof NavbarModifierBase) {
             throw new Exception($class . ' is no valid ParamGenerator. Must be subclass of LocationParamGenerator');
         }

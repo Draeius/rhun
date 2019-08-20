@@ -19,7 +19,7 @@ use App\Util\Session\RhunSession;
  */
 class RespawnModifier extends NavbarModifierBase {
 
-    public function modifyNavbar(NavbarService $service, Location $location): array {
+    public function modifyNavbar(NavbarService $service, Location $location) {
         $session = new RhunSession();
         $service
                 ->addNavhead('Sonstiges')

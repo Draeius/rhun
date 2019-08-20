@@ -70,5 +70,11 @@ class RolePlayConfig extends Config {
 
         return $this->getPrice('price', $data);
     }
+    
+    public function getBulletinPrice(): Price {
+        $data = $this->getData('bulletin');
+
+        return $this->getPrice('price', $data);
+    }
 
 }

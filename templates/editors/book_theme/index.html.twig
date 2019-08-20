@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BookTheme index{% endblock %}
+
+{% block body %}
+    <h1>BookTheme index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Theme</th>
+                <th>ListOrder</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for book_theme in book_themes %}
+            <tr>
+                <td>{{ book_theme.id }}</td>
+                <td>{{ book_theme.theme }}</td>
+                <td>{{ book_theme.listOrder }}</td>
+                <td>
+                    <a href="{{ path('book_theme_show', {'id': book_theme.id}) }}">show</a>
+                    <a href="{{ path('book_theme_edit', {'id': book_theme.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('book_theme_new') }}">Create new</a>
+{% endblock %}

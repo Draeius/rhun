@@ -3,7 +3,6 @@
 namespace App\Service\ParamGenerator\Location;
 
 use App\Entity\LocationBase;
-use App\Util\Session\RhunSession;
 
 /**
  * Description of LibraryGenerator
@@ -13,8 +12,7 @@ use App\Util\Session\RhunSession;
 class LibraryGenerator extends LocationParamGeneratorBase {
 
     public function getParams(LocationBase $location): array {
-        $session = new RhunSession();
-        $themeId = $session->getBookTheme();
+        $themeId = $this->getSession()->getBookTheme();
         if ($themeId) {
             $books = $this->getEntityManager()->getRepository('App:Book')->findBy(['theme' => $themeId], ['listOrder' => 'ASC']);
         } else {
@@ -22,9 +20,9 @@ class LibraryGenerator extends LocationParamGeneratorBase {
         }
 
         return [
-            'themes' => $this->getManager()->getRepository('App:BookTheme')->findAll(),
+            'themes' => $this->getEntityManager()->getRepository('App:BookTheme')->findAll(),
             'books' => $books,
-            'own_books' => $this->getManager()->getRepository('App:Book')->findByAuthor($this->getCharacter())
+            'own_books' => $this->getEntityManager()->getRepository('App:Book')->findByAuthor($this->getCharacter())
         ];
     }
 

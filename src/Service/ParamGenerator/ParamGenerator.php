@@ -59,8 +59,12 @@ class ParamGenerator {
         ];
     }
 
-    function getDtService(): DateTimeService {
+    public function getDtService(): DateTimeService {
         return $this->dtService;
+    }
+
+    public function getSession() {
+        return $this->session;
     }
 
 }

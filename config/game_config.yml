@@ -25,6 +25,11 @@ role_play:
             gold: 0
             platin: 0
             gems: 500
+    bulletin:
+        price:
+            gold: 100
+            platin: 0
+            gems: 0
          
 house:
     price:

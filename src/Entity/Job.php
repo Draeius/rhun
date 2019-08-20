@@ -3,9 +3,12 @@
 namespace App\Entity;
 
 use App\Entity\Traits\EntityColoredNameTrait;
+use App\Util\Price;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\JoinTable;
+use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\OneToOne;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Repository\RepositoryFactory;
@@ -22,14 +25,14 @@ class Job extends RhunEntity {
     use EntityColoredNameTrait;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Location", fetch="EXTRA_LAZY")
-     * @ORM\JoinTable(
+     * @ManyToMany(targetEntity="Location", fetch="EXTRA_LAZY")
+     * @JoinTable(
      *  name="job_location",
      *  joinColumns={
-     *      @ORM\JoinColumn(name="job_id", referencedColumnName="id")
+     *      @JoinColumn(name="job_id", referencedColumnName="id")
      *  },
      *  inverseJoinColumns={
-     *      @ORM\JoinColumn(name="location_id", referencedColumnName="id")
+     *      @JoinColumn(name="location_id", referencedColumnName="id")
      *  }
      * )
      */

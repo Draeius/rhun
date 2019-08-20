@@ -1,0 +1,80 @@
+
+{% if books |length > 0 %}
+    <ul>
+        {% for book in books %}
+            <li>
+                <div>
+                    <h3 style="margin-bottom: 5px;" data-book="book-{{ book.id }}" onclick="App.Location.Library.selectBook(this)">{{ book.title | colorize | raw }}</h3>
+                    von {{ book.author ? book.author |charName(false) |colorize |raw : 'Anonym' }}<br /><br />
+                    <div id="book-{{ book.id }}" style="display: none">
+                        {{ book.content |colorize |raw }}
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <ul class="tab">
+        <li><a class="tablinks" onclick="content.ContentManager.openTab(event, 'add')">Schreiben</a></li>
+        <li><a class="tablinks" onclick="content.ContentManager.openTab(event, 'edit')">Bearbeiten</a></li>
+        <li><a class="tablinks" onclick="content.ContentManager.openTab(event, 'del')">Löschen</a></li>
+    </ul>
+
+    <div id="add" class="tabcontent">
+        <form action="{{path('book_add', {'uuid': uuid})}}" method="POST">
+            Thema: <br />
+            <select name="theme">
+                {% for theme in themes %}
+                    <option value="{{ theme.id }}">{{ theme.theme }}</option>
+                {% endfor %}
+            </select><br />
+            Titel: <br />
+            <input name="title" /><br />
+            Inhalt: <br />
+            <textarea name="content"></textarea><br />
+            <input type="submit" value="Einreichen" />
+        </form>
+    </div>
+
+    <div id="edit" class="tabcontent">
+        {% if own_books |length > 0 %}
+            <form name="book_edit" action="{{path('book_edit', {'uuid': uuid})}}" method="POST">
+                Buch auswählen:<br />
+                <select name="bookId" onchange="App.Location.Library.getBookFromServer(this)">
+                    <option value="0">Ein Buch auswählen</option>
+                    {% for book in own_books %}
+                        <option value="{{ book.id }}">{{ book.title }}</option>
+                    {% endfor %}
+                </select><br />
+                Thema: <br />
+                <select name="theme">
+                    {% for theme in themes %}
+                        <option value="{{ theme.id }}">{{ theme.theme }}</option>
+                    {% endfor %}
+                </select><br />
+                Titel: <br />
+                <input name="title" /><br />
+                Inhalt: <br />
+                <textarea name="content"></textarea><br />
+                <input type="submit" value="Ändern" />
+            </form>
+        {% else %}
+            Du hast noch keine Bücher geschrieben.
+        {% endif %}
+    </div>
+
+    <div id="del" class="tabcontent">
+        {% if own_books |length > 0 %}
+            <form action="{{path('book_delete', {'uuid': uuid})}}" method="POST">
+                <select name="bookId">
+                    {% for book in own_books %}
+                        <option value="{{ book.id }}">{{ book.title }}</option>
+                    {% endfor %}
+                </select><br />
+                <input type="submit" value="Löschen" />
+            </form>
+        {% else %}
+            Du hast noch keine Bücher geschrieben.
+        {% endif %}
+    </div>
+{% endif %}

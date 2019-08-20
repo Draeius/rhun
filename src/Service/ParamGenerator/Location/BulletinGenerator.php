@@ -13,7 +13,10 @@ class BulletinGenerator extends LocationParamGeneratorBase {
 
     public function getParams(LocationBase $location): array {
         $repo = $this->getEntityManager()->getRepository('App:Bulletin');
-        return ['bulletins' => $repo->findBy(['location' => $location], ['createdAt' => 'DESC'])];
+        return [
+            'bulletins' => $repo->findBy(['location' => $location], ['createdAt' => 'DESC']),
+            'price' => $this->getConfig()->getRpConfig()->getBulletinPrice()
+        ];
     }
 
 }

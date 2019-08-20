@@ -1,0 +1,27 @@
+
+<div id="bulletinPreview">
+</div>
+
+<br />
+<br />
+<span style="color: darkblue;">Ein alter Mann, der gerade vorbei kommt, weist dich darauf hin, dass es <span style="color: #00FFFF;">{{ price }}</span>
+    kostet eine Notiz auf zu hängen.</span>
+<br />
+<br />
+
+<form action="{{path('bulletin_add', {'uuid': uuid})}}" method="POST">
+    <textarea id="bulletinInput" name="content" data-preview="bulletinPreview" ></textarea><br /><br />
+    <input type="submit" value="Notiz aufhängen" />
+</form>
+
+<h1>Die Pinnwand</h1>
+{% if bulletins |length > 0 %}
+    {% for bulletin in bulletins %}
+        <div>
+            <span style="font-size: 1.2em;">{{ bulletin.getCreationDate() |date("j.n.  G:i") }}</span><br />
+            {{ bulletin.getContent() |colorize |raw }}
+        </div><br /><br />
+    {% endfor %}
+{% else %}
+    Die Pinnwand ist leer. Scheinbar hat niemand etwas interessantes zu berichten.
+{% endif %}

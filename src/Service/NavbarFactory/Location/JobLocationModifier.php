@@ -15,7 +15,7 @@ use App\Util\TabIdentification\TabIdentifier;
  */
 class JobLocationModifier extends NavbarModifierBase {
 
-    public function modifyNavbar(NavbarService $service, Location $location): array {
+    public function modifyNavbar(NavbarService $service, Location $location) {
         $jobList = $this->getEntityManager()->getRepository('App:Job')->findByLocation($location);
 
         $character = $this->getCharacter();
