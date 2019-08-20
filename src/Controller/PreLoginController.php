@@ -22,7 +22,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Description of PreLoginController
  *
- * @author Matthias
+ * @author Draeius
  */
 class PreLoginController extends BasicController {
 

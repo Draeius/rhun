@@ -20,7 +20,7 @@ use Doctrine\ORM\EntityManagerInterface;
 /**
  * Description of CreateCharacterFacade
  *
- * @author Matthias
+ * @author Draeius
  */
 class CreateCharacterFacade {
 

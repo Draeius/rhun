@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping\Table;
 /**
  * Description of TitleStorage
  *
- * @author Matthias
+ * @author Draeius
  * @Entity
  * @Table(name="item_title_storages")
  */

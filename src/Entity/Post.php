@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping\Table;
 /**
  * Description of Post
  *
- * @author Matthias
+ * @author Draeius
  * @Entity(repositoryClass="App\Repository\PostRepository")
  * @Table(name="posts")
  * @HasLifecycleCallbacks

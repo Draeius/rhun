@@ -8,7 +8,7 @@ use App\Service\NavbarService;
 /**
  * Description of EditorNavbarFactory
  *
- * @author Matthias
+ * @author Draeius
  */
 class EditorNavbarFactory {
 

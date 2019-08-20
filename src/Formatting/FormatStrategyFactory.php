@@ -9,7 +9,7 @@ use function mb_substr;
 /**
  * Description of FormatStrategyFactory
  *
- * @author Matthias
+ * @author Draeius
  */
 class FormatStrategyFactory {
 

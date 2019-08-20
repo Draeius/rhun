@@ -7,7 +7,7 @@ use App\Util\Price;
 /**
  * Description of RolePlayConfig
  *
- * @author Matthias
+ * @author Draeius
  */
 class RolePlayConfig extends Config {
 

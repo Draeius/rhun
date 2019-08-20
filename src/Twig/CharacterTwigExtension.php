@@ -16,7 +16,7 @@ use Twig_SimpleFilter;
 /**
  * Description of CharacterTwigExtension
  *
- * @author Matthias
+ * @author Draeius
  */
 class CharacterTwigExtension extends AbstractExtension {
 

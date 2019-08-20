@@ -17,7 +17,7 @@ use Doctrine\ORM\Mapping\Table;
 /**
  * Description of CraftRecipe
  *
- * @author Matthias
+ * @author Draeius
  * @Entity(repositoryClass="App\Repository\RecipeRepository")
  * @Table(name="craft_recipes")
  */

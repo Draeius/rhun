@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 /**
  * Description of CheckAccountSecurityQuery
  *
- * @author Matthias
+ * @author Draeius
  */
 class CheckAccountSecurityQuery {
 

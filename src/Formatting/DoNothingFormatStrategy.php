@@ -5,7 +5,7 @@ namespace App\Formatting;
 /**
  * Description of DoNothingFormatStrategy
  *
- * @author Matthias
+ * @author Draeius
  */
 class DoNothingFormatStrategy implements FormatStrategy {
 

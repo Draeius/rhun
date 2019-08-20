@@ -29,7 +29,7 @@ use Symfony\Component\Form\FormInterface;
 /**
  * Description of PersistRaceForm
  *
- * @author Matthias
+ * @author Draeius
  */
 class PersistRaceForm extends AbstractType {
 

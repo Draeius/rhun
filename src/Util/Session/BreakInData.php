@@ -11,7 +11,7 @@ namespace App\Util\Session;
 /**
  * Description of BreakInData
  *
- * @author Matthias
+ * @author Draeius
  */
 class BreakInData {
     //put your code here

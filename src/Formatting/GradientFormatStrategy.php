@@ -5,7 +5,7 @@ namespace App\Formatting;
 /**
  * Description of GradientFormatStrategy
  *
- * @author Matthias
+ * @author Draeius
  */
 class GradientFormatStrategy implements FormatStrategy {
 

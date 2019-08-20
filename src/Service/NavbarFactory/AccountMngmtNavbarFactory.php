@@ -19,7 +19,7 @@ use Doctrine\ORM\EntityManagerInterface;
 /**
  * Description of AccountMngmtNavbarFactory
  *
- * @author Matthias
+ * @author Draeius
  */
 class AccountMngmtNavbarFactory {
 

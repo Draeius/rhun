@@ -15,7 +15,7 @@ use App\Util\Session\RhunSession;
 /**
  * Description of RespawnModifier
  *
- * @author matth
+ * @author Draeius
  */
 class RespawnModifier extends NavbarModifierBase {
 

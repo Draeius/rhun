@@ -8,7 +8,7 @@ use App\Service\CharacterService;
 /**
  * Description of CharacterNameCommand
  *
- * @author Matthias
+ * @author Draeius
  */
 class CharacterNameCommand implements TextCommand {
 

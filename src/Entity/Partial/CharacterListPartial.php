@@ -8,7 +8,7 @@ use DateTime;
 /**
  * Description of CharacterListPartial
  *
- * @author Matthias
+ * @author Draeius
  */
 class CharacterListPartial extends CharacterNamePartial {
 

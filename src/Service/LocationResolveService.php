@@ -10,7 +10,7 @@ use App\Repository\LocationRepository;
 /**
  * Description of LocationResolveService
  *
- * @author Matthias
+ * @author Draeius
  */
 class LocationResolveService {
 

@@ -11,7 +11,7 @@ use Symfony\Component\Form\FormInterface;
 /**
  * Description of RaceByCityModifier
  *
- * @author Matthias
+ * @author Draeius
  */
 class RaceByCityModifier {
 

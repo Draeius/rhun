@@ -17,7 +17,7 @@ use Doctrine\ORM\EntityManagerInterface;
 /**
  * Description of NavbarModifierBase
  *
- * @author matth
+ * @author Draeius
  */
 abstract class NavbarModifierBase {
 

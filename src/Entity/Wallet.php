@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping\Table;
 /**
  * Description of Wallet
  *
- * @author Matthias
+ * @author Draeius
  * @Entity
  * @Table(name="character_wallets")
  */

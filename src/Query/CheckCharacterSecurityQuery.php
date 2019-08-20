@@ -11,7 +11,7 @@ namespace App\Query;
 /**
  * Description of CheckCharacterSecurityQuery
  *
- * @author Matthias
+ * @author Draeius
  */
 class CheckCharacterSecurityQuery {
 

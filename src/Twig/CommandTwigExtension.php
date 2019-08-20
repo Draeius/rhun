@@ -11,7 +11,7 @@ use Twig_SimpleFilter;
 /**
  * Description of CommandTwigExtension
  *
- * @author Matthias
+ * @author Draeius
  */
 class CommandTwigExtension extends Twig_Extension {
 

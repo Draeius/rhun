@@ -7,7 +7,7 @@ use App\Entity\Character;
 /**
  * Description of PlayerHurtCommand
  *
- * @author Matthias
+ * @author Draeius
  */
 class PlayerHurtCommand implements TextCommand {
 

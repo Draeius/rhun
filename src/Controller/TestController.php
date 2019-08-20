@@ -27,7 +27,7 @@ use Symfony\Component\VarDumper\VarDumper;
 /**
  * Description of TestController
  *
- * @author Matthias
+ * @author Draeius
  */
 class TestController extends BasicController {
 

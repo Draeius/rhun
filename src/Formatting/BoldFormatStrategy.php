@@ -5,7 +5,7 @@ namespace App\Formatting;
 /**
  * Description of BoldFormatStrategy
  *
- * @author Matthias
+ * @author Draeius
  */
 class BoldFormatStrategy implements FormatStrategy {
 

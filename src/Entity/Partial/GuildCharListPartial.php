@@ -11,7 +11,7 @@ namespace App\Entity\Partial;
 /**
  * Description of GuildCharListPartial
  *
- * @author Matthias
+ * @author Draeius
  */
 class GuildCharListPartial {
 

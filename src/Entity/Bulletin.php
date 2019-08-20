@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping\Table;
 /**
  * Description of Bulletin
  *
- * @author Matthias
+ * @author Draeius
  * @Entity
  * @HasLifecycleCallbacks
  * @Table(name="bulletins")

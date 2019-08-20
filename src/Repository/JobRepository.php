@@ -16,7 +16,7 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 /**
  * Description of JobRepository
  *
- * @author matth
+ * @author Draeius
  */
 class JobRepository extends ServiceEntityRepository {
 

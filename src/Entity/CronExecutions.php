@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping\Table;
 /**
  * Description of CronExecutions
  *
- * @author Matthias
+ * @author Draeius
  * @Entity
  * @Table("cron_executions")
  */

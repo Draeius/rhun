@@ -9,7 +9,7 @@ use Symfony\Component\Yaml\Yaml;
 /**
  * Lädt eine YAML Datei.
  *
- * @author Matthias
+ * @author Draeius
  */
 class YamlListLoader extends FileLoader {
 

@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping\Table;
 /**
  * Description of GuildBuffTemplate
  *
- * @author Matthias
+ * @author Draeius
  * @Entity
  * @Table(name="templates_guild_buff")
  */

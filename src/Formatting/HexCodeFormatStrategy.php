@@ -6,7 +6,7 @@ namespace App\Formatting;
 /**
  * Description of HexCodeFormatStrategy
  *
- * @author Matthias
+ * @author Draeius
  */
 class HexCodeFormatStrategy implements FormatStrategy {
 

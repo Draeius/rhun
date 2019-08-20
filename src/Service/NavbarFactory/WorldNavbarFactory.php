@@ -24,7 +24,7 @@ use Exception;
 /**
  * Description of WorldNavbarFactory
  *
- * @author Matthias
+ * @author Draeius
  */
 class WorldNavbarFactory {
 

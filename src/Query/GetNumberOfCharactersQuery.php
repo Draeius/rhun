@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 /**
  * Description of GetNumberOfCharactersQuery
  *
- * @author Matthias
+ * @author Draeius
  */
 class GetNumberOfCharactersQuery {
 

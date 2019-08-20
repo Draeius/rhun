@@ -17,7 +17,7 @@ use Symfony\Component\VarDumper\VarDumper;
 /**
  * Description of ConfigService
  *
- * @author Matthias
+ * @author Draeius
  */
 class ConfigService {
 

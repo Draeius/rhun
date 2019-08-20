@@ -18,7 +18,7 @@ use Doctrine\ORM\Mapping\Table;
 /**
  * Description of Character
  *
- * @author Matthias
+ * @author Draeius
  * @Entity(repositoryClass="App\Repository\CharacterRepository")
  * @Table(name="characters")
  */

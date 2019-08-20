@@ -8,7 +8,7 @@ use Symfony\Component\VarDumper\VarDumper;
 /**
  * Description of GenderiseCommand
  *
- * @author Matthias
+ * @author Draeius
  */
 class GenderizeCommand implements TextCommand {
 

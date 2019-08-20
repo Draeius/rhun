@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping\Table;
 /**
  * A players inventory
  *
- * @author Matthias
+ * @author Draeius
  * @Entity
  * @Table(name="inventory_items")
  */

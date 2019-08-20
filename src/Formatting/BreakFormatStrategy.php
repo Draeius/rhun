@@ -5,7 +5,7 @@ namespace App\Formatting;
 /**
  * Description of BreakFormatStrategy
  *
- * @author Matthias
+ * @author Draeius
  */
 class BreakFormatStrategy implements FormatStrategy {
 

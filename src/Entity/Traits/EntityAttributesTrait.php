@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping\Column;
 /**
  * Description of AttributesTrait
  *
- * @author Matthias
+ * @author Draeius
  */
 trait EntityAttributesTrait {
 

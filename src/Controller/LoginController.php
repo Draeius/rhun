@@ -23,7 +23,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 /**
  * Description of LoginController
  *
- * @author Matthias
+ * @author Draeius
  */
 class LoginController extends BasicController {
 

@@ -16,7 +16,7 @@ use Doctrine\ORM\EntityManagerInterface;
 /**
  * Description of GetRaceListQuery
  *
- * @author Matthias
+ * @author Draeius
  */
 class GetRaceListQuery {
     

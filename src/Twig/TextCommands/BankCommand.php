@@ -8,7 +8,7 @@ use App\Util\Price;
 /**
  * Description of BankCommand
  *
- * @author Matthias
+ * @author Draeius
  */
 class BankCommand implements TextCommand {
 

@@ -5,7 +5,7 @@ namespace App\Formatting;
 /**
  * Description of ItalicFormatStrategy
  *
- * @author Matthias
+ * @author Draeius
  */
 class ItalicFormatStrategy implements FormatStrategy {
 

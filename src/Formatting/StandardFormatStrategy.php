@@ -7,7 +7,7 @@ use App\Repository\FormatRepository;
 /**
  * Description of StandardFormatStrategy
  *
- * @author Matthias
+ * @author Draeius
  */
 class StandardFormatStrategy implements FormatStrategy {
 

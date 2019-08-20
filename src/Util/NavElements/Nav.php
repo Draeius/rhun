@@ -13,7 +13,7 @@ use Twig\Environment;
 /**
  * Description of Nav
  *
- * @author Matthias
+ * @author Draeius
  */
 class Nav extends NavElement {
 

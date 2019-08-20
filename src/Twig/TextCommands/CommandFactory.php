@@ -5,7 +5,7 @@ namespace App\Twig\TextCommands;
 /**
  * Description of CommandFactory
  *
- * @author Matthias
+ * @author Draeius
  */
 class CommandFactory {
 

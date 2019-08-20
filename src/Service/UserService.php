@@ -16,7 +16,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 /**
  * Description of UserService
  *
- * @author Matthias
+ * @author Draeius
  */
 class UserService {
 
