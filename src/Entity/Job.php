@@ -22,6 +22,20 @@ class Job extends RhunEntity {
     use EntityColoredNameTrait;
 
     /**
+     * @ORM\ManyToMany(targetEntity="Location", fetch="EXTRA_LAZY")
+     * @ORM\JoinTable(
+     *  name="job_location",
+     *  joinColumns={
+     *      @ORM\JoinColumn(name="job_id", referencedColumnName="id")
+     *  },
+     *  inverseJoinColumns={
+     *      @ORM\JoinColumn(name="location_id", referencedColumnName="id")
+     *  }
+     * )
+     */
+    protected $locations;
+
+    /**
      * @var int
      * @Column(type="integer")
      */
@@ -101,6 +115,10 @@ class Job extends RhunEntity {
         return "Du hast nicht genug Erfahrung mit dieser Art von Tätigkeit um diesen Beruf ausüben zu können.";
     }
 
+    public function getSalary(): Price {
+        return new Price($this->goldSalary, $this->platinSalary, 0);
+    }
+
     public function getIntRequirement() {
         return $this->intRequirement;
     }
@@ -131,6 +149,14 @@ class Job extends RhunEntity {
 
     public function getStaminaDrain() {
         return $this->staminaDrain;
+    }
+
+    function getLocations() {
+        return $this->locations;
+    }
+
+    function setLocations($locations) {
+        $this->locations = $locations;
     }
 
     public function setStaminaDrain($staminaDrain) {
