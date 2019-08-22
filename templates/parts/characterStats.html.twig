@@ -10,7 +10,8 @@
         <tr>
             <td style="width: 33%">
                 <p style="font-size: 1.5em; margin-top: 0px;">
-                    Level {{ character.getLevel() }}
+                    Level {{ character.getLevel() }}<br />
+                    Aktionen {{ character.getActionPoints() }}
                 </p>
                 <span style="font-size: 1.5em;">
                     HP:
@@ -27,24 +28,9 @@
                 <div style="text-align: left; margin-left: 40px;">
                     {{character.getCurrentHP()}}/{{character.getMaxHPWithBuff()}}
                 </div>
+
                 <span style="font-size: 1.5em;">
-                    AP:
-                </span>
-                {% set percentage = (character.getCurrentStamina() / -character.getMaxStaminaWithBuff()) %}
-                <div style="
-                     display: inline-block; 
-                     width: 200px; 
-                     height: 10px;
-                     border: 1px solid green;
-                     background-image: url({{asset('/images/vitalinfo/APBar.png')}});
-                     background-position: {{200 - percentage * 200}}px 0px;">
-                </div><br />
-                <div style="text-align: left; margin-left: 40px;">
-                    {{character.getCurrentStamina()}}/{{character.getMaxStaminaWithBuff()}}
-                </div>
-                <!--
-            <span style="font-size: 1.5em;">
-                MP: (TBD)
+                    MP:
                 </span>
                 {% set percentage = 0 %}
                 <div style="
@@ -56,9 +42,8 @@
                      background-position: {{200 - percentage * 200}}px 0px;">
                 </div><br />
                 <div style="text-align: left; margin-left: 40px;">
-                {{character.getCurrentHP()}}/{{character.getMaxHPWithBuff()}}
-            </div>
-                -->
+                    {{character.getCurrentHP()}}/{{character.getMaxHPWithBuff()}}
+                </div>
                 <span style="font-size: 1.5em;">
                     XP:
                 </span>
@@ -171,8 +156,8 @@
             <td>
                 {% if character.getGuild() %} 
                     <a href="{{ path('guild_show', {'uuid': uuid, 'id': character.getGuild().getId()}) }}">[{{ character.getGuild().getTag() |colorize |raw }}]
-                    {{ character.getGuild().getName() |colorize |raw }}</a>
-                {% else %}
+                        {{ character.getGuild().getName() |colorize |raw }}</a>
+                    {% else %}
                     Keine
                 {% endif %}
             </td>

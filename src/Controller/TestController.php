@@ -6,6 +6,7 @@ use App\Controller\BasicController;
 use App\Entity\Area;
 use App\Entity\ArmorType;
 use App\Entity\Attribute;
+use App\Entity\Character;
 use App\Entity\Items\ArmorTemplate;
 use App\Entity\Items\WeaponTemplate;
 use App\Entity\Location;
@@ -17,8 +18,10 @@ use App\Repository\ArmorTemplateRepository;
 use App\Repository\LocationRepository;
 use App\Repository\WeaponTemplateRepository;
 use App\Service\ConfigService;
+use App\Util\Fight\Fight;
 use App\Util\Price;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Stopwatch\Stopwatch;
@@ -34,25 +37,36 @@ class TestController extends BasicController {
     /**
      * @Route("/test")
      */
-    public function test(Request $request, EntityManagerInterface $eManager, LocationRepository $locRepo, AreaRepository $areaRepo, WeaponTemplateRepository $wepRepo,
-            ArmorTemplateRepository $armRepo, ConfigService $configService, Stopwatch $stopwatch) {
+    public function test(Request $request, ConfigService $configService, Stopwatch $stopwatch) {
 
-//        $data = $this->getData();
-//        $this->populateAreas($data['areas'], $eManager);
-//        $eManager->flush();
-//        $this->populateLocations($data['location'], $eManager, $areaRepo);
-//        $eManager->flush();
-//        $this->populateItems($data['items'], $eManager);
-//        $eManager->flush();
-//        $this->populateRaces($data['races'], $locRepo, $wepRepo, $armRepo, $eManager);
-//        $eManager->flush();
-//        $this->populateNavs($data['navigation'], $locRepo, $eManager);
-//        $eManager->flush();
+        $fight = new Fight();
+        $fight->addFighter(new Character());
 
-        $location = new Location();
-        VarDumper::dump($location->getDataArray());
+        VarDumper::dump($fight);
+        VarDumper::dump($fight->serialize());
+        VarDumper::dump(json_decode($fight->serialize()));
 
         return $this->render('test.html.twig');
+    }
+
+    /**
+     * @Route("/popData")
+     */
+    public function populateData(Request $request, EntityManagerInterface $eManager, LocationRepository $locRepo, AreaRepository $areaRepo, WeaponTemplateRepository $wepRepo,
+            ArmorTemplateRepository $armRepo) {
+        $data = $this->getData();
+        $this->populateAreas($data['areas'], $eManager);
+        $eManager->flush();
+        $this->populateLocations($data['location'], $eManager, $areaRepo);
+        $eManager->flush();
+        $this->populateItems($data['items'], $eManager);
+        $eManager->flush();
+        $this->populateRaces($data['races'], $locRepo, $wepRepo, $armRepo, $eManager);
+        $eManager->flush();
+        $this->populateNavs($data['navigation'], $locRepo, $eManager);
+        $eManager->flush();
+
+        return new JsonResponse('success');
     }
 
     private function getData(): array {

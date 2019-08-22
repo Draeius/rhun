@@ -1,0 +1,39 @@
+
+<ul class="tab">
+    <li><a class="tablinks" onclick="content.ContentManager.openTab(event, 'craft');">Herstellen</a></li>
+    <li><a class="tablinks" onclick="content.ContentManager.openTab(event, 'known');">Rezeptbuch</a></li>
+</ul>
+<div id="craft" class="tabcontent">
+    <h3>Herstellen</h3>
+    {% if inventory | length <= 0 %}
+        {{ '`pDu kannst leider nichts herstellen, da du keine Items hast.' | colorize | raw }}
+    {% else %}
+
+        <form name="craft_form" action="{{path('craft_item', {'uuid': uuid})}}" method="POST">
+            {% for invItem in inventory %}
+                <input type="checkbox" name="ingredients[]" value=" {{ invItem.item.id }}" /> {{ invItem.item.name |colorize |raw}}<br />
+            {% endfor %}
+            <br />
+            <input type="submit" value="Herstellen" />
+        </form>
+    {% endif %}
+</div>
+
+<div id="known" class="tabcontent">
+    {% if character.getKnownRecipes() |length > 0 %}
+        {% for recipe in character.getKnownRecipes() %}
+            <p>
+                <span style="font-size:1.3em">{{ recipe.getResult().getName() |colorize |raw }}</span>
+            <ul>
+                {% for ingredient in recipe.getIngredients() %}
+                    <li>
+                        {{ingredient.getName() |colorize |raw}}
+                    </li>
+                {% endfor %}
+            </ul>
+        </p>
+    {% endfor %}
+{% else %}
+    {{ '`pDu kkennst noch keine Rezepte. Probier doch einfach ein wenig rum.' | colorize | raw }}
+{% endif %}
+</div>

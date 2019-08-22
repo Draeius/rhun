@@ -1,0 +1,53 @@
+
+<p>
+    Das Kampfsystem ist im Moment noch eine Baustelle. Es besteht die Gefahr von Instakills, Suizidmonstern und Kämpfen in denen beide Parteien keinen Schaden anrichten können.
+</p>
+<br />
+<br />
+<div>
+    <table style="width: 100%;">
+        <tr>
+            <td style="width: 50%;">
+                {{ fightLog | colorize | raw }}
+            </td>
+            <td>
+                {% if enemy %}
+                    <h3>Dein Gegner:</h3>
+                    {{ enemy.name | colorize | raw }} Level {{ enemy.level }}<br />
+                    <br />
+                    Lebenspunkte:<br />
+            <status-bar current_value="{{ enemyHP }}" max_value="{{ enemy.getAttribute(20) }}" width="300"></status-bar><br />
+            Waffe:<br />
+            {{ enemy.getWeapon().getName() }}<br />
+            Rüstung:<br />
+            {{ enemy.getArmor().getName() }}<br />
+        {% endif %}
+        </td>
+        </tr>
+    </table>
+    {% if enemy %}
+        <h3>Fähigkeiten</h3>
+        {% if character.getSpells() |length > 0 %}
+            <div>
+                {% for spell in character.getSpells() %}
+                    <img src="
+                         {% if spell.getIcon() != '' %}
+                             {{asset('/images/spells/' ~ spell.getIcon() ~ '.png')}}
+                         {% else %}
+                             {{asset('/images/item_icons/potion_hp_ico.png')}}
+                         {% endif %}" style="width: 40px; height: 40px;" onclick="window.location.href = '{{path('spell_use', {'uuid': uuid, 'spellId': spell.getId()})}}';">
+                {% endfor %}
+            </div>
+        {% else %}
+            Leider hast du keine speziellen Fähigkeiten.
+        {% endif %}
+    {% endif %}
+</div>
+<br />
+<br />
+
+{% if special is defined %}
+    <div>
+        <!--<?php echo $this->special; ?>-->
+    </div>
+{% endif %}

@@ -11,6 +11,7 @@ use App\Form\Facade\CreateCharacterFacade;
 use App\Repository\BroadcastRepository;
 use App\Repository\UserRepository;
 use App\Service\CharacterService;
+use App\Service\ConfigService;
 use App\Service\DateTimeService;
 use App\Service\NavbarFactory\AccountMngmtNavbarFactory;
 use App\Service\ParamGenerator\AccountMngmtParamGenerator;
@@ -51,7 +52,7 @@ class AccountManagementController extends BasicController {
      * @Route("/account", name=AccountManagementController::ACCOUNT_MANAGEMENT_ROUTE_NAME, defaults={"_fragment"="chars"})
      */
     public function showCharmanagement(Request $request, UserRepository $userRepo, AccountMngmtParamGenerator $paramGenerator, BroadcastRepository $broadcastRepo,
-            CreateCharacterFacade $characterFacade) {
+            CreateCharacterFacade $characterFacade, ConfigService $config) {
         $session = new RhunSession();
         /* @var $user User */
         $user = $userRepo->find($session->getAccountID());
@@ -67,7 +68,7 @@ class AccountManagementController extends BasicController {
         $this->stopwatch->stop('form handling');
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $characterFacade->createUser($character);
+            $characterFacade->createUser($character, $config->getSettings()->getActionPoints());
         }
 
         return $this->render($this->getSkinFile(), $paramGenerator->getStandardParams($user, $form, $broadcastRepo));

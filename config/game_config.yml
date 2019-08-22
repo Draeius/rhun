@@ -54,6 +54,7 @@ settings:
         platin: 0
         gems: 0
     start_user_level: 1
+    action_points: 50
     email_validation: 0
     phase_per_day: 4
     ooc_days: 3

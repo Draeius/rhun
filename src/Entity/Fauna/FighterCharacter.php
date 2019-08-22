@@ -10,6 +10,8 @@ use App\Entity\Items\Weapon;
 use App\Entity\Spell;
 use App\Entity\Traits\EntityAttributesTrait;
 use App\Entity\Traits\EntityHealthTrait;
+use App\Util\Fight\Action\Action;
+use App\Util\Fight\FighterInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Column;
@@ -24,7 +26,7 @@ use Doctrine\ORM\Mapping\OneToMany;
  *
  * @author Draeius
  */
-class FighterCharacter extends RPCharacter {
+class FighterCharacter extends RPCharacter implements FighterInterface {
 
     use EntityAttributesTrait;
     use EntityHealthTrait;
@@ -43,18 +45,11 @@ class FighterCharacter extends RPCharacter {
     protected $currentHP = 100;
 
     /**
-     * The characters maximum stamina
-     * @var int
-     * @Column(type="integer")
-     */
-    protected $maxStamina = 100;
-
-    /**
      * The characters remaining stamina
      * @var int
      * @Column(type="integer")
      */
-    protected $currentStamina = 100;
+    protected $actionPoints = 0;
 
     /**
      *
@@ -114,10 +109,6 @@ class FighterCharacter extends RPCharacter {
         return $this->calculateBuffedStat($this->maxHP, Attribute::HEALTH_POINTS);
     }
 
-    public function getMaxStaminaWithBuff() {
-        return $this->calculateBuffedStat($this->maxStamina, Attribute::STAMINA_POINTS);
-    }
-
     public function getMaxMPWithBuff() {
         return $this->calculateBuffedStat($this->maxMP, Attribute::MAGIC_POINTS);
     }
@@ -132,7 +123,7 @@ class FighterCharacter extends RPCharacter {
 //        }
 //        $calculator = new StatCalculator($this->buffList);
 
-        return $value;// $calculator->calculateAttribute($attribute, $value);
+        return $value; // $calculator->calculateAttribute($attribute, $value);
     }
 
     /**
@@ -161,8 +152,8 @@ class FighterCharacter extends RPCharacter {
         $this->currentHP = $this->addToValue($amount, $this->currentHP, $this->getMaxHPWithBuff());
     }
 
-    public function addStamina($amount) {
-        $this->currentStamina = $this->addToValue($amount, $this->currentStamina, $this->getMaxStaminaWithBuff());
+    public function addActionPoints($amount) {
+        $this->actionPoints = $this->addToValue($amount, $this->actionPoints, 999999);
     }
 
     public function addMP($amount) {
@@ -248,14 +239,6 @@ class FighterCharacter extends RPCharacter {
         return $this->currentHP;
     }
 
-    function getMaxStamina() {
-        return $this->maxStamina;
-    }
-
-    function getCurrentStamina() {
-        return $this->currentStamina;
-    }
-
     function getCurrentMP() {
         return $this->currentMP;
     }
@@ -280,20 +263,20 @@ class FighterCharacter extends RPCharacter {
         return $this->spells;
     }
 
+    function getActionPoints() {
+        return $this->actionPoints;
+    }
+
+    function setActionPoints($actionPoints) {
+        $this->actionPoints = $actionPoints;
+    }
+
     function setBuffs(array $buffs) {
         $this->buffs = $buffs;
     }
 
     function setCurrentHP($currentHP) {
         $this->currentHP = $currentHP;
-    }
-
-    function setMaxStamina($maxStamina) {
-        $this->maxStamina = $maxStamina;
-    }
-
-    function setCurrentStamina($currentStamina) {
-        $this->currentStamina = $currentStamina;
     }
 
     function setCurrentMP($currentMP) {
@@ -318,6 +301,23 @@ class FighterCharacter extends RPCharacter {
 
     function setSpells(array $spells) {
         $this->spells = $spells;
+    }
+
+    public function getAction(array $participants): ?Action {
+        //only needed for PvP, wich is not yet implemented
+        return null;
+    }
+
+    public function getArmorClass(): int {
+        
+    }
+
+    public function getAttackDice(): \App\Util\Fight\Dice {
+        
+    }
+
+    public function getDamageDice(): \App\Util\Fight\Dice {
+        
     }
 
 }

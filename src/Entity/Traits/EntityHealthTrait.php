@@ -16,11 +16,11 @@ trait EntityHealthTrait {
      */
     protected $maxHP = 100;
 
-    function getMaxHP() {
+    function getMaxHP(): int {
         return $this->maxHP;
     }
 
-    function setMaxHP($maxHP) {
+    function setMaxHP(int $maxHP) {
         $this->maxHP = $maxHP;
     }
 

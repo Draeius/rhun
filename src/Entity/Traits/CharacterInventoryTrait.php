@@ -4,6 +4,7 @@ namespace App\Entity\Traits;
 
 use App\Entity\InventoryItem;
 use App\Entity\Item;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\OneToMany;
 
 /**
@@ -75,6 +76,10 @@ trait CharacterInventoryTrait {
 
     public function hasItem(Item $item) {
         return $this->findItemInInventory($item) != null;
+    }
+
+    function getInventory(): Collection {
+        return $this->inventory;
     }
 
     private function &findItemInInventory(Item $item): ?InventoryItem {

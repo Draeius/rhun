@@ -47,4 +47,8 @@ class Settings extends Config {
         return $this->getData('delete_threshold');
     }
 
+    public function getActionPoints(): int {
+        return $this->getData('action_points');
+    }
+
 }

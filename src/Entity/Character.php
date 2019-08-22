@@ -6,6 +6,7 @@ use App\Entity\Fauna\FighterCharacter;
 use App\Entity\Traits\CharacterInventoryTrait;
 use App\Entity\Traits\EntityLevelTrait;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\JoinColumn;
@@ -64,13 +65,6 @@ class Character extends FighterCharacter {
      * @Column(type="boolean", nullable=false)
      */
     protected $hasPreied = false;
-
-    /**
-     * 
-     * @var int 
-     * @Column(type="integer") 
-     */
-    protected $staminaHealed = 0;
 
     /**
      * @var Character
@@ -155,15 +149,11 @@ class Character extends FighterCharacter {
         return $this->hasPreied;
     }
 
-    function getStaminaHealed() {
-        return $this->staminaHealed;
-    }
-
     function getPartner(): Character {
         return $this->partner;
     }
 
-    function getKnownRecipes(): array {
+    function getKnownRecipes(): Collection {
         return $this->knownRecipes;
     }
 
@@ -186,10 +176,6 @@ class Character extends FighterCharacter {
 
     function setHasPreied($hasPreied) {
         $this->hasPreied = $hasPreied;
-    }
-
-    function setStaminaHealed($staminaHealed) {
-        $this->staminaHealed = $staminaHealed;
     }
 
     function setPartner(Character $partner) {

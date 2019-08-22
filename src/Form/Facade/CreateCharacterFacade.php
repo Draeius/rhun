@@ -48,7 +48,7 @@ class CreateCharacterFacade {
         $this->eManager = $eManager;
     }
 
-    public function createUser(CreateCharacterDTO $dto): Character {
+    public function createUser(CreateCharacterDTO $dto, int $actionPoints): Character {
         $character = new Character();
         $session = new RhunSession();
 
@@ -62,6 +62,7 @@ class CreateCharacterFacade {
         $character->setLastActive(DateTimeService::getDateTime('NOW'));
         $character->setWallet(new Wallet());
         $character->setNewest(true);
+        $character->setActionPoints($actionPoints);
 
         $this->eManager->createQueryBuilder()->update('App:Character', 'c')
                 ->set('c.newest', 'false')->getQuery()->execute();

@@ -12,7 +12,7 @@ use App\Entity\LocationBase;
 class CraftingGenerator extends LocationParamGeneratorBase {
 
     public function getParams(LocationBase $location): array {
-        
+        return ['inventory' => $this->getCharacter()->getInventory()];
     }
 
 }
