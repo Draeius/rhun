@@ -75,7 +75,7 @@ class FighterCharacter extends RPCharacter implements FighterInterface {
     /**
      * The character's weapon
      * @var Weapon  
-     * @ManyToOne(targetEntity="Weapon", cascade={"persist"})
+     * @ManyToOne(targetEntity="App\Entity\Items\Weapon", cascade={"persist"})
      * @JoinColumn(name="weapon_id", referencedColumnName="id")
      */
     protected $weapon;
@@ -83,7 +83,7 @@ class FighterCharacter extends RPCharacter implements FighterInterface {
     /**
      * Die Zweitwaffe/Schild dieses Charakters
      * @var Weapon  
-     * @ManyToOne(targetEntity="Weapon", cascade={"persist"})
+     * @ManyToOne(targetEntity="App\Entity\Items\Weapon", cascade={"persist"})
      * @JoinColumn(name="weapon_id", referencedColumnName="id", nullable=true)
      */
     protected $offhandWeapon;
@@ -91,7 +91,7 @@ class FighterCharacter extends RPCharacter implements FighterInterface {
     /**
      * The character's armor
      * @var Armor 
-     * @ManyToOne(targetEntity="Armor", cascade={"persist"})
+     * @ManyToOne(targetEntity="App\Entity\Items\Armor", cascade={"persist"})
      * @JoinColumn(name="armor_id", referencedColumnName="id")
      */
     protected $armor;

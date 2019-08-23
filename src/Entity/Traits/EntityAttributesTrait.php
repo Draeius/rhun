@@ -73,7 +73,7 @@ trait EntityAttributesTrait {
             case Attribute::STRENGTH:
                 return $this->getStrength();
             case Attribute::DEXTERITY:
-                return $this->getDexterousness();
+                return $this->getDexterity();
             case Attribute::CONSTITUTION:
                 return $this->getConstitution();
             case Attribute::INTELLIGENCE:

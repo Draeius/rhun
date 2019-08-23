@@ -2,8 +2,11 @@
 
 namespace App\Entity\Items;
 
+use App\Entity\DamageType;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
 
 /**
@@ -78,24 +81,24 @@ class WeaponTemplate extends Item {
     /**
      *
      * @var DamageType
-     * @ManyToOne(targetEntity="DamageType")
+     * @ManyToOne(targetEntity="App\Entity\DamageType")
      * @JoinColumn(name="damage_type_id", referencedColumnName="id")
      */
     protected $damageType;
 
-    public function getDamage(): int {
-        return $this->baseDamage;
+    function getDamage() {
+        return $this->damage;
     }
 
-    public function getWeaponType(): int {
+    function getWeaponType() {
         return $this->weaponType;
     }
 
-    public function getAttribute(): int {
+    function getAttribute() {
         return $this->attribute;
     }
 
-    public function getMinAttribute(): int {
+    function getMinAttribute() {
         return $this->minAttribute;
     }
 
@@ -119,19 +122,19 @@ class WeaponTemplate extends Item {
         return $this->damageType;
     }
 
-    public function setDamage(float $baseDamage) {
-        $this->baseDamage = $baseDamage;
+    function setDamage($damage) {
+        $this->damage = $damage;
     }
 
-    public function setWeaponType(int $weaponType) {
+    function setWeaponType($weaponType) {
         $this->weaponType = $weaponType;
     }
 
-    public function setAttribute(int $attribute) {
+    function setAttribute($attribute) {
         $this->attribute = $attribute;
     }
 
-    public function setMinAttribute(int $minAttribute) {
+    function setMinAttribute($minAttribute) {
         $this->minAttribute = $minAttribute;
     }
 

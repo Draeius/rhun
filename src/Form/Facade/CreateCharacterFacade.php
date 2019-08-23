@@ -9,6 +9,7 @@
 namespace App\Form\Facade;
 
 use App\Entity\Character;
+use App\Entity\Wallet;
 use App\Form\DTO\CreateCharacterDTO;
 use App\Repository\RaceRepository;
 use App\Repository\UserRepository;

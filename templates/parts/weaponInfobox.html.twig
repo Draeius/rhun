@@ -28,15 +28,30 @@
             </td>
             <td>
                 <span>
-                    {{ item.getWeaponType |weaponType }} Level {{ item.getLevel() }}
+                    {{ item.getWeaponType |weaponType }}
                 </span><br />
                 <span>
                     Schaden:
-                    {{ item |damageInfo }}
+                    {{ item.getDamage() }}, Typ: {{ item.getDamageType().getColoredName() |colorize |raw }}
                 </span><br />
                 <span>
-                    Ausdauerverlust: {{ item.getStaminaDrain() }}
+                    Zweithand:
+                </span><br />
+                <span>
+                    Erlaubt: 
+                    {{ item.getOffhandAllowed() ? 'Ja' : 'Nein' }}
                 </span>
+                {% if item.getOffhandAllowed() %}
+                    <br />
+                    <span>
+                        Verteidigungsbonus: 
+                        {{ item.getOffhandDefBonus() }}
+                    </span><br />
+                    <span>
+                        Angriffsbonus: 
+                        {{ item.getOffhandAtkBonus() }}
+                    </span>
+                {% endif %}
                 <br />
                 <br />
                 Voraussetzungen:<br />

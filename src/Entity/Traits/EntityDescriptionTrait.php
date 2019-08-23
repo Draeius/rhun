@@ -2,6 +2,8 @@
 
 namespace App\Entity\Traits;
 
+use Doctrine\ORM\Mapping\Column;
+
 /**
  * Ein Trait, das einem Entity ermöglicht eine Beschreibung zu haben.
  *

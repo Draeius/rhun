@@ -53,7 +53,7 @@ class Quest extends LocationBasedEntity {
     /**
      *
      * @var Item
-     * @ManyToOne(targetEntity="Item2")
+     * @ManyToOne(targetEntity="App\Entity\Items\Item")
      * @JoinColumn(name="needed_item_id", referencedColumnName="id")
      */
     protected $neededItem;
@@ -103,7 +103,7 @@ class Quest extends LocationBasedEntity {
     /**
      *
      * @var Item;
-     * @ManyToOne(targetEntity="Item2")
+     * @ManyToOne(targetEntity="App\Entity\Items\Item")
      * @JoinColumn(name="reward_item_id", referencedColumnName="id", nullable=true)
      */
     protected $rewardItem;

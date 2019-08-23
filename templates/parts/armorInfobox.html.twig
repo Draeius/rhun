@@ -18,22 +18,47 @@
             </td>
             <td>
                 <span>
-                    {{ item.getArmorType() |armorType }} Level {{ item.getLevel() }} 
+                    {{ item.getArmorType() |armorType }} Level
                 </span><br />
                 <span>
-                    Ausdauerverlust: {{ item.getStaminaDrain() }}
+                    Rüstungsklasse: 
+                    {{ item.getDefense() }}
                 </span>
-                <br />
-                <br />
                 Voraussetzungen:<br />
                 <span>
                     {{ item.getAttribute() |attributeName }}: {{ item.getMinAttribute() }}
-                </span>
-                {% if item.getSecondAttribute |isValidAttribute and item.getMinSecondAttr() > 0 %}
-                    <br />
-                    <span>
-                        {{ item.getSecondAttribute() |attributeName }}: {{ item.getMinSecondAttr() }}
-                    </span>
+                </span><br /><br />
+                Resistenzen: <br />
+                {% if item.getResistances() |length > 0 %}
+                    <ul>
+                        {% for res in item.getResistances() %}
+                            <li>
+                                {{ res.getColoredName() |colorize |raw }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <ul>
+                        <li>
+                            Keine
+                        </li>
+                    </ul>
+                {% endif %}
+                Verwundbarkeiten: <br />
+                {% if item.getVulnerabilities() |length > 0 %}
+                    <ul>
+                        {% for vul in item.getVulnerabilities() %}
+                            <li>
+                                {{ vul.getColoredName() |colorize |raw }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <ul>
+                        <li>
+                            Keine
+                        </li>
+                    </ul>
                 {% endif %}
             </td>
         </tr>

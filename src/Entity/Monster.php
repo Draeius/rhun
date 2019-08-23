@@ -50,7 +50,7 @@ class Monster extends RhunEntity implements FighterInterface {
 
     /**
      * @var int
-     * @Column(type="int")
+     * @Column(type="integer")
      */
     protected $armorClass;
 
@@ -71,7 +71,7 @@ class Monster extends RhunEntity implements FighterInterface {
      *
      * @var Collection|array
      * @ManyToMany(targetEntity="DamageType")
-     * @JoinTable(name="armor_resistances",
+     * @JoinTable(name="monster_resistances",
      *      joinColumns={@JoinColumn(name="armor_templ_id", referencedColumnName="id")},
      *      inverseJoinColumns={@JoinColumn(name="damage_type_id", referencedColumnName="id")}
      *      )
@@ -83,7 +83,7 @@ class Monster extends RhunEntity implements FighterInterface {
      *
      * @var Collection|array
      * @ManyToMany(targetEntity="DamageType")
-     * @JoinTable(name="armor_vulnerabilities",
+     * @JoinTable(name="monster_vulnerabilities",
      *      joinColumns={@JoinColumn(name="armor_templ_id", referencedColumnName="id")},
      *      inverseJoinColumns={@JoinColumn(name="damage_type_id", referencedColumnName="id")}
      *      )
@@ -123,7 +123,7 @@ class Monster extends RhunEntity implements FighterInterface {
     /**
      * The items this monster can drop.
      * @var Item[]
-     * @ManyToMany(targetEntity="Item2", fetch="EXTRA_LAZY")
+     * @ManyToMany(targetEntity="App\Entity\Items\Item", fetch="EXTRA_LAZY")
      * @JoinTable(name="monster_drops",
      *      joinColumns={@JoinColumn(name="monster_id", referencedColumnName="id")},
      *      inverseJoinColumns={@JoinColumn(name="item_id", referencedColumnName="id")}
@@ -195,7 +195,7 @@ class Monster extends RhunEntity implements FighterInterface {
         return $this->damageRoll;
     }
 
-    function getArmorClass() {
+    function getArmorClass(): int {
         return $this->armorClass;
     }
 

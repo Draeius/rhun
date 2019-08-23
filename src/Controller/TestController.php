@@ -6,7 +6,6 @@ use App\Controller\BasicController;
 use App\Entity\Area;
 use App\Entity\ArmorType;
 use App\Entity\Attribute;
-use App\Entity\Character;
 use App\Entity\Items\ArmorTemplate;
 use App\Entity\Items\WeaponTemplate;
 use App\Entity\Location;
@@ -57,10 +56,10 @@ class TestController extends BasicController {
     public function populateData(Request $request, EntityManagerInterface $eManager, LocationRepository $locRepo, AreaRepository $areaRepo, WeaponTemplateRepository $wepRepo,
             ArmorTemplateRepository $armRepo) {
         $data = $this->getData();
-        $this->populateAreas($data['areas'], $eManager);
-        $eManager->flush();
-        $this->populateLocations($data['location'], $eManager, $areaRepo);
-        $eManager->flush();
+//        $this->populateAreas($data['areas'], $eManager);
+//        $eManager->flush();
+//        $this->populateLocations($data['location'], $eManager, $areaRepo);
+//        $eManager->flush();
         $this->populateItems($data['items'], $eManager);
         $eManager->flush();
         $this->populateRaces($data['races'], $locRepo, $wepRepo, $armRepo, $eManager);
@@ -133,8 +132,8 @@ class TestController extends BasicController {
             $race->setDescription($data['description']);
             $race->setLocation($locRepo->find($data['start_loc_id']));
             $race->setDeathLocation($locRepo->find($data['death_loc_id']));
-            $race->setDefaultArmor($armRepo->find(1));
-            $race->setDefaultWeapon($wepRepo->find(2));
+            $race->setDefaultArmor($armRepo->find(2));
+            $race->setDefaultWeapon($wepRepo->find(3));
             $eManager->persist($race);
         }
     }
@@ -153,33 +152,38 @@ class TestController extends BasicController {
     }
 
     private function populateItems(array $dataSet, EntityManagerInterface $eManager) {
+        $damageRepo = $eManager->getRepository('App:DamageType');
         $weapon = new WeaponTemplate();
-        $weapon->setAttribute(Attribute::AGILITY);
-        $weapon->setBaseDamage(5);
+        $weapon->setAttribute(Attribute::DEXTERITY);
+        $weapon->setDamage('1d8');
         $weapon->setPrice(new Price(100, 0, 0));
         $weapon->setColoredName('TestWaffe');
         $weapon->setDescription('Ein kleiner Test');
-        $weapon->setLevel(1);
         $weapon->setMadeByPlayer(false);
         $weapon->setMinAttribute(10);
         $weapon->setName('TestWaffe');
-        $weapon->setStaminaDrain(1);
         $weapon->setWeaponType(WeaponType::DAGGER);
+        $weapon->setDamageType($damageRepo->find(12));
         $eManager->persist($weapon);
 
         $armor = new ArmorTemplate();
         $armor->setArmorType(ArmorType::LIGHT);
-        $armor->setAttribute(Attribute::AGILITY);
-        $armor->setSecondAttribute(-1);
-        $armor->setMinSecondAttr(0);
+        $armor->setAttribute(Attribute::DEXTERITY);
         $armor->setPrice(new Price(100, 0, 0));
         $armor->setColoredName('TestRüstung');
         $armor->setDescription('Ein kleiner Test');
-        $armor->setLevel(1);
         $armor->setMadeByPlayer(false);
         $armor->setMinAttribute(10);
         $armor->setName('TestRüstung');
-        $armor->setStaminaDrain(1);
+        $armor->setDefense(15);
+        $armor->setResistances([
+            $damageRepo->find(6),
+            $damageRepo->find(7)
+        ]);
+        $armor->setVulnerabilities([
+            $damageRepo->find(8),
+            $damageRepo->find(9)
+        ]);
         $eManager->persist($armor);
     }
 

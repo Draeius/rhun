@@ -207,14 +207,6 @@
         </tr>
         <tr>
             <td>
-                Charme:
-            </td>
-            <td>
-                {{ ((character.getCharme() < 0 ? "`e" : "`d") ~ character.getCharme()) |colorize |raw }}
-            </td>
-        </tr>
-        <tr>
-            <td>
                 Stärke:
             </td>
             <td>
@@ -223,7 +215,7 @@
         </tr>
         <tr>
             <td>
-                Präzision:
+                Geschicklichkeit:
             </td>
             <td>
                 {{ character.getAttributeWithBuff(1) }}
@@ -231,7 +223,7 @@
         </tr>
         <tr>
             <td>
-                Geschicklichkeit:
+                Konstitution:
             </td>
             <td>
                 {{ character.getAttributeWithBuff(2) }}
@@ -239,15 +231,7 @@
         </tr>
         <tr>
             <td>
-                Agilität:
-            </td>
-            <td>
-                {{ character.getAttributeWithBuff(4) }}
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Konstitution:
+                Intelligenz:
             </td>
             <td>
                 {{ character.getAttributeWithBuff(3) }}
@@ -255,7 +239,15 @@
         </tr>
         <tr>
             <td>
-                Intelligenz:
+                Weisheit:
+            </td>
+            <td>
+                {{ character.getAttributeWithBuff(4) }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Willenskraft:
             </td>
             <td>
                 {{ character.getAttributeWithBuff(5) }}

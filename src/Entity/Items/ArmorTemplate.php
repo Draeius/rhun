@@ -2,9 +2,14 @@
 
 namespace App\Entity\Items;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\JoinTable;
+use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\Table;
+use Symfony\Component\Validator\Constraints\Collection;
 
 /**
  * Armor that the player can use
@@ -47,7 +52,7 @@ class ArmorTemplate extends Item {
      * Die Resistenzen dieser Rüstung
      *
      * @var Collection|array
-     * @ManyToMany(targetEntity="DamageType")
+     * @ManyToMany(targetEntity="App\Entity\DamageType")
      * @JoinTable(name="armor_resistances",
      *      joinColumns={@JoinColumn(name="armor_templ_id", referencedColumnName="id")},
      *      inverseJoinColumns={@JoinColumn(name="damage_type_id", referencedColumnName="id")}
@@ -59,7 +64,7 @@ class ArmorTemplate extends Item {
      * Die Verwundbarkeiten dieser Rüstung
      *
      * @var Collection|array
-     * @ManyToMany(targetEntity="DamageType")
+     * @ManyToMany(targetEntity="App\Entity\DamageType")
      * @JoinTable(name="armor_vulnerabilities",
      *      joinColumns={@JoinColumn(name="armor_templ_id", referencedColumnName="id")},
      *      inverseJoinColumns={@JoinColumn(name="damage_type_id", referencedColumnName="id")}
@@ -67,15 +72,20 @@ class ArmorTemplate extends Item {
      */
     protected $vulnerabilities;
 
-    public function getArmorType() {
+    function __construct() {
+        $this->resistances = new ArrayCollection();
+        $this->vulnerabilities = new ArrayCollection();
+    }
+
+    function getArmorType() {
         return $this->armorType;
     }
 
-    public function getAttribute() {
+    function getAttribute() {
         return $this->attribute;
     }
 
-    public function getMinAttribute() {
+    function getMinAttribute() {
         return $this->minAttribute;
     }
 
@@ -91,15 +101,15 @@ class ArmorTemplate extends Item {
         return $this->vulnerabilities;
     }
 
-    public function setArmorType($armorType) {
+    function setArmorType($armorType) {
         $this->armorType = $armorType;
     }
 
-    public function setAttribute($attribute) {
+    function setAttribute($attribute) {
         $this->attribute = $attribute;
     }
 
-    public function setMinAttribute($minAttribute) {
+    function setMinAttribute($minAttribute) {
         $this->minAttribute = $minAttribute;
     }
 
