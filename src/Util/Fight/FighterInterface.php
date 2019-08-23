@@ -17,11 +17,17 @@ interface FighterInterface {
 
     public function getAttribute(int $attribute): int;
 
+    public function getAttributeDice(int $attribute): Dice;
+
     public function getAttackDice(): Dice;
 
-    public function getDamageDice(): Dice;
+    public function getDamage(): Damage;
 
     public function getArmorClass(): int;
 
     public function getAction(array $participants): ?Action;
+
+    public function getVulnerabilitiers();
+
+    public function getResistances();
 }

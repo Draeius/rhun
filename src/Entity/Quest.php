@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Entity\Item;
+use App\Entity\Items\Item as Item2;
+use App\Entity\Traits\EntityAttributesTrait;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\JoinColumn;
@@ -17,6 +19,8 @@ use Doctrine\ORM\Mapping\Table;
  * @Table(name="quests")
  */
 class Quest extends LocationBasedEntity {
+
+    use EntityAttributesTrait;
 
     /**
      *
@@ -49,7 +53,7 @@ class Quest extends LocationBasedEntity {
     /**
      *
      * @var Item
-     * @ManyToOne(targetEntity="App\Entity\Items\Item")
+     * @ManyToOne(targetEntity="Item2")
      * @JoinColumn(name="needed_item_id", referencedColumnName="id")
      */
     protected $neededItem;
@@ -73,7 +77,7 @@ class Quest extends LocationBasedEntity {
      * @var int
      * @Column(type="integer")
      */
-    protected $rewardStamina;
+    protected $rewardActionPoints;
 
     /**
      *
@@ -99,7 +103,7 @@ class Quest extends LocationBasedEntity {
     /**
      *
      * @var Item;
-     * @ManyToOne(targetEntity="App\Entity\Items\Item")
+     * @ManyToOne(targetEntity="Item2")
      * @JoinColumn(name="reward_item_id", referencedColumnName="id", nullable=true)
      */
     protected $rewardItem;
@@ -154,8 +158,8 @@ class Quest extends LocationBasedEntity {
         return $this->navLabel;
     }
 
-    public function getRewardStamina() {
-        return $this->rewardStamina;
+    public function getRewardActionPoints() {
+        return $this->rewardActionPoints;
     }
 
     public function getRewardGold() {
@@ -174,8 +178,8 @@ class Quest extends LocationBasedEntity {
         return $this->available;
     }
 
-    public function setRewardStamina($rewardStamina) {
-        $this->rewardStamina = $rewardStamina;
+    public function setRewardActionPoints($rewardActionPoints) {
+        $this->rewardActionPoints = $rewardActionPoints;
     }
 
     public function setRewardGold($rewardGold) {

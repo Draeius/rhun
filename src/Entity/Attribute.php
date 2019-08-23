@@ -7,16 +7,11 @@ use App\Util\BasicEnum;
 class Attribute extends BasicEnum {
 
     const STRENGTH = 0;
-    const PRECISION = 1;
-
-    /**
-     * Geschicklichkeit
-     */
-    const DEXTEROUSNESS = 2;
-    const CONSTITUTION = 3;
-    const AGILITY = 4;
-    const INTELLIGENCE = 5;
-    const WILLPOWER = 6;
+    const DEXTERITY = 1;
+    const CONSTITUTION = 2;
+    const INTELLIGENCE = 3;
+    const WISDOM = 4;
+    const WILLPOWER = 5;
     const HEALTH_POINTS = 20;
     const STAMINA_POINTS = 21;
     const MAGIC_POINTS = 22;
@@ -25,16 +20,14 @@ class Attribute extends BasicEnum {
         switch ($attribute) {
             case self::STRENGTH:
                 return 'Stärke';
-            case self::PRECISION:
-                return 'Präzision';
-            case self::DEXTEROUSNESS:
+            case self::DEXTERITY:
                 return 'Geschicklichkeit';
             case self::CONSTITUTION:
                 return 'Konstitution';
-            case self::AGILITY:
-                return 'Agilität';
             case self::INTELLIGENCE:
                 return 'Intelligenz';
+            case self::WISDOM:
+                return 'Weisheit';
             case self::WILLPOWER:
                 return 'Willenskraft';
             case self::HEALTH_POINTS:
@@ -44,6 +37,10 @@ class Attribute extends BasicEnum {
             case self::MAGIC_POINTS:
                 return 'Magie';
         }
+    }
+
+    public static function GET_ABILITY_MODIFIER(int $score): int {
+        return floor(($score - 10) / 2);
     }
 
 }

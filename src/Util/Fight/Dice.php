@@ -27,10 +27,17 @@ class Dice {
      */
     private $modificator;
 
-    public function __construct(int $number, int $count = 1, int $modificator = 0) {
+    /**
+     * Gibt an, ob bei diesem Wurf Vorteil, Nachteil oder keins von beidem besteht
+     * @var int
+     */
+    private $diceMode;
+
+    public function __construct(int $number, int $count = 1, int $modificator = 0, $diceMode = 0) {
         $this->count = $count;
         $this->number = $number;
         $this->modificator = $modificator;
+        $this->diceMode = 0;
     }
 
     /**
@@ -71,8 +78,8 @@ class Dice {
      * 
      * @return bool Gibt true zurück, wenn der eigene Wurf größer oder gleich dem Wurf des anderen Würfels ist, sonst false.
      */
-    public function isGreaterThan(Dice $other, int $mode = DiceMode::NONE): bool {
-        return $this->checkThreshold($other->roll(), $mode);
+    public function isGreaterThan(Dice $other): bool {
+        return $this->checkThreshold($other->roll());
     }
 
     /**
@@ -84,8 +91,8 @@ class Dice {
      * 
      * @return bool Gibt true zurück, wenn der Wurf größer oder gleich dem Limit war, sonst false.
      */
-    public function checkThreshold(int $threshold, int $mode = DiceMode::NONE): bool {
-        switch ($mode) {
+    public function checkThreshold(int $threshold): bool {
+        switch ($this->diceMode) {
             case DiceMode::ADVANTAGE:
                 $valOne = $this->roll();
                 $valTwo = $this->roll();
@@ -102,6 +109,10 @@ class Dice {
                 return $valOne >= $threshold;
         }
         return $this->roll() >= $threshold;
+    }
+
+    function setDiceMode($diceMode) {
+        $this->diceMode = $diceMode;
     }
 
     /**

@@ -5,14 +5,13 @@ namespace App\Util\Fight\Participant;
 use App\Entity\Attribute;
 use App\Util\Fight\Dice;
 use App\Util\Fight\FighterInterface;
-use Serializable;
 
 /**
  * Repräsentiert einen Teilnehmer in einem Kampf
  *
  * @author Draeius
  */
-abstract class Participant implements Serializable {
+abstract class Participant {
 
     /**
      * Initiative des Teilnehmers
@@ -29,7 +28,7 @@ abstract class Participant implements Serializable {
     private $fighter;
 
     function __construct(FighterInterface $fighter) {
-        $d20 = new Dice(20, 1, $fighter->getAttribute(Attribute::DEXTEROUSNESS));
+        $d20 = new Dice(20, 1, $fighter->getAttribute(Attribute::DEXTERITY));
         $this->initiative = $d20->roll();
 
         $this->fighter = $fighter;
@@ -48,7 +47,7 @@ abstract class Participant implements Serializable {
         return $this->initiative < $other->initiative;
     }
 
-    public abstract function doDamage(Dice $damageDice);
+    public abstract function doDamage(Damage $damage);
 
     protected function getFighterId(): int {
         return $this->getFighter()->getId();
@@ -70,4 +69,5 @@ abstract class Participant implements Serializable {
         $this->initiative = $initiative;
     }
 
+    public abstract function getDataArray(): array;
 }

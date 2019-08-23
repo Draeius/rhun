@@ -32,7 +32,7 @@ class ParticipantFactory {
         $this->monsterRepo = $monsterRepo;
     }
 
-    public function decodeParticipant(array $data) {
+    public function decodeParticipant($data): Participant {
         $fighter = null;
         switch ($data['class']) {
             case CharacterParticipant::class:
@@ -43,6 +43,7 @@ class ParticipantFactory {
                 break;
         }
         $participant = self::FACTORY($fighter);
+        $participant->setInitiative($data['initiative']);
         if ($participant instanceof MonsterParticipant) {
             $participant->setCurrentHP($data['currentHP']);
         }

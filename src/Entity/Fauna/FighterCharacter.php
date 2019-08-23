@@ -2,6 +2,7 @@
 
 namespace App\Entity\Fauna;
 
+use App\Entity\ArmorType;
 use App\Entity\Attribute;
 use App\Entity\Buff;
 use App\Entity\BuffTemplate;
@@ -10,7 +11,12 @@ use App\Entity\Items\Weapon;
 use App\Entity\Spell;
 use App\Entity\Traits\EntityAttributesTrait;
 use App\Entity\Traits\EntityHealthTrait;
+use App\Entity\Traits\EntityLevelTrait;
+use App\Entity\WeaponType;
 use App\Util\Fight\Action\Action;
+use App\Util\Fight\Damage;
+use App\Util\Fight\Dice;
+use App\Util\Fight\DiceMode;
 use App\Util\Fight\FighterInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -29,6 +35,7 @@ use Doctrine\ORM\Mapping\OneToMany;
 class FighterCharacter extends RPCharacter implements FighterInterface {
 
     use EntityAttributesTrait;
+    use EntityLevelTrait;
     use EntityHealthTrait;
 
     /**
@@ -68,15 +75,23 @@ class FighterCharacter extends RPCharacter implements FighterInterface {
     /**
      * The character's weapon
      * @var Weapon  
-     * @ManyToOne(targetEntity="App\Entity\Items\Weapon", cascade={"persist"})
+     * @ManyToOne(targetEntity="Weapon", cascade={"persist"})
      * @JoinColumn(name="weapon_id", referencedColumnName="id")
      */
     protected $weapon;
 
     /**
+     * Die Zweitwaffe/Schild dieses Charakters
+     * @var Weapon  
+     * @ManyToOne(targetEntity="Weapon", cascade={"persist"})
+     * @JoinColumn(name="weapon_id", referencedColumnName="id", nullable=true)
+     */
+    protected $offhandWeapon;
+
+    /**
      * The character's armor
      * @var Armor 
-     * @ManyToOne(targetEntity="App\Entity\Items\Armor", cascade={"persist"})
+     * @ManyToOne(targetEntity="Armor", cascade={"persist"})
      * @JoinColumn(name="armor_id", referencedColumnName="id")
      */
     protected $armor;
@@ -231,6 +246,10 @@ class FighterCharacter extends RPCharacter implements FighterInterface {
         $this->buildBuffList();
     }
 
+    public function levelUp(): void {
+        $this->level ++;
+    }
+
     function getBuffs(): Collection {
         return $this->buffs;
     }
@@ -309,15 +328,89 @@ class FighterCharacter extends RPCharacter implements FighterInterface {
     }
 
     public function getArmorClass(): int {
-        
+        $modifier = Attribute::GET_ABILITY_MODIFIER($this->getAttributeWithBuff(Attribute::DEXTERITY));
+        $shield = $this->getOffhandDefBonus();
+
+        $armorTemplate = $this->getArmor()->getArmorTemplate();
+        switch ($armorTemplate->getArmorType()) {
+            case ArmorType::LIGHT:
+                return $armorTemplate->getDefense() + $modifier + $shield;
+            case ArmorType::MIDDLE:
+                if ($modifier > 2) {
+                    $modifier = 2;
+                }
+                return $armorTemplate->getDefense() + $modifier + $shield;
+            case ArmorType::HEAVY:
+                return $armorTemplate->getDefense() + $shield;
+        }
     }
 
-    public function getAttackDice(): \App\Util\Fight\Dice {
-        
+    public function getAttributeDice(int $attribute): Dice {
+        return new Dice(20);
     }
 
-    public function getDamageDice(): \App\Util\Fight\Dice {
-        
+    public function getAttackDice(): Dice {
+        return new Dice(20, 1, $this->getAtkDiceModifier(), $this->getAtkDiceMode());
+    }
+
+    public function getDamage(): Damage {
+        $mod = $this->getAtkDiceModifier();
+        $diceMode = $this->getAtkDiceMode();
+
+        $dice = Dice::FACTORY($this->weapon->getWeaponTemplate()->getDamage());
+        $dice->addToModificator($mod);
+        $dice->setDiceMode($diceMode);
+
+        return new Damage($dice, $this->weapon->getWeaponTemplate()->getDamageType());
+    }
+
+    public function getResistances() {
+        return $this->armor->getArmorTemplate()->getResistances();
+    }
+
+    public function getVulnerabilitiers() {
+        return $this->armor->getArmorTemplate()->getVulnerabilities();
+    }
+
+    private function getOffhandDefBonus() {
+        $shield = $this->offhandWeapon->getWeaponTemplate();
+        if (!$this->offhandWeapon) {
+            return 0;
+        }
+        if ($this->getAttributeWithBuff($shield->getAttribute()) < $shield->getMinAttribute()) {
+            return -2;
+        }
+        return $shield->getOffhandDefBonus();
+    }
+
+    private function getAtkDiceModifier() {
+        switch ($this->weapon->getWeaponTemplate()->getWeaponType()) {
+            case WeaponType::BOW:
+            case WeaponType::FOCUS:
+            case WeaponType::STAFF:
+                return Attribute::GET_ABILITY_MODIFIER($this->getAttributeWithBuff(Attribute::DEXTERITY));
+        }
+        return Attribute::GET_ABILITY_MODIFIER($this->getAttributeWithBuff(Attribute::STRENGTH));
+    }
+
+    private function getAtkDiceMode() {
+        $armor = $this->armor->getArmorTemplate();
+        if ($this->getAttributeWithBuff($armor->getAttribute()) < $armor->getMinAttribute()) {
+            return DiceMode::DISADVANTAGE;
+        }
+
+        $weapon = $this->weapon->getWeaponTemplate();
+        if ($this->getAttributeWithBuff($weapon->getAttribute()) < $weapon->getMinAttribute()) {
+            return DiceMode::DISADVANTAGE;
+        }
+
+        if ($this->offhandWeapon) {
+            $offhand = $this->offhandWeapon->getWeaponTemplate();
+            if ($this->getAttributeWithBuff($offhand->getAttribute()) < $offhand->getMinAttribute()) {
+                return DiceMode::DISADVANTAGE;
+            }
+        }
+        return DiceMode::NONE;
     }
 
 }

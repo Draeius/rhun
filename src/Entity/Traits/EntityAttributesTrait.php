@@ -17,7 +17,14 @@ trait EntityAttributesTrait {
      * @var int
      * @Column(type="integer")
      */
-    protected $dexterousness = 10;
+    protected $strength = 10;
+
+    /**
+     *
+     * @var int
+     * @Column(type="integer")
+     */
+    protected $dexterity = 10;
 
     /**
      *
@@ -31,13 +38,6 @@ trait EntityAttributesTrait {
      * @var int
      * @Column(type="integer")
      */
-    protected $agility = 10;
-
-    /**
-     *
-     * @var int
-     * @Column(type="integer")
-     */
     protected $intelligence = 10;
 
     /**
@@ -45,14 +45,14 @@ trait EntityAttributesTrait {
      * @var int
      * @Column(name="precision_attr", type="integer")
      */
-    protected $precision = 10;
+    protected $wisdom = 10;
 
     /**
      *
      * @var int
      * @Column(type="integer")
      */
-    protected $strength = 10;
+    protected $willpower = 10;
 
     /**
      *
@@ -66,36 +66,29 @@ trait EntityAttributesTrait {
      * @var int
      * @Column(type="integer")
      */
-    protected $charme = 0;
-
-    /**
-     *
-     * @var int
-     * @Column(type="integer")
-     */
-    protected $skillPoints = 0;
+    protected $skillPoints = 20;
 
     public function getAttribute(int $attribute): int {
         switch ($attribute) {
             case Attribute::STRENGTH:
                 return $this->getStrength();
-            case Attribute::PRECISION:
-                return $this->getPrecision();
-            case Attribute::DEXTEROUSNESS:
+            case Attribute::DEXTERITY:
                 return $this->getDexterousness();
             case Attribute::CONSTITUTION:
                 return $this->getConstitution();
-            case Attribute::AGILITY:
-                return $this->getAgility();
             case Attribute::INTELLIGENCE:
                 return $this->getIntelligence();
+            case Attribute::WISDOM:
+                return $this->getWisdom();
+            case Attribute::WILLPOWER:
+                return $this->getWillpower();
         }
         return 0;
     }
 
     public function setAttribute(int $attribute, int $value) {
-        if ($value > 100) {
-            $value = 100;
+        if ($value > 20) {
+            $value = 20;
         }
         if ($value < 0) {
             $value = 0;
@@ -113,99 +106,91 @@ trait EntityAttributesTrait {
         $this->reputation += $amount;
     }
 
-    function getDexterousness() {
-        return $this->dexterousness;
-    }
-
-    function getConstitution() {
-        return $this->constitution;
-    }
-
-    function getAgility() {
-        return $this->agility;
-    }
-
-    function getIntelligence() {
-        return $this->intelligence;
-    }
-
-    function getPrecision() {
-        return $this->precision;
+    private function set(int $attribute, int $value) {
+        switch ($attribute) {
+            case Attribute::STRENGTH:
+                $this->strength = $value;
+                break;
+            case Attribute::DEXTERITY:
+                $this->dexterity = $value;
+                break;
+            case Attribute::CONSTITUTION:
+                $this->constitution = $value;
+                break;
+            case Attribute::INTELLIGENCE:
+                $this->intelligence = $value;
+                break;
+            case Attribute::WISDOM:
+                $this->precision = $value;
+                break;
+            case Attribute::WILLPOWER:
+                $this->agility = $value;
+                break;
+        }
     }
 
     function getStrength() {
         return $this->strength;
     }
 
-    function getReputation() {
-        return $this->reputation;
+    function getDexterity() {
+        return $this->dexterity;
     }
 
-    function getCharme() {
-        return $this->charme;
+    function getConstitution() {
+        return $this->constitution;
+    }
+
+    function getIntelligence() {
+        return $this->intelligence;
+    }
+
+    function getWisdom() {
+        return $this->wisdom;
+    }
+
+    function getWillpower() {
+        return $this->willpower;
+    }
+
+    function getReputation() {
+        return $this->reputation;
     }
 
     function getSkillPoints() {
         return $this->skillPoints;
     }
 
-    function setDexterousness($dexterousness) {
-        $this->dexterousness = $dexterousness;
+    function setStrength($strength) {
+        $this->strength = $strength;
+    }
+
+    function setDexterity($dexterity) {
+        $this->dexterity = $dexterity;
     }
 
     function setConstitution($constitution) {
         $this->constitution = $constitution;
     }
 
-    function setAgility($agility) {
-        $this->agility = $agility;
-    }
-
     function setIntelligence($intelligence) {
         $this->intelligence = $intelligence;
     }
 
-    function setPrecision($precision) {
-        $this->precision = $precision;
+    function setWisdom($wisdom) {
+        $this->wisdom = $wisdom;
     }
 
-    function setStrength($strength) {
-        $this->strength = $strength;
+    function setWillpower($willpower) {
+        $this->willpower = $willpower;
     }
 
     function setReputation($reputation) {
         $this->reputation = $reputation;
     }
 
-    function setCharme($charme) {
-        $this->charme = $charme;
-    }
-
     function setSkillPoints($skillPoints) {
         $this->skillPoints = $skillPoints;
-    }
-
-    private function set(int $attribute, int $value) {
-        switch ($attribute) {
-            case Attribute::STRENGTH:
-                $this->strength = $value;
-                break;
-            case Attribute::PRECISION:
-                $this->precision = $value;
-                break;
-            case Attribute::DEXTEROUSNESS:
-                $this->dexterousness = $value;
-                break;
-            case Attribute::CONSTITUTION:
-                $this->constitution = $value;
-                break;
-            case Attribute::AGILITY:
-                $this->agility = $value;
-                break;
-            case Attribute::INTELLIGENCE:
-                $this->intelligence = $value;
-                break;
-        }
     }
 
 }

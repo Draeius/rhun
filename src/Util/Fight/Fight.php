@@ -3,17 +3,18 @@
 namespace App\Util\Fight;
 
 use App\Entity\Character;
+use App\Repository\CharacterRepository;
+use App\Repository\MonsterRepository;
 use App\Util\Fight\Action\Action;
 use App\Util\Fight\Participant\Participant;
 use App\Util\Fight\Participant\ParticipantFactory;
-use Serializable;
 
 /**
  * Description of Fight
  *
  * @author Draeius
  */
-class Fight implements Serializable {
+class Fight {
 
     /**
      * Liste aller Teilnehmer dieses Kampfes
@@ -36,7 +37,8 @@ class Fight implements Serializable {
     public function doRound(Action &$action): void {
         $count = count($this->participants);
         for ($index = 0; $index < $count; $index++) {
-            if (!($this->participants[$index] instanceof Character)) {
+            if (!($this->participants[$index] instanceof Character &&
+                    $this->participants[$index]->getFighterId() == $action->getOrigin()->getId())) {
                 $this->participants[$index]->getAction($this->participants)->execute($this->participants);
             } elseif ($action->isReady()) {
                 $action->execute($this->participants);
@@ -90,16 +92,22 @@ class Fight implements Serializable {
         return $result;
     }
 
-    public function serialize(): string {
+    public function getDataString(): string {
         $result = [];
         foreach ($this->participants as $key => $value) {
-            $result[$key] = json_encode($value->serialize());
+            $result[$key] = $value->getDataArray();
         }
         return json_encode($result);
     }
 
-    public function unserialize($serialized): void {
-        $this->participants = json_decode($serialized);
+    public static function FROM_DATA_STRING(string $string, CharacterRepository $charRepo, MonsterRepository $monsterRepo): Fight {
+        $data = json_decode($string, true);
+        $factory = new ParticipantFactory($charRepo, $monsterRepo);
+        $fight = new Fight();
+        foreach ($data as $key => $value) {
+            $fight->participants[$key] = $factory->decodeParticipant($value);
+        }
+        return $fight;
     }
 
 }

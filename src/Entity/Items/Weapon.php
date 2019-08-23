@@ -30,20 +30,12 @@ class Weapon extends Item {
         return $this->buffs;
     }
 
-    function setId($id) {
-        $this->id = $id;
-    }
-
     function setWeaponTemplate(WeaponTemplate $weaponTemplate) {
         $this->weaponTemplate = $weaponTemplate;
     }
 
     function setBuffs($buffs) {
         $this->buffs = $buffs;
-    }
-
-    public function getDamageType() {
-        return 4;
     }
 
     function getDisplayTemplate() {

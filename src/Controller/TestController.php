@@ -15,7 +15,9 @@ use App\Entity\Race;
 use App\Entity\WeaponType;
 use App\Repository\AreaRepository;
 use App\Repository\ArmorTemplateRepository;
+use App\Repository\CharacterRepository;
 use App\Repository\LocationRepository;
+use App\Repository\MonsterRepository;
 use App\Repository\WeaponTemplateRepository;
 use App\Service\ConfigService;
 use App\Util\Fight\Fight;
@@ -37,14 +39,14 @@ class TestController extends BasicController {
     /**
      * @Route("/test")
      */
-    public function test(Request $request, ConfigService $configService, Stopwatch $stopwatch) {
+    public function test(Request $request, ConfigService $configService, Stopwatch $stopwatch, CharacterRepository $charRepo, MonsterRepository $monsterRepo) {
 
         $fight = new Fight();
-        $fight->addFighter(new Character());
+        $fight->addFighter($charRepo->find(1));
 
         VarDumper::dump($fight);
-        VarDumper::dump($fight->serialize());
-        VarDumper::dump(json_decode($fight->serialize()));
+        VarDumper::dump($fight->getDataString());
+        VarDumper::dump(Fight::FROM_DATA_STRING($fight->getDataString(), $charRepo, $monsterRepo));
 
         return $this->render('test.html.twig');
     }

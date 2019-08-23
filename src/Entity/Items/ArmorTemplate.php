@@ -34,13 +34,6 @@ class ArmorTemplate extends Item {
      * @var int
      * @Column(type="integer")
      */
-    protected $secondAttribute;
-
-    /**
-     *
-     * @var int
-     * @Column(type="integer")
-     */
     protected $minAttribute;
 
     /**
@@ -48,21 +41,31 @@ class ArmorTemplate extends Item {
      * @var int
      * @Column(type="integer")
      */
-    protected $minSecondAttr;
+    protected $defense;
 
     /**
+     * Die Resistenzen dieser Rüstung
      *
-     * @var int
-     * @Column(type="integer")
+     * @var Collection|array
+     * @ManyToMany(targetEntity="DamageType")
+     * @JoinTable(name="armor_resistances",
+     *      joinColumns={@JoinColumn(name="armor_templ_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@JoinColumn(name="damage_type_id", referencedColumnName="id")}
+     *      )
      */
-    protected $staminaDrain;
+    protected $resistances;
 
     /**
+     * Die Verwundbarkeiten dieser Rüstung
      *
-     * @var int
-     * @Column(type="integer")
+     * @var Collection|array
+     * @ManyToMany(targetEntity="DamageType")
+     * @JoinTable(name="armor_vulnerabilities",
+     *      joinColumns={@JoinColumn(name="armor_templ_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@JoinColumn(name="damage_type_id", referencedColumnName="id")}
+     *      )
      */
-    protected $level;
+    protected $vulnerabilities;
 
     public function getArmorType() {
         return $this->armorType;
@@ -76,32 +79,16 @@ class ArmorTemplate extends Item {
         return $this->minAttribute;
     }
 
-    public function getStaminaDrain() {
-        return $this->staminaDrain;
+    function getDefense() {
+        return $this->defense;
     }
 
-    public function getLevel() {
-        return $this->level;
+    function getResistances() {
+        return $this->resistances;
     }
 
-    public function getSecondAttribute() {
-        return $this->secondAttribute;
-    }
-
-    public function getMinSecondAttr() {
-        return $this->minSecondAttr;
-    }
-
-    public function setSecondAttribute($secondAttribute) {
-        $this->secondAttribute = $secondAttribute;
-    }
-
-    public function setMinSecondAttr($minSecondAttr) {
-        $this->minSecondAttr = $minSecondAttr;
-    }
-
-    public function setLevel($level) {
-        $this->level = $level;
+    function getVulnerabilities() {
+        return $this->vulnerabilities;
     }
 
     public function setArmorType($armorType) {
@@ -116,8 +103,16 @@ class ArmorTemplate extends Item {
         $this->minAttribute = $minAttribute;
     }
 
-    public function setStaminaDrain($staminaDrain) {
-        $this->staminaDrain = $staminaDrain;
+    function setDefense($defense) {
+        $this->defense = $defense;
+    }
+
+    function setResistances($resistances) {
+        $this->resistances = $resistances;
+    }
+
+    function setVulnerabilities($vulnerabilities) {
+        $this->vulnerabilities = $vulnerabilities;
     }
 
     function getDisplayTemplate() {

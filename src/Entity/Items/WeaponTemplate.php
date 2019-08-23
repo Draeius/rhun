@@ -18,9 +18,9 @@ class WeaponTemplate extends Item {
     /**
      *
      * @var int The weapons damage base
-     * @Column(type="float", nullable=false)
+     * @Column(type="string", nullable=false)
      */
-    protected $baseDamage = 0;
+    protected $damage = '1d4';
 
     /**
      *
@@ -44,20 +44,46 @@ class WeaponTemplate extends Item {
     protected $minAttribute = 10;
 
     /**
+     * Gibt an, ob diese Waffe als dualwield geeignet ist
+     * 
+     * @var bool
+     * @Column(type="boolean")
+     */
+    protected $offhand = false;
+
+    /**
+     * Gibt an, ob man mit dieser Waffe/Schild eine Zweite in der anderen Hand führen kann
+     *
+     * @var bool
+     * @Column(type="boolean")
+     */
+    protected $offhandAllowed = false;
+
+    /**
+     * Der Verteidigungsbonus, den diese Waffe/Schild bringt, wenn man sie in als dualwield benutzt
      *
      * @var int
-     * @Column(type="integer")
+     * @Column(type="boolean")
      */
-    protected $staminaDrain = 1;
+    protected $offhandDefBonus = 0;
+
+    /**
+     * Der Angriffsbonus, den diese Waffe/Schild bringt, wenn man sie in als dualwield benutzt
+     *
+     * @var int
+     * @Column(type="string")
+     */
+    protected $offhandAtkBonus = '0d0';
 
     /**
      *
-     * @var int
-     * @Column(type="integer")
+     * @var DamageType
+     * @ManyToOne(targetEntity="DamageType")
+     * @JoinColumn(name="damage_type_id", referencedColumnName="id")
      */
-    protected $level = 1;
+    protected $damageType;
 
-    public function getBaseDamage(): float {
+    public function getDamage(): int {
         return $this->baseDamage;
     }
 
@@ -73,19 +99,27 @@ class WeaponTemplate extends Item {
         return $this->minAttribute;
     }
 
-    public function getStaminaDrain(): int {
-        return $this->staminaDrain;
+    function getOffhand() {
+        return $this->offhand;
     }
 
-    public function getLevel(): int {
-        return $this->level;
+    function getOffhandAllowed() {
+        return $this->offhandAllowed;
     }
 
-    public function setLevel(int $level) {
-        $this->level = $level;
+    function getOffhandDefBonus() {
+        return $this->offhandDefBonus;
     }
 
-    public function setBaseDamage(float $baseDamage) {
+    function getOffhandAtkBonus() {
+        return $this->offhandAtkBonus;
+    }
+
+    function getDamageType(): DamageType {
+        return $this->damageType;
+    }
+
+    public function setDamage(float $baseDamage) {
         $this->baseDamage = $baseDamage;
     }
 
@@ -101,8 +135,24 @@ class WeaponTemplate extends Item {
         $this->minAttribute = $minAttribute;
     }
 
-    public function setStaminaDrain(int $staminaDrain) {
-        $this->staminaDrain = $staminaDrain;
+    function setOffhand($offhand) {
+        $this->offhand = $offhand;
+    }
+
+    function setOffhandAllowed($offhandAllowed) {
+        $this->offhandAllowed = $offhandAllowed;
+    }
+
+    function setOffhandDefBonus($offhandDefBonus) {
+        $this->offhandDefBonus = $offhandDefBonus;
+    }
+
+    function setOffhandAtkBonus($offhandAtkBonus) {
+        $this->offhandAtkBonus = $offhandAtkBonus;
+    }
+
+    function setDamageType(DamageType $damageType) {
+        $this->damageType = $damageType;
     }
 
     function getDisplayTemplate() {

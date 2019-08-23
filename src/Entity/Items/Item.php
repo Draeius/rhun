@@ -57,14 +57,6 @@ abstract class Item extends RhunEntity {
         return $this->getName();
     }
 
-    public function getBuyPrice() {
-        return $this->buyPrice;
-    }
-
-    public function getSellPrice() {
-        return $this->sellPrice;
-    }
-
     public function getMadeByPlayer() {
         return $this->madeByPlayer;
     }
@@ -73,20 +65,12 @@ abstract class Item extends RhunEntity {
         return $this->icon;
     }
 
-    public function setIcon($icon) {
-        $this->icon = $icon;
-    }
-
-    public function setBuyPrice($buyPrice) {
-        $this->buyPrice = $buyPrice;
-    }
-
-    public function setSellPrice($sellPrice) {
-        $this->sellPrice = $sellPrice;
-    }
-
     public function setMadeByPlayer($madeByPlayer) {
         $this->madeByPlayer = $madeByPlayer;
+    }
+
+    public function setIcon($icon) {
+        $this->icon = $icon;
     }
 
     function getDisplayTemplate() {

@@ -25,7 +25,6 @@ use Doctrine\ORM\Mapping\Table;
  */
 class Character extends FighterCharacter {
 
-    use EntityLevelTrait;
     use CharacterInventoryTrait;
 
     /**
@@ -118,15 +117,6 @@ class Character extends FighterCharacter {
             }
         }
         return false;
-    }
-
-    public function levelUp(): void {
-        //increment level
-        $this->level ++;
-        $this->maxHP = 50 + 50 * $this->level;
-        $this->currentHP = $this->getMaxHPWithBuff();
-
-        $this->s($this->attributes->getSkillPoints() + 6);
     }
 
     function getWallet(): Wallet {

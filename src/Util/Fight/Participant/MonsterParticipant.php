@@ -2,7 +2,8 @@
 
 namespace App\Util\Fight\Participant;
 
-use App\Util\Fight\Dice;
+use App\Entity\Monster;
+use App\Util\Fight\Damage;
 use App\Util\Fight\FighterInterface;
 
 /**
@@ -12,43 +13,35 @@ use App\Util\Fight\FighterInterface;
  */
 class MonsterParticipant extends Participant {
 
-    /**
-     * Die Lebenspunkte des Monsters
-     *
-     * @var int
-     */
-    private $currentHP;
-
     public function __construct(FighterInterface $fighter) {
         parent::__construct($fighter);
         $this->fighterId = $fighter->getId();
     }
 
     function getCurrentHP() {
-        return $this->currentHP;
+        /* @var $monster Monster */
+        $monster = $this->getFighter();
+        return $monster->getCurrentHP();
     }
 
     function setCurrentHP($currentHP) {
-        $this->currentHP = $currentHP;
+        /* @var $monster Monster */
+        $monster = $this->getFighter();
+        return $monster->setCurrentHP($currentHP);
     }
 
-    public function doDamage(Dice $damageDice) {
-        $this->currentHP -= $damageDice->roll();
+    public function doDamage(Damage $damage) {
+        $hp = $this->getCurrentHP() - $damage->getDamage($this->getFighter()->getResistances(), $this->getFighter()->getVulnerabilitiers());
+        $this->setCurrentHP($hp);
     }
 
-    public function serialize(): string {
-        json_encode([
+    public function getDataArray(): array {
+        return [
             'class' => self::class,
-            'currentHP' => $this->currentHP,
+            'currentHP' => $this->getCurrentHP(),
             'fighterId' => $this->getFighterId(),
             'initiative' => $this->getInitiative()
-        ]);
-    }
-
-    public function unserialize($serialized): void {
-        $data = json_decode($serialized);
-        $this->setInitiative($data['initiative']);
-        $this->currentHP = $data['currentHP'];
+        ];
     }
 
 }

@@ -3,14 +3,23 @@
 namespace App\Entity;
 
 use App\Entity\Item;
+use App\Entity\Items\Item as Item2;
+use App\Entity\Traits\EntityAttributesTrait;
 use App\Entity\Traits\EntityColoredNameTrait;
 use App\Entity\Traits\EntityHealthTrait;
+use App\Util\Fight\Action\Action;
+use App\Util\Fight\Action\AttackAction;
+use App\Util\Fight\Action\FleeAction;
+use App\Util\Fight\Damage;
+use App\Util\Fight\Dice;
+use App\Util\Fight\FighterInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\JoinTable;
 use Doctrine\ORM\Mapping\ManyToMany;
+use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\Table;
 
@@ -21,47 +30,29 @@ use Doctrine\ORM\Mapping\Table;
  * @Entity
  * @Table(name="monsters")
  */
-class Monster extends RhunEntity {
+class Monster extends RhunEntity implements FighterInterface {
 
     use EntityColoredNameTrait;
     use EntityHealthTrait;
+    use EntityAttributesTrait;
 
     /**
-     * @var int
-     * @Column(type="integer")
-     */
-    protected $attack;
-
-    /**
-     * @var int
-     * @Column(type="integer")
-     */
-    protected $defense;
-
-    /**
-     * @var int
-     * @Column(type="integer")
-     */
-    protected $critChance;
-
-    /**
-     * @var int
-     * @Column(type="integer")
-     */
-    protected $critMulti;
-
-    /**
-     * @var int
-     * @Column(type="integer")
-     */
-    protected $evadeChance;
-
-    /**
-     * 
      * @var string
-     * @Column(type="integer")
+     * @Column(type="string")
      */
-    protected $monsterRank;
+    protected $attackRoll;
+
+    /**
+     * @var string
+     * @Column(type="string")
+     */
+    protected $damageRoll;
+
+    /**
+     * @var int
+     * @Column(type="int")
+     */
+    protected $armorClass;
 
     /**
      * @var string
@@ -74,6 +65,38 @@ class Monster extends RhunEntity {
      * @Column(type="string", length=64)
      */
     protected $armorName;
+
+    /**
+     * Die Resistenzen dieser Rüstung
+     *
+     * @var Collection|array
+     * @ManyToMany(targetEntity="DamageType")
+     * @JoinTable(name="armor_resistances",
+     *      joinColumns={@JoinColumn(name="armor_templ_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@JoinColumn(name="damage_type_id", referencedColumnName="id")}
+     *      )
+     */
+    protected $resistances;
+
+    /**
+     * Die Verwundbarkeiten dieser Rüstung
+     *
+     * @var Collection|array
+     * @ManyToMany(targetEntity="DamageType")
+     * @JoinTable(name="armor_vulnerabilities",
+     *      joinColumns={@JoinColumn(name="armor_templ_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@JoinColumn(name="damage_type_id", referencedColumnName="id")}
+     *      )
+     */
+    protected $vulnerabilities;
+
+    /**
+     *
+     * @var DamageType
+     * @ManyToOne(targetEntity="DamageType")
+     * @JoinColumn(name="damage_type_id", referencedColumnName="id")
+     */
+    protected $damageType;
 
     /**
      *
@@ -100,7 +123,7 @@ class Monster extends RhunEntity {
     /**
      * The items this monster can drop.
      * @var Item[]
-     * @ManyToMany(targetEntity="App\Entity\Items\Item", fetch="EXTRA_LAZY")
+     * @ManyToMany(targetEntity="Item2", fetch="EXTRA_LAZY")
      * @JoinTable(name="monster_drops",
      *      joinColumns={@JoinColumn(name="monster_id", referencedColumnName="id")},
      *      inverseJoinColumns={@JoinColumn(name="item_id", referencedColumnName="id")}
@@ -127,6 +150,13 @@ class Monster extends RhunEntity {
      */
     protected $loseSentence;
 
+    /**
+     * @var bool
+     * @Column(type="boolean")
+     */
+    protected $allowFlee;
+    private $currentHP;
+
     public function __construct() {
         $this->occurances = new ArrayCollection();
     }
@@ -138,7 +168,7 @@ class Monster extends RhunEntity {
     public function chooseDroppedItem() {
         $total = 0;
         foreach ($this->drops as $item) {
-            $total += $item->getBuyPrice();
+            $total += 1 / ($item->getPriceGold() + $item->getPricePlatin() + $item->getPriceGems());
         }
         if ($total == 0) {
             return null;
@@ -146,131 +176,178 @@ class Monster extends RhunEntity {
         $rand = rand(0, $total);
         $counter = 0;
         foreach ($this->drops as $item) {
-            $counter += $item->getBuyPrice();
+            $counter += 1 / ($item->getPriceGold() + $item->getPricePlatin() + $item->getPriceGems());
             if ($rand <= $counter) {
                 return $item;
             }
         }
     }
 
-    public function getAttack() {
-        return $this->attack;
+    public function calculateEXP(): int {
+        return round(($this->level / 4) * 100);
     }
 
-    public function getDefense() {
-        return $this->defense;
+    function getAttackRoll() {
+        return $this->attackRoll;
     }
 
-    public function getMonsterRank() {
-        return $this->monsterRank;
+    function getDamageRoll() {
+        return $this->damageRoll;
     }
 
-    public function getWeaponName() {
+    function getArmorClass() {
+        return $this->armorClass;
+    }
+
+    function getWeaponName() {
         return $this->weaponName;
     }
 
-    public function getArmorName() {
+    function getArmorName() {
         return $this->armorName;
     }
 
-    public function getLevel() {
+    function getLevel() {
         return $this->level;
     }
 
-    public function getLootPlatin() {
+    function getLootPlatin() {
         return $this->lootPlatin;
     }
 
-    public function getLootGold() {
+    function getLootGold() {
         return $this->lootGold;
     }
 
-    public function getDrops(): array {
+    function getDrops(): array {
         return $this->drops;
     }
 
-    public function getOccurances(): array {
+    function getOccurances(): array {
         return $this->occurances;
     }
 
-    public function getVictorySentence() {
+    function getVictorySentence() {
         return $this->victorySentence;
     }
 
-    public function getLoseSentence() {
+    function getLoseSentence() {
         return $this->loseSentence;
     }
 
-    public function getCritChance() {
-        return $this->critChance;
+    function getVulnerabilities() {
+        return $this->vulnerabilities;
     }
 
-    public function getCritMulti() {
-        return $this->critMulti;
+    function getDamageType(): DamageType {
+        return $this->damageType;
     }
 
-    public function getEvadeChance() {
-        return $this->evadeChance;
+    function getCurrentHP() {
+        return $this->currentHP;
     }
 
-    public function setEvadeChance($evadeChance) {
-        $this->evadeChance = $evadeChance;
+    function getAllowFlee() {
+        return $this->allowFlee;
     }
 
-    public function setCritMulti($critMulti) {
-        $this->critMulti = $critMulti;
+    function setAllowFlee($allowFlee) {
+        $this->allowFlee = $allowFlee;
     }
 
-    public function setCritChance($critChance) {
-        $this->critChance = $critChance;
+    function setCurrentHP($currentHP) {
+        $this->currentHP = $currentHP;
     }
 
-    public function setAttack($attack) {
-        $this->attack = $attack;
+    function setVulnerabilities($vulnerabilities) {
+        $this->vulnerabilities = $vulnerabilities;
     }
 
-    public function setDefense($defense) {
-        $this->defense = $defense;
+    function setDamageType(DamageType $damageType) {
+        $this->damageType = $damageType;
     }
 
-    public function setMonsterRank($rank) {
-        $this->monsterRank = $rank;
+    function setResistances($resistances) {
+        $this->resistances = $resistances;
     }
 
-    public function setWeaponName($weaponName) {
+    function setAttackRoll($attackRoll) {
+        $this->attackRoll = $attackRoll;
+    }
+
+    function setDamageRoll($damageRoll) {
+        $this->damageRoll = $damageRoll;
+    }
+
+    function setArmorClass($armorClass) {
+        $this->armorClass = $armorClass;
+    }
+
+    function setWeaponName($weaponName) {
         $this->weaponName = $weaponName;
     }
 
-    public function setArmorName($armorName) {
+    function setArmorName($armorName) {
         $this->armorName = $armorName;
     }
 
-    public function setLevel($level) {
+    function setLevel($level) {
         $this->level = $level;
     }
 
-    public function setLootPlatin($lootPlatin) {
+    function setLootPlatin($lootPlatin) {
         $this->lootPlatin = $lootPlatin;
     }
 
-    public function setLootGold($lootGold) {
+    function setLootGold($lootGold) {
         $this->lootGold = $lootGold;
     }
 
-    public function setDrops(array $drops) {
+    function setDrops(array $drops) {
         $this->drops = $drops;
     }
 
-    public function setOccurances(array $occurances) {
+    function setOccurances(array $occurances) {
         $this->occurances = $occurances;
     }
 
-    public function setVictorySentence($victorySentence) {
+    function setVictorySentence($victorySentence) {
         $this->victorySentence = $victorySentence;
     }
 
-    public function setLoseSentence($loseSentence) {
+    function setLoseSentence($loseSentence) {
         $this->loseSentence = $loseSentence;
+    }
+
+    public function getAction(array $participants): ?Action {
+        if ($this->allowFlee && $this->currentHP < $this->maxHP * 0.1) {
+            return new FleeAction($this, 0, 0);
+        }
+        foreach ($participants as $key => $value) {
+            if ($value->getFighter() instanceof Character) {
+                return new AttackAction($this, $key, 0);
+            }
+        }
+    }
+
+    public function getAttackDice(): Dice {
+        return Dice::FACTORY($this->attackRoll);
+    }
+
+    public function getDamage(): Damage {
+        return new Damage(Dice::FACTORY($this->damageRoll), $this->damageType);
+    }
+
+    public function getResistances() {
+        return $this->resistances;
+    }
+
+    public function getVulnerabilitiers() {
+        return $this->vulnerabilities;
+    }
+
+    public function getAttributeDice(int $attribute): Dice {
+        return new Dice(20);
     }
 
 }

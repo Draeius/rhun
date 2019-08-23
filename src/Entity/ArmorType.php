@@ -11,37 +11,13 @@ class ArmorType extends BasicEnum {
     const HEAVY = 2;
 
     private static $DATA = [
-        0 => [
-            'armor' => 2,
-            'evade' => 90,
-            'name' => 'Leichte Rüstung'
-        ],
-        1 => [
-            'armor' => 3,
-            'evade' => 80,
-            'name' => 'Mittlere Rüstung'
-        ],
-        2 => [
-            'armor' => 4,
-            'evade' => 50,
-            'name' => 'Schwere Rüstung'
-        ]
+        0 => 'Leichte Rüstung',
+        1 => 'Mittlere Rüstung',
+        2 => 'Schwere Rüstung'
     ];
 
-    private static function getData(int $type) {
-        return self::$DATA[$type];
-    }
-
-    public static function getArmor(int $type) {
-        return self::getData($type)['armor'];
-    }
-
-    public static function getEvade(int $type) {
-        return self::getData($type)['evade'];
-    }
-
     public static function getName(int $type) {
-        return self::getData($type)['name'];
+        return self::$DATA[$type];
     }
 
 }

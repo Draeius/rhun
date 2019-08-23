@@ -23,30 +23,13 @@ class Armor extends Item{
      * @JoinColumn(name="armor_template_id", referencedColumnName="id")
      */
     protected $armorTemplate;
-    protected $buffs;
 
     function getArmorTemplate(): ArmorTemplate {
         return $this->armorTemplate;
     }
 
-    function getBuffs() {
-        return $this->buffs;
-    }
-
     function setArmorTemplate(ArmorTemplate $armorTemplate) {
         $this->armorTemplate = $armorTemplate;
-    }
-
-    function setBuffs($buffs) {
-        $this->buffs = $buffs;
-    }
-
-    public function getWeakTypes() {
-        return [];
-    }
-
-    public function getStrongTypes() {
-        return [];
     }
 
     function getDisplayTemplate() {
