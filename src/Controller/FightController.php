@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Character;
 use App\Repository\CharacterRepository;
 use App\Repository\MonsterRepository;
 use App\Util\Fight\Action\AttackAction;
@@ -9,7 +10,7 @@ use App\Util\Fight\Action\FleeAction;
 use App\Util\Fight\Fight;
 use App\Util\Session\RhunSession;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Routing\Route;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Description of FightController
@@ -24,14 +25,14 @@ class FightController extends BasicController {
     const NEW_FIGHT_ROUTE_NAME = 'fight_new';
 
     /**
-     * @Route("/new/{uuid}" name=FightController::NEW_FIGHT_ROUTE_NAME)
+     * @Route("/new/{uuid}", name=FightController::NEW_FIGHT_ROUTE_NAME)
      */
     public function newFight($uuid, EntityManagerInterface $eManager, MonsterRepository $monsterRepo) {
         
     }
 
     /**
-     * @Route("/attack/{uuid}/{targetIndex}" name=FightController::ATTACK_ROUTE_NAME)
+     * @Route("/attack/{uuid}/{targetIndex}", name=FightController::ATTACK_ROUTE_NAME)
      */
     public function attack($uuid, $targetIndex, EntityManagerInterface $eManager, CharacterRepository $charRepo, MonsterRepository $monsterRepo) {
         $session = new RhunSession();
@@ -48,7 +49,7 @@ class FightController extends BasicController {
     }
 
     /**
-     * @Route("/flee/{uuid}" name=FightController::FLEE_ROUTE_NAME)
+     * @Route("/flee/{uuid}", name=FightController::FLEE_ROUTE_NAME)
      */
     public function attemptFlee($uuid, EntityManagerInterface $eManager, CharacterRepository $charRepo, MonsterRepository $monsterRepo) {
         $session = new RhunSession();
