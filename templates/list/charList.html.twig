@@ -29,7 +29,18 @@
     });
 </script>
 
+<h3> Ansprechpartner </h3>
+Code/Bugs:<br />
+Gwindor <a href="{{ path('mail_show', {'charName': 'Gwindor'})}}" target="_blank" >Brieftaube senden</a><br />
+<br />
+Alles Andere:<br />
+Alea <a href="{{ path('mail_show', {'charName': 'Alea'})}}" target="_blank" >Brieftaube senden</a><br />
+Adaya <a href="{{ path('mail_show', {'charName': 'Adaya'})}}" target="_blank" >Brieftaube senden</a><br />
+Ophelia <a href="{{ path('mail_show', {'charName': 'Ophelia'})}}" target="_blank" >Brieftaube senden</a><br />
 
+<h3>
+    Kämpferliste:
+</h3>
 <div>
     Auf diesem Server gibt es insgesamt {{ characters |length }} Einwohner.
 </div>
@@ -41,6 +52,15 @@
     <th>Rasse <br /> <input onclick="stopEvent(event)" onkeyup="searchTable(1, this.value.toUpperCase())" /></th>
     <th>Geschlecht</th>
     <th>Gilde</th>
+    <th>Level</th>
+    <th>Ort <br /> <input onclick="stopEvent(event)" onkeyup="searchTable(4, this.value.toUpperCase())" </th>
+    <th>Status</th>
+    <th>RP</th>
+        {% set birthday = account.getBirthday() %}
+        {% set adult = birthday.diff(dateNow).y >= 18 %}
+        {% if adult %}
+        <th>CS</th>
+        {% endif %}
     <th id="standard_sort">Zuletzt online</th>
 </thead>
 <tbody>
@@ -62,6 +82,29 @@
                     Keine
                 {% endif %}
             </td>
+            <td>
+                {{ char.getLevel() }}
+            </td>
+            <td>
+                {{ char.getLocation().getTitle() |colorize |raw}}
+            </td>
+            <td>
+                {% if not char.getDead() %}
+                    <span style="color: green;">lebendig</span>
+                {% else %}
+                    <span style="color: red;">tot</span>
+                {% endif %}
+            </td>
+            <td>
+                <img src="{% if character.getRPState() %}{{asset('images/Icon_green_dot.png')}}{% else %}{{asset('images/Icon_red_dot.png')}}{% endif %}"
+                     style="width: 20px; height: 20px;">
+            </td>
+            {% if adult %}
+                <td>
+                    <img src="{% if char.adult %}{{asset('images/Icon_green_dot.png')}}{% else %}{{asset('images/Icon_red_dot.png')}}{% endif %}"
+                         style="width: 20px; height: 20px;">
+                </td>
+            {% endif %}
             <td data-type="date" data-value="{{char.getLastActive().format('Y-m-d H:i:s')}}">
                 {% if char.getOnline() %}
                     <span style="color: green;">online</span>

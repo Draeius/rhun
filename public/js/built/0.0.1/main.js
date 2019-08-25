@@ -1184,7 +1184,7 @@ var navigation;
                     }
                 }
             }
-            return null;
+            return text;
         };
         KeyNavigator.prototype.navigate = function (event) {
             if (event.altKey) {

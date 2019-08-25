@@ -41,7 +41,7 @@ module navigation {
                     }
                 }
             }
-            return null;
+            return text;
         }
 
         public navigate(event: KeyboardEvent) {

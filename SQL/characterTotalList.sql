@@ -1,5 +1,5 @@
 
--- Fragt die Daten ab, die für die Darstellung der Kämpferliste im PreLogin benötigt wird.
+-- Fragt die Daten ab, die für die Darstellung der Kämpferliste benötigt wird.
 SELECT 
     x.name,
     x.gender,
@@ -15,7 +15,8 @@ SELECT
     x.locationUuid,
     x.dead,
     x.last_active,
-    x.is_online
+    x.is_online,
+    x.adult
 FROM
     (SELECT 
         c.name,
@@ -29,6 +30,7 @@ FROM
             t.title,
             t.is_in_front,
             t.is_activated AS tActivated,
+            DATE(a.birthday) + INTERVAL 18 YEAR <= CURDATE() AS adult,
             g.name AS guildName,
             g.tag AS guildTag,
             r.name AS raceName,
@@ -39,6 +41,7 @@ FROM
         characters c
     LEFT JOIN character_names n ON c.id = n.owner_id
     LEFT JOIN character_titles t ON c.id = t.owner_id
+    LEFT JOIN accounts a ON c.account_id = a.id
     LEFT JOIN guilds g ON c.guild_id = g.id
     LEFT JOIN races r ON c.race_id = r.id
     LEFT JOIN locations l ON c.location_id = l.id) x

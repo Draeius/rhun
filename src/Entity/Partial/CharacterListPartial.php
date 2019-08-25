@@ -54,6 +54,12 @@ class CharacterListPartial extends CharacterNamePartial {
      */
     protected $online;
 
+    /**
+     *
+     * @var bool
+     */
+    protected $adult;
+
     function getGender() {
         return $this->gender;
     }
@@ -82,6 +88,10 @@ class CharacterListPartial extends CharacterNamePartial {
         return $this->online;
     }
 
+    function getAdult() {
+        return $this->adult;
+    }
+
     public static function FROM_DATA(array $data): CharacterNamePartial {
         $partial = new self();
         $partial->fromData($data);
@@ -95,8 +105,9 @@ class CharacterListPartial extends CharacterNamePartial {
         $this->lastActive = DateTimeService::getDateTime($data['last_active']);
         $this->online = $data['is_online'];
         $this->gender = $data['gender'];
+        $this->adult = $data['adult'];
 
-        $this->location = LocationNamePartial::fromData(['title' => $data['locationTitle'],'id' => $data['locationId'],'uuid' => $data['locationUuid']]);
+        $this->location = LocationNamePartial::fromData(['title' => $data['locationTitle'], 'id' => $data['locationId'], 'uuid' => $data['locationUuid']]);
         $this->race = RacePartial::fromData(['name' => $data['raceName'], 'city' => '', 'description' => '']);
     }
 
