@@ -253,7 +253,7 @@
 <div id="create" class="tabcontent">
     {% if account.validated and not account.isBanned() and account.birthday() %}
         <p style="color: blue;">
-            Du kannst noch <span style="color: lightblue;"> account.maxChars - account.getCharacters() | length </span> weitere Charaktere erstellen.
+            Du kannst noch <span style="color: lightblue;">{{ account.maxChars - chars | length }}</span> weitere Charaktere erstellen.
             Einen neuen Charakterslot <a href="/account/buy_slot" style="color: lightblue;"> kaufen</a>. <br />
             Dafür müssen alle deine Charaktere mindestens {{ neededPosts }} Posts haben und du brauchst {{ neededGems }} Edelsteine auf deinem Account.
         </p>

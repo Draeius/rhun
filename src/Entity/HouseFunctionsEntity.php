@@ -24,14 +24,14 @@ class HouseFunctionsEntity extends RhunEntity {
     protected $savingsActive = false;
 
     /**
-     * How many rooms the house may have
+     * 
      * @var int
      * @Column(type="integer")
      */
     protected $savingsPlatin = 0;
 
     /**
-     * How many rooms the house may have
+     * 
      * @var int
      * @Column(type="integer")
      */
@@ -43,27 +43,6 @@ class HouseFunctionsEntity extends RhunEntity {
      * @Column(type="boolean")
      */
     protected $titleStorageActive = false;
-
-    /**
-     * 
-     * @var int
-     * @Column(type="integer")
-     */
-    protected $trapdoor = 0;
-
-    /**
-     * 
-     * @var int
-     * @Column(type="integer")
-     */
-    protected $watchdog = 0;
-
-    /**
-     * 
-     * @var int
-     * @Column(type="integer")
-     */
-    protected $guard = 0;
 
     public function getSavingsActive() {
         return $this->savingsActive;
@@ -79,30 +58,6 @@ class HouseFunctionsEntity extends RhunEntity {
 
     public function getTitleStorageActive() {
         return $this->titleStorageActive;
-    }
-
-    public function getTrapdoor() {
-        return $this->trapdoor;
-    }
-
-    public function getWatchdog() {
-        return $this->watchdog;
-    }
-
-    public function getGuard() {
-        return $this->guard;
-    }
-
-    public function setTrapdoor($trapdoor) {
-        $this->trapdoor = $trapdoor;
-    }
-
-    public function setWatchdog($watchdog) {
-        $this->watchdog = $watchdog;
-    }
-
-    public function setGuard($guard) {
-        $this->guard = $guard;
     }
 
     public function setTitleStorageActive($titleStorageActive) {

@@ -46,7 +46,7 @@ class RPCharacter extends CharacterBase {
     /**
      * The messages this character has received
      * @var ArrayCollection
-     * @OneToMany(targetEntity="Message", mappedBy="addressee", fetch="EXTRA_LAZY")
+     * @OneToMany(targetEntity="Message", mappedBy="addressee", fetch="EXTRA_LAZY", cascade={"remove"})
      */
     protected $receivedMessages;
 

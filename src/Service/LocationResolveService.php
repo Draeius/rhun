@@ -25,7 +25,7 @@ class LocationResolveService {
     }
 
     public function getLocation(Character $character, $locationId): LocationBase {
-        $location = $this->locRepo->find($locationId);
+        $location = $this->locRepo->findOneByEncodedUuid($locationId);
 
         if (!$this->isValidLocation($location, $character)) {
             return $character->getLocation();

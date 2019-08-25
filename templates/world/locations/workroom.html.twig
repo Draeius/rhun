@@ -1,0 +1,374 @@
+
+{% if house.getOwner().getId() == character.getId() %}
+    <link href="{{asset('bundles/codemirror/lib/codemirror.css')}}" rel='stylesheet' type='text/css' />
+
+    <script src="{{asset('bundles/codemirror/lib/codemirror.js')}}"></script>
+    <script src="{{asset('bundles/codemirror/mode/javascript/javascript.js')}}"></script>
+    <script src="{{asset('bundles/codemirror/mode/xml/xml.js')}}"></script>
+
+    <script>
+        var messenger, preview;
+        $(document).ready(function () {
+            messenger = new mail.Messenger();
+        })
+
+        function getLocation(location) {
+            if (location == 0) {
+                var form = document.getElementById("room_edit");
+                form.title.value = "";
+                form.description_spring.innerHTML = "";
+                form.description_summer.innerHTML = "";
+                form.description_fall.innerHTML = "";
+                form.description_winter.innerHTML = "";
+                return;
+            }
+            var con = new Ajax.AjaxConnector();
+            con.getData('location/get', {"location": location}, function (location) {
+                var form = document.getElementById("room_edit");
+                form.title.value = location.title;
+                form.description_spring.innerHTML = location.description_spring;
+                form.description_summer.innerHTML = location.description_summer;
+                form.description_fall.innerHTML = location.description_fall;
+                form.description_winter.innerHTML = location.description_winter;
+            });
+        }
+
+        function deleteInhabitant(id) {
+            document.forms.removeInhab.char.value = id;
+            document.forms.removeInhab.submit();
+        }
+
+        function save() {
+            var con = new Ajax.AjaxConnector();
+            con.getData('house/workroom/update/{{uuid}}', {data: exportNetwork()}, function (json) {
+                data = JSON.parse(json);
+                if (data.MSG) {
+                    alert(data.MSG);
+                } else {
+                    console.log(data);
+                }
+            });
+        }
+
+
+        var nodes = new vis.DataSet({{locData |raw}});
+        var edges = new vis.DataSet({{navData |raw}});
+        var network = null;
+
+        var data = null;
+
+        function setDefaultLocale() {
+            var defaultLocal = 'de';
+            var select = document.getElementById('locale');
+            select.selectedIndex = 0; // set fallback value
+            for (var i = 0, j = select.options.length; i < j; ++i) {
+                if (select.options[i].getAttribute('value') === defaultLocal) {
+                    select.selectedIndex = i;
+                    break;
+                }
+            }
+        }
+
+        function destroy() {
+            if (network !== null) {
+                network.destroy();
+                network = null;
+            }
+        }
+
+        function addConnections(elem, index) {
+            // need to replace this with a tree of the network, then get child direct children of the element
+            elem.connections = network.getConnectedNodes(index);
+        }
+
+        function exportNetwork() {
+            var nodes = objectToArray(network.getPositions());
+
+            for (var index = 0; index < nodes.length; index++) {
+                addConnections(nodes[index], nodes[index].id);
+            }
+
+            // pretty print node data
+            var exportValue = JSON.stringify(nodes, undefined, 2);
+
+            return exportValue;
+        }
+
+        function getNodeData(data) {
+            var networkNodes = [];
+
+            data.forEach(function (elem, index, array) {
+                networkNodes.push({id: elem.id, label: elem.id, x: elem.x, y: elem.y});
+            });
+
+            return new vis.DataSet(networkNodes);
+        }
+
+        function getNodeById(data, id) {
+            for (var n = 0; n < data.length; n++) {
+                if (data[n].id == id) {  // double equals since id can be numeric or string
+                    return data[n];
+                }
+            }
+            ;
+
+            throw 'Can not find id \'' + id + '\' in data';
+        }
+
+        function getEdgeData(data) {
+            var networkEdges = [];
+
+            data.forEach(function (node) {
+                // add the connection
+                node.connections.forEach(function (connId, cIndex, conns) {
+                    networkEdges.push({from: node.id, to: connId});
+                    let cNode = getNodeById(data, connId);
+
+                    var elementConnections = cNode.connections;
+
+                    // remove the connection from the other node to prevent duplicate connections
+                    var duplicateIndex = elementConnections.findIndex(function (connection) {
+                        return connection == node.id; // double equals since id can be numeric or string
+                    });
+
+
+                    if (duplicateIndex != -1) {
+                        elementConnections.splice(duplicateIndex, 1);
+                    }
+                    ;
+                });
+            });
+
+            return new vis.DataSet(networkEdges);
+        }
+
+        function objectToArray(obj) {
+            return Object.keys(obj).map(function (key) {
+                obj[key].id = key;
+                return obj[key];
+            });
+        }
+
+        function resizeExportArea() {
+            exportArea.style.height = (1 + exportArea.scrollHeight) + "px";
+        }
+
+
+        function draw() {
+            destroy();
+
+            var data = {
+                nodes: nodes,
+                edges: edges
+            };
+
+            // create a network
+            var container = document.getElementById('mynetwork');
+            var options = {
+                locale: document.getElementById('locale').value,
+                manipulation: {
+                    addEdge: function (data, callback) {
+                        if (data.from == data.to) {
+                            return;
+                        } else {
+                            data.arrows = 'to, from'
+                            callback(data);
+                        }
+                    },
+                    addNode: false,
+                    deleteNode: false
+                }
+            };
+
+            network = new vis.Network(container, data, options);
+        }
+
+        function init() {
+            setDefaultLocale();
+            draw();
+        }
+    </script>
+    <ul class="tab">
+        <li><a class="tablinks" onclick="content.ContentManager.openTab(event, 'manage')">Bewohner verwalten</a></li>
+        <li><a class="tablinks" onclick="content.ContentManager.openTab(event, 'build')">Räume anbauen</a></li>
+        <li><a class="tablinks" onclick="content.ContentManager.openTab(event, 'edit')">Räume bearbeiten</a></li>
+        <li><a class="tablinks" onclick="content.ContentManager.openTab(event, 'edit_house')">Haus bearbeiten</a></li>
+        <li><a class="tablinks" onclick="content.ContentManager.openTab(event, 'organize_rooms')">Räume anordnen</a></li>
+    </ul>
+
+    <div id="manage" class="tabcontent">
+        <table>
+            <tr>
+                <td>
+                    <p>
+                        {{'`dEinen Bewohner hinzufügen:' |colorize |raw }}
+                    </p>
+                    {{('`dDies kostet dich '~addInhabPrice~'.') |colorize |raw }}
+                    <form name="messageForm" action="{{ path('add_inhabitant', {'uuid': uuid}) }}" method="POST">
+                        Spieler: <br />
+                        <input name="target" /> <br />
+                        <input type="hidden" name="houseId" value="{{ house.getId() }}" />
+                        <input type="submit" value="Senden" />
+                    </form>
+                </td>
+                <td style="vertical-align: top">
+                    Empfänger suchen:<br />
+                    <input onkeyup="messenger.search(this.value)" /><br />
+                    <ul id="searchList">
+
+                    </ul>
+                </td>
+            </tr>
+        </table>
+        <table>
+            <th>Name</th>
+            <th>Rasse</th>
+            <th>Stadt</th>
+            <th>Aktion</th>
+                {% if house.getInhabitants() |length == 0 %}
+                <tr>
+                    <td>
+                        Niemand
+                    </td>
+                    <td>
+                        Keine
+                    </td>
+                    <td>
+                        Keine
+                    </td>
+                    <td>
+                        Keine
+                    </td>
+                </tr>
+            {% else %}
+                {% for char in house.getInhabitants() %}
+                    <tr>
+                        <td>
+                            {{ char |charName |colorize |raw }}
+                        </td>
+                        <td>
+                            {{ char.getRace().getName() |colorize |raw }}
+                        </td>
+                        <td>
+                            {% for city in cities %}
+                                {% if char.getRace.getCity() == city.getCity() %}
+                                    {{ city.getColoredName() |colorize |raw }}
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td onclick="deleteInhabitant({{ char.getId() }})">Entfernen</td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+        </table>
+        <form name="removeInhab" action="{{ path('remove_inhabitant', {'uuid': uuid}) }}" method="POST">
+            <input type="hidden" name="char" />
+            <input type="hidden" name="houseId" value="{{ house.getId() }}" />
+        </form>
+    </div>
+
+    <div id="build" class="tabcontent">
+        Einen weiteren Raum anbauen kostet dich {{ buyRoomPrice }} <br />
+        {% if rooms |length |houseLevel != (rooms |length + 1) |houseLevel %}
+            <span style="color: red; font-size: 1.5em;">Dies würde die Stufe deines Hauses erhöhen.</span>
+        {% endif %}
+        <form method="POST" action="{{ path('add_room', {'uuid': uuid}) }}">
+            <select name="type">
+                <option value="Leer">Leerer Raum</option>
+                <option value="Küche">Küche</option>
+                <option value="CS Raum">CS Raum</option>
+                <option value="Lagerraum">Lagerraum</option>
+                <!--<option value="<?php echo RoomService::TYPE_BATHROOM ?>">Badezimmer</option>-->        
+            </select><br />
+            <br/>
+            <input type="hidden" name="houseId" value="{{ house.getId() }}" />
+            <input type="submit" value="Anbauen" />
+        </form>
+    </div>
+
+    <div id="edit" class="tabcontent">
+        <form  id="room_edit" action="{{ path('room_edit', {'uuid': uuid}) }}" method="POST">
+            <select name="location" onchange="getLocation(this.value);">
+                <option value="0">Einen Raum wählen</option>
+                {% for room in rooms %}
+                    <option value="{{ room.getId() }}">{{ room.getName() }}</option>
+                {% endfor %}
+            </select><br />
+            Name: <br />
+            <input name="title" /><br />
+            Beschreibung Frühling: <br />
+            <textarea name="description_spring"></textarea><br />
+            Beschreibung Sommer: <br />
+            <textarea name="description_summer"></textarea><br />
+            Beschreibung Herbst: <br />
+            <textarea name="description_fall"></textarea><br />
+            Beschreibung Winter: <br />
+            <textarea name="description_winter"></textarea><br />
+            <input type="hidden" name="houseId" value="{{ house.getId() }}" />
+            <input type="submit" value="Ändern" />
+        </form>
+    </div>
+
+    <div id="edit_house" class="tabcontent">
+        <form method="POST" action="{{ path('house_edit', {'uuid': uuid, 'id': house.getId()}) }}">
+            <input name="showOwner" type="checkbox" {% if house.getShowOwner() %} checked {% endif %} /> Namensschild zeigen:<br /><br />
+
+            Avatar:<br />
+            <input name="avatar" size="50" value="{{house.getAvatar()}}"/><br /><br />    
+
+            <h4>Script (optional)</h4>
+            <span style="color: green">Hier kannst du alles an JavaScript reinschreiben, was deine Seite so braucht (ein script tag brauchst du nicht angeben).<br />
+                Alle script elemente in deiner Biographie werden entfernt werden.
+            </span><br />
+            <textarea id="script_area" name="script">{{house.getScript()}}</textarea>
+
+            <h4>Beschreibung</h4>
+            <a class="clickable"  style="font-size: 1.2em;" href="/colorlist" target="_blank">{{ '`pF`ea`Nr`Gb`Le`Kn`Ll`Gi`Ns`et`pe' |colorize |raw }}</a><br /><br />
+            <textarea id="description_area" name="text" data-preview="preview">{{house.getDescription()}}</textarea><br /><br />
+            <input type="submit" value="Haus speichern"/>
+        </form><br /><br />
+
+        <h3>Vorschau:</h3>
+        <div id="preview">
+
+        </div>
+    </div>
+
+    <div id="organize_rooms" class="tabcontent" style="height: 900px;">
+
+        <p style="color: red">
+            Die Pfeile werden doppelt angezeigt, werden aber nur einfach benötigt. Dies lässt sich leider nicht vermeiden. Ein Pfeil meint immer eine Navigation in beide
+            Richtungen. Also hin und zurück.
+        </p>
+        <button onclick="save();">Speichern</button>
+
+        <select style="display: none;" id="locale" onchange="draw();">
+            <option value="en">en</option>
+            <option value="de">de</option>
+            <option value="es">es</option>
+            <option value="it">it</option>
+            <option value="nl">nl</option>
+            <option value="pt-br">pt</option>
+            <option value="ru">ru</option>
+        </select>
+
+        <div id="mynetwork" style="height: 800px">
+
+        </div>
+    </div>
+
+    <script>
+        var scriptArea = CodeMirror.fromTextArea(document.getElementById("script_area"), {
+            lineNumbers: true,
+            mode: "text/javascript",
+            autoRefresh: true,
+        });
+        var descriptionArea = CodeMirror.fromTextArea(document.getElementById("description_area"), {
+            lineNumbers: true,
+            mode: "text/html",
+            autoRefresh: true,
+        });
+        init();
+    </script>
+
+{% endif %}

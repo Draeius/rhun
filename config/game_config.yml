@@ -41,6 +41,31 @@ house:
             gold: 0
             platin: 150
             gems: 0
+    intrusion_chance: 12 #1d20 Standardchance, dass ein Einbruch fehlschlägt
+    house_area: 10
+    nav_update:
+        price: #Wenn die Orte neu angeordnet werden, muss dies bezahlt werden
+            gold: 0
+            platin: 150
+            gems: 0
+    key:
+        key_per_room: 1 #Die Anzahl Schlüssel, die man pro Raum um sonst verteilen kann
+        price:
+            gold: 1000
+            platin: 150
+            gems: 0
+    levels:
+        1: Verschlag
+        4: Bruchbude
+        5: Laube
+        7: Hütte
+        9: Holzhäuschen
+        11: Häuschen
+        14: Haus
+        17: Villa
+        21: Anwesen
+        26: Residenz
+    max_rooms: 26 #Ab dieser Stufe kostet jeder Raum soviel wie ein neues Haus
             
 guild:
     founding_price:

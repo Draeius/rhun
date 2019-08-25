@@ -9,6 +9,7 @@
 namespace App\Service\NavbarFactory;
 
 use App\Controller\WorldController;
+use App\Doctrine\UuidEncoder;
 use App\Entity\Character;
 use App\Entity\Location;
 use App\Entity\LocationBase;
@@ -54,7 +55,7 @@ class WorldNavbarFactory {
      * @var ConfigService;
      */
     private $config;
-    
+
     /**
      *
      * @var EntityManagerInterface
@@ -104,9 +105,10 @@ class WorldNavbarFactory {
             }
             return;
         }
+        $encoder = new UuidEncoder();
         if ($nav->getTargetLocation() != NULL) {
             $this->navbarService->addNav($nav->getColoredName(), WorldController::STANDARD_WORLD_ROUTE_NAME,
-                    ['uuid' => $tabIdentifier->getIdentifier(), 'locationId' => $nav->getTargetLocation()->getId()]);
+                    ['uuid' => $tabIdentifier->getIdentifier(), 'locationId' => $encoder->encode($nav->getTargetLocation()->getUuid())]);
             return;
         }
         $this->navbarService->addNavhead($nav->getColoredName());

@@ -3,9 +3,6 @@
 namespace App\Entity;
 
 use App\Entity\Character;
-use App\Entity\HouseLocation;
-use App\Entity\Location;
-use App\Entity\RhunEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
@@ -13,7 +10,6 @@ use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\JoinTable;
 use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\ManyToOne;
-use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\OneToOne;
 use Doctrine\ORM\Mapping\Table;
 
@@ -21,18 +17,10 @@ use Doctrine\ORM\Mapping\Table;
  * A house, buildable by a character
  *
  * @author Draeius
- * @Entity()
+ * @Entity(repositoryClass="App\Repository\HouseRepository")
  * @Table(name="houses")
  */
-class House extends RhunEntity {
-
-    /**
-     * Where this house is standing
-     * @var LocationEntity
-     * @ManyToOne(targetEntity="Location")
-     * @JoinColumn(name="location_id", referencedColumnName="id")
-     */
-    protected $location;
+class House extends LocationBasedEntity {
 
     /**
      * The title of this house
@@ -51,7 +39,11 @@ class House extends RhunEntity {
     /**
      * The rooms in this house
      * @var Room[]
-     * @OneToMany(targetEntity="HouseLocation", mappedBy="house", cascade={"remove", "persist"}, fetch="EXTRA_LAZY")
+     * @ManyToMany(targetEntity="Location", cascade={"remove", "persist"}, fetch="EXTRA_LAZY")
+     * @JoinTable(name="house_locations",
+     *      joinColumns={@JoinColumn(name="house_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@JoinColumn(name="location_id", referencedColumnName="id")}
+     *      )
      */
     protected $rooms;
 
@@ -77,14 +69,14 @@ class House extends RhunEntity {
     /**
      * The description of this house
      * @var string
-     * @Column(type="text")
+     * @Column(type="text", nullable=true)
      */
     protected $description;
 
     /**
      * The description of this house
      * @var string
-     * @Column(type="text")
+     * @Column(type="text", nullable=true)
      */
     protected $script;
 
@@ -98,10 +90,21 @@ class House extends RhunEntity {
     /**
      * 
      * @var HouseFunctionsEntity
-     * @OneToOne(targetEntity="HouseFunctionsEntity", fetch="EXTRA_LAZY", cascade={"remove"})
+     * @OneToOne(targetEntity="HouseFunctionsEntity", fetch="EXTRA_LAZY", cascade={"persist", "remove"})
      * @JoinColumn(name="functions_id", referencedColumnName="id")
      */
     protected $houseFunctions;
+
+    /**
+     *
+     * @var BurglarAlarm[]
+     * @ManyToMany(targetEntity="BurglarAlarm", fetch="EXTRA_LAZY")
+     * @JoinTable(name="house_alarms",
+     *          joinColumns={@JoinColumn(name="house_id", referencedColumnName="id")},
+     *          inverseJoinColumns={@JoinColumn(name="alarm_id", referencedColumnName="id")}
+     *          )
+     */
+    protected $alarms;
 
     /**
      * 
@@ -109,6 +112,14 @@ class House extends RhunEntity {
      * @Column(type="boolean")
      */
     protected $showOwner;
+
+    /**
+     *
+     * @var Location
+     * @OneToOne(targetEntity="Location", fetch="EXTRA_LAZY")
+     * @JoinColumn(name="entrance_id", referencedColumnName="id")
+     */
+    protected $entrance;
 
     public function __construct() {
         $this->rooms = new ArrayCollection();
@@ -161,10 +172,6 @@ class House extends RhunEntity {
         return $this->avatar;
     }
 
-    public function getLocation() {
-        return $this->location;
-    }
-
     public function getTitle() {
         return $this->title;
     }
@@ -175,6 +182,22 @@ class House extends RhunEntity {
 
     public function getShowOwner() {
         return $this->showOwner;
+    }
+
+    function getEntrance() {
+        return $this->entrance;
+    }
+
+    function getAlarms() {
+        return $this->alarms;
+    }
+
+    function setAlarms($alarms) {
+        $this->alarms = $alarms;
+    }
+
+    function setEntrance($entrance) {
+        $this->entrance = $entrance;
     }
 
     public function setShowOwner($showOwner) {
@@ -189,10 +212,6 @@ class House extends RhunEntity {
         $this->title = $title;
     }
 
-    public function setLocation(LocationEntity $location) {
-        $this->location = $location;
-    }
-
     public function setMaxRooms($maxRooms) {
         $this->maxRooms = $maxRooms;
     }
@@ -201,9 +220,8 @@ class House extends RhunEntity {
         $this->rooms = $rooms;
     }
 
-    public function addRoom(Room $room) {
+    public function addRoom(Location $room) {
         $this->rooms[] = $room;
-        $room->setHouse($this);
     }
 
     public function setOwner(Character $owner) {

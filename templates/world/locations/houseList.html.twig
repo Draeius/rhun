@@ -1,0 +1,71 @@
+<table>
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Stufe
+            </th>
+            <th>
+                Besitzer
+            </th>
+            <th>
+                Aktionen
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for house in houses %}
+            <tr>
+                <td>
+                    {{ house.getTitle() |colorize |raw }}
+                </td>
+                <td>
+                    {{ house.getRooms() |length |houseLevel }}
+                </td>
+                <td>
+                    {% if house.getShowOwner() %}
+                        {{ house.getOwner() |charName(false) |colorize |raw }}
+                    {% else %}
+                        Unbekannt
+                    {% endif %}
+                </td>
+                <td>
+                    <table>
+                        <tr>
+                            <td>
+                                {% if character.getId == house.getOwner().getId() %}
+                                    <a href="{{path('house_enter', {'uuid': uuid, 'id': house.getId()})}}">Betreten</a>
+                                {% else %}
+                                    {% for inhabitant in house.getInhabitants() %}
+                                        {% if inhabitant.getId() == character.getId() %}
+                                            <a href="{{path('house_enter', {'uuid': uuid, 'id': house.getId()})}}">Betreten</a>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if character.getId != house.getOwner().getId() %}
+                                    <a href="{{path('house_break', {'uuid': uuid, 'id': house.getId()})}}">Einbrechen</a>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{path('house_show', {'uuid': uuid, 'id': house.getId()})}}">Anschauen</a>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<br />
+<br />
+Ein neues Haus bauen ({{ buildPrice }}): <br />
+<form action="{{path('house_build', {'uuid': uuid})}}" method="POST">
+    Name:<br />
+    <input name="title" size="20" maxlength="128"/><br />
+    <input type="submit" value="Bauen" />
+</form>

@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping\Table;
  * This class describes a usable path from one Location to another
  *
  * @author Draeius
- * @Entity
+ * @Entity(repositoryClass="App\Repository\NavigationRepository")
  * @Table(name="navigations")
  */
 class Navigation extends LocationBasedEntity {

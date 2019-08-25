@@ -64,7 +64,7 @@ class WorldController extends BasicController {
         return $this->render($this->getSkinFile(), $this->paramGenerator->getWorldParams($location, $character, $navRepo));
     }
 
-    private function persistLocation(EntityManagerInterface $manager, Character $character, Location $location) {
+    private function persistLocation(EntityManagerInterface $manager, Character &$character, Location $location) {
         $character->setLocation($location);
         $manager->flush($character);
     }

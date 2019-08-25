@@ -137,6 +137,36 @@ class Location extends LocationBase {
      */
     protected $post = false;
 
+    /**
+     *
+     * @var bool
+     * @Column(type="boolean")
+     */
+    protected $cs = false;
+
+    //house location options
+
+    /**
+     *
+     * @var bool
+     * @Column(type="boolean")
+     */
+    protected $bedroom = false;
+
+    /**
+     *
+     * @var bool
+     * @Column(type="boolean")
+     */
+    protected $workroom = false;
+
+    /**
+     *
+     * @var bool
+     * @Column(type="boolean")
+     */
+    protected $storage = false;
+
     function getArea(): Area {
         return $this->area;
     }
@@ -203,6 +233,26 @@ class Location extends LocationBase {
 
     function getSchool() {
         return $this->school;
+    }
+
+    function getPost() {
+        return $this->post;
+    }
+
+    function getCs() {
+        return $this->cs;
+    }
+
+    function getBedroom() {
+        return $this->bedroom;
+    }
+
+    function getWorkroom() {
+        return $this->workroom;
+    }
+
+    function getStorage() {
+        return $this->storage;
     }
 
     function setArea(Area $area) {
@@ -273,12 +323,32 @@ class Location extends LocationBase {
         $this->school = $school;
     }
 
+    function setPost($post) {
+        $this->post = $post;
+    }
+
+    function setCs($cs) {
+        $this->cs = $cs;
+    }
+
+    function setBedroom($bedroom) {
+        $this->bedroom = $bedroom;
+    }
+
+    function setWorkroom($workroom) {
+        $this->workroom = $workroom;
+    }
+
+    function setStorage($storage) {
+        $this->storage = $storage;
+    }
+
     public function getDataArray(): array {
         $fields = parent::getDataArray();
         unset($fields['area']);
         return $fields;
     }
-    
+
     protected function getClassName(): string {
         return 'App\Entity\Location';
     }

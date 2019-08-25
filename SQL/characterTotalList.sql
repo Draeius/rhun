@@ -11,6 +11,8 @@ SELECT
     x.raceName,
     x.level,
     x.locationTitle,
+    x.locationId,
+    x.locationUuid,
     x.dead,
     x.last_active,
     x.is_online
@@ -30,7 +32,9 @@ FROM
             g.name AS guildName,
             g.tag AS guildTag,
             r.name AS raceName,
-            l.name AS locationTitle
+            l.name AS locationTitle,
+            l.id AS locationId,
+            l.uuid AS locationUuid
     FROM
         characters c
     LEFT JOIN character_names n ON c.id = n.owner_id

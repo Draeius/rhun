@@ -92,11 +92,11 @@ class CharacterListPartial extends CharacterNamePartial {
         parent::fromData($data);
         $this->level = $data['level'];
         $this->dead = $data['dead'];
-        $this->lastActive = DateTimeService::getDateTime($data['lastActive']);
-        $this->online = $data['online'];
+        $this->lastActive = DateTimeService::getDateTime($data['last_active']);
+        $this->online = $data['is_online'];
         $this->gender = $data['gender'];
 
-        $this->location = LocationNamePartial::fromData(['title' => $data['locationTitle']]);
+        $this->location = LocationNamePartial::fromData(['title' => $data['locationTitle'],'id' => $data['locationId'],'uuid' => $data['locationUuid']]);
         $this->race = RacePartial::fromData(['name' => $data['raceName'], 'city' => '', 'description' => '']);
     }
 

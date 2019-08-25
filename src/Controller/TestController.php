@@ -56,10 +56,10 @@ class TestController extends BasicController {
     public function populateData(Request $request, EntityManagerInterface $eManager, LocationRepository $locRepo, AreaRepository $areaRepo, WeaponTemplateRepository $wepRepo,
             ArmorTemplateRepository $armRepo) {
         $data = $this->getData();
-//        $this->populateAreas($data['areas'], $eManager);
-//        $eManager->flush();
-//        $this->populateLocations($data['location'], $eManager, $areaRepo);
-//        $eManager->flush();
+        $this->populateAreas($data['areas'], $eManager);
+        $eManager->flush();
+        $this->populateLocations($data['location'], $eManager, $areaRepo);
+        $eManager->flush();
         $this->populateItems($data['items'], $eManager);
         $eManager->flush();
         $this->populateRaces($data['races'], $locRepo, $wepRepo, $armRepo, $eManager);
@@ -132,8 +132,8 @@ class TestController extends BasicController {
             $race->setDescription($data['description']);
             $race->setLocation($locRepo->find($data['start_loc_id']));
             $race->setDeathLocation($locRepo->find($data['death_loc_id']));
-            $race->setDefaultArmor($armRepo->find(2));
-            $race->setDefaultWeapon($wepRepo->find(3));
+            $race->setDefaultArmor($armRepo->find(1));
+            $race->setDefaultWeapon($wepRepo->find(2));
             $eManager->persist($race);
         }
     }

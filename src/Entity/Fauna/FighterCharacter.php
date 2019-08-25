@@ -75,7 +75,7 @@ class FighterCharacter extends RPCharacter implements FighterInterface {
     /**
      * The character's weapon
      * @var Weapon  
-     * @ManyToOne(targetEntity="App\Entity\Items\Weapon", cascade={"persist"})
+     * @ManyToOne(targetEntity="App\Entity\Items\Weapon", cascade={"persist", "remove"})
      * @JoinColumn(name="weapon_id", referencedColumnName="id")
      */
     protected $weapon;
@@ -83,15 +83,15 @@ class FighterCharacter extends RPCharacter implements FighterInterface {
     /**
      * Die Zweitwaffe/Schild dieses Charakters
      * @var Weapon  
-     * @ManyToOne(targetEntity="App\Entity\Items\Weapon", cascade={"persist"})
-     * @JoinColumn(name="weapon_id", referencedColumnName="id", nullable=true)
+     * @ManyToOne(targetEntity="App\Entity\Items\Weapon", cascade={"persist", "remove"})
+     * @JoinColumn(name="offhand_weapon_id", referencedColumnName="id", nullable=true)
      */
     protected $offhandWeapon;
 
     /**
      * The character's armor
      * @var Armor 
-     * @ManyToOne(targetEntity="App\Entity\Items\Armor", cascade={"persist"})
+     * @ManyToOne(targetEntity="App\Entity\Items\Armor", cascade={"persist", "remove"})
      * @JoinColumn(name="armor_id", referencedColumnName="id")
      */
     protected $armor;
@@ -106,7 +106,7 @@ class FighterCharacter extends RPCharacter implements FighterInterface {
     /**
      * 
      * @var Spell[] 
-     * @ManyToMany(targetEntity="Spell", cascade={"remove", "persist"})
+     * @ManyToMany(targetEntity="Spell")
      * @JoinTable(name="character_spells",
      *      joinColumns={@JoinColumn(name="character_id", referencedColumnName="id")},
      *      inverseJoinColumns={@JoinColumn(name="spell_id", referencedColumnName="id")}

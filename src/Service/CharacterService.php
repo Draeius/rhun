@@ -2,7 +2,9 @@
 
 namespace App\Service;
 
+use App\Entity\Character;
 use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Description of CharacterService
@@ -23,22 +25,6 @@ class CharacterService {
         return 1000;
     }
 
-//    
-//    public function createChar($name, $gender, User $acct, Race $race, Weapon $weapon, Armor $armor): Character {
-//        $char = new Character();
-//        $char->setName($name);
-//        $char->setAccount($acct);
-//        $char->setGender($gender);
-//        $char->setRace($race);
-//        $char->setLocation($race->getStartingLocation());
-//        $char->setWeapon($weapon);
-//        $char->setArmor($armor);
-//        $char->setWallet(new Wallet());
-//        $char->setAttributes(new CharacterAttributes());
-//
-//        return $char;
-//    }
-//
 //    /**
 //     * 
 //     * @param EntityManager $manager
@@ -120,58 +106,40 @@ class CharacterService {
 //        $manager->flush($character);
 //    }
 //
-//    public static function deleteCharacter(EntityManager $em, Character $character) {
-//        self::deleteCharForeignKeyEntities($em, $character);
-//        $em->remove($character);
-//        $em->flush();
-//    }
-//
-//    private static function deleteCharForeignKeyEntities(EntityManager $em, Character $character) {
-//        $em->remove($character->getWallet());
-//        $em->remove($character->getAttributes());
-//
-//        self::deleteEntities($em, $em->getRepository('App:ShortNews')->findByCharacter($character));
-//        self::deleteEntities($em, $em->getRepository('App:Biography')->findByOwner($character));
-//        self::deleteEntities($em, $em->getRepository('App:DiaryEntry')->findByOwner($character));
-//        self::deleteEntities($em, $em->getRepository('App:ColoredName')->findByOwner($character));
-//        self::deleteEntities($em, $em->getRepository('App:Title')->findByOwner($character));
-//        $inventory = $em->getRepository('App:InventoryItem')->findByOwner($character);
-//        foreach ($inventory as $invItem) {
-//            if ($invItem->getItem() instanceof Weapon || $invItem->getItem() instanceof Armor) {
-//                $item = $invItem->getItem();
-//                $em->remove($invItem);
-//                $em->remove($item);
-//            }
-//            $em->remove($invItem);
-//        }
-//        self::deleteEntities($em, $em->getRepository('App:Post')->findByAuthor($character));
-//        self::deleteEntities($em, $em->getRepository('App:Message')->findBySender($character));
-//        self::deleteEntities($em, $em->getRepository('App:Message')->findByAddressee($character));
-//        $characterHouses = $em->getRepository('HouseBundle:House')->findByOwner($character);
-//        foreach ($characterHouses as $house) {
-//            $rooms = $house->getRooms();
-//            foreach ($rooms as $room) {
-//                $chars = $em->getRepository('App:Character')->findByLocation($room->getLocation());
-//                if ($chars) {
-//                    foreach ($chars as $char) {
-//                        $char->setLocation($char->getRace()->getStartingLocation());
-//                    }
-//                }
-//            }
-//        }
-//        self::deleteEntities($em, $characterHouses);
-//        $houses = $em->getRepository('HouseBundle:House')->findAll();
-//        foreach ($houses as $house) {
-//            if ($house->isInhabitant($character)) {
-//                $house->removeInhabitant($character);
-//                $em->persist($house);
-//            }
-//        }
-//    }
-//
-//    private static function deleteEntities(EntityManager $em, $entities) {
-//        foreach ($entities as $item) {
-//            $em->remove($item);
-//        }
-//    }
+    public static function deleteCharacter(EntityManagerInterface $eManager, Character $character) {
+        self::deleteCharForeignKeyEntities($eManager, $character);
+        $eManager->remove($character);
+        $eManager->flush();
+    }
+
+    private static function deleteCharForeignKeyEntities(EntityManagerInterface $eManager, Character $character) {
+        self::deleteEntities($eManager, $eManager->getRepository('App:ShortNews')->findByCharacter($character));
+        self::deleteEntities($eManager, $eManager->getRepository('App:Post')->findByOwner($character));
+        $characterHouses = $eManager->getRepository('App:House')->findByOwner($character);
+        foreach ($characterHouses as $house) {
+            $rooms = $house->getRooms();
+            foreach ($rooms as $room) {
+                $chars = $eManager->getRepository('App:Character')->findByLocation($room->getLocation());
+                if ($chars) {
+                    foreach ($chars as $char) {
+                        $char->setLocation($char->getRace()->getStartingLocation());
+                    }
+                }
+            }
+        }
+        self::deleteEntities($eManager, $characterHouses);
+        $houses = $eManager->getRepository('App:House')->findByInhabitant($character);
+        foreach ($houses as $house) {
+            $house->removeInhabitant($character);
+            $eManager->persist($house);
+        }
+        $eManager->flush();
+    }
+
+    private static function deleteEntities(EntityManagerInterface $em, $entities) {
+        foreach ($entities as $item) {
+            $em->remove($item);
+        }
+    }
+
 }

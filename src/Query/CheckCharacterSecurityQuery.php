@@ -8,6 +8,9 @@
 
 namespace App\Query;
 
+use App\Util\SQLFileLoader;
+use Doctrine\ORM\EntityManagerInterface;
+
 /**
  * Description of CheckCharacterSecurityQuery
  *
@@ -27,7 +30,7 @@ class CheckCharacterSecurityQuery {
 
     public function __invoke(int $characterId, int $accountId): bool {
         $conn = $this->eManager->getConnection();
-        $q = $conn->prepare(SQLFileLoader::getSQLFileContent('checkAccountSecurity'));
+        $q = $conn->prepare(SQLFileLoader::getSQLFileContent('checkCharacterSecurity'));
         $q->bindParam(1, $characterId);
         $q->bindParam(2, $accountId);
         $q->execute();

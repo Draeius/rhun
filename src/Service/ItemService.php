@@ -14,23 +14,25 @@ use App\Entity\Items\WeaponTemplate;
  */
 class ItemService {
 
-    public static function createWeapon(WeaponTemplate $template) {
+    public static function createWeapon(WeaponTemplate $template): Weapon {
         $weapon = new Weapon();
         $weapon->setWeaponTemplate($template);
         $weapon->setDescription($template->getDescription());
         $weapon->setPrice($template->getPrice());
         $weapon->setMadeByPlayer(true);
         $weapon->setName($template->getName());
+        $weapon->setColoredName($template->getColoredName());
         return $weapon;
     }
 
-    public static function createArmor(ArmorTemplate $template) {
+    public static function createArmor(ArmorTemplate $template): Armor {
         $armor = new Armor();
         $armor->setArmorTemplate($template);
         $armor->setDescription($template->getDescription());
         $armor->setPrice($template->getPrice());
         $armor->setMadeByPlayer(true);
         $armor->setName($template->getName());
+        $armor->setColoredName($template->getColoredName());
         return $armor;
     }
 

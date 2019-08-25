@@ -14,7 +14,7 @@ class EditorParamGenerator extends ParamGenerator {
 
     /**
      *
-     * @var \App\Service\EditorNavbarFactory
+     * @var EditorNavbarFactory
      */
     private $navbarFactory;
 

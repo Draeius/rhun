@@ -9,14 +9,15 @@ use App\Form\CreateCharacterType;
 use App\Form\DTO\CreateCharacterDTO;
 use App\Form\Facade\CreateCharacterFacade;
 use App\Repository\BroadcastRepository;
+use App\Repository\CharacterRepository;
 use App\Repository\UserRepository;
 use App\Service\CharacterService;
 use App\Service\ConfigService;
 use App\Service\DateTimeService;
-use App\Service\FormatService;
 use App\Service\NavbarFactory\AccountMngmtNavbarFactory;
 use App\Service\ParamGenerator\AccountMngmtParamGenerator;
 use App\Util\Session\RhunSession;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Stopwatch\Stopwatch;
@@ -103,47 +104,6 @@ class AccountManagementController extends BasicController {
         }
         $manager->flush();
         return $this->redirectToRoute(self::ACCOUNT_MANAGEMENT_ROUTE_NAME);
-    }
-
-    /**
-     * @App\Annotation\Security(needAccount=true)
-     * @Route("/createchar", name="create_char")
-     * @deprecated since version number
-     */
-    public function createCharacter(Request $request, CharacterService $charService, FormatService $formatter) {
-        $this->cleanSession();
-
-        $this->validateRequest($request, array(
-            new StringNotNullValidator('name', 3, 32, 'Dein Name muss mindestens 3 und maximal 32 Zeichen lang sein.'),
-            new NumberNotNullValidator('gender', 'Du musst ein Geschlecht auswählen.'),
-            new NumberNotNullValidator('race', 'Du musst eine Rasse auswählen.')
-        ));
-
-        $success = $this->checkCharSlots();
-        $success = $success && $this->checkCharName($request->get('name'));
-
-        $em = $this->getDoctrine()->getManager();
-
-        $race = $em->getRepository('App:Race')->find($request->get('race'));
-        $success = $success && $this->checkCharRace($race);
-
-        $request['name'] = strip_tags($formatter->parse($request->get("name"), true));
-        $character = $charService->createChar($request->get('name'), $request->get('gender'), $this->getAccount(), $race
-                , WeaponService::getStartingWeapon($em), ArmorService::getStartingArmor($em));
-
-        if (!$success) {
-            return $this->redirectToRoute(self::ACCOUNT_MANAGEMENT_ROUTE_NAME, [
-                        'request' => $request,
-                        '_fragment' => 'create'
-                            ], 307);
-        }
-
-        $em->persist($character);
-
-        $this->addShortNews('`jwurde soeben zum ersten Mal in Rhûn gesichtet.', $character);
-
-        $em->flush();
-        return $this->redirectToRoute(self::ACCOUNT_MANAGEMENT_ROUTE_NAME, ['_fragment' => 'chars']);
     }
 
     /**
@@ -255,9 +215,9 @@ class AccountManagementController extends BasicController {
      * @App\Annotation\Security(needAccount=true)
      * @Route("account/delete")
      */
-    public function deleteAccount() {
-        $account = $this->getAccount();
+    public function deleteAccount(UserRepository $userRepo) {
         $session = new RhunSession();
+        $account = $userRepo->find($session->getAccountID());
         $session->clearData();
         $manager = $this->getDoctrine()->getManager();
         foreach ($account->getCharacters() as $char) {
@@ -269,109 +229,25 @@ class AccountManagementController extends BasicController {
         return $this->redirectToRoute(self::ACCOUNT_MANAGEMENT_ROUTE_NAME);
     }
 
-    private function buildNavbar(User $account) {
-        $count = 0;
-
-        $rep = $this->getDoctrine()->getRepository('App:Message');
-        foreach ($account->getCharacters() as $char) {
-            $count += count($rep->findNewMessages($char));
+    /**
+     * @Route("/char/delete/{char}")
+     * @param int $char
+     */
+    public function deleteChar($char, UserRepository $userRepo, CharacterRepository $charRepo, EntityManagerInterface $eManager) {
+        $session = new RhunSession();
+        $character = $charRepo->find($char);
+        if (!$character) {
+            return $this->redirectToRoute(self::ACCOUNT_MANAGEMENT_ROUTE_NAME);
+        }
+        /* @var $account User */
+        $account = $userRepo->find($session->getAccountID());
+        if (!$userRepo->ownsCharacter($account, $character)) {
+            return $this->redirectToRoute(self::ACCOUNT_MANAGEMENT_ROUTE_NAME);
         }
 
-        $builder = $this->get('app.navbar');
-        if ($account->isBanned() || !$account->getValidated()) {
-            $builder->addNav('Bio Editor (gesperrt)', self::ACCOUNT_MANAGEMENT_ROUTE_NAME)
-                    ->addNav('Tagebuch schreiben (gesperrt)', self::ACCOUNT_MANAGEMENT_ROUTE_NAME)
-                    ->addNav('Taubenschlag (gesperrt)', self::ACCOUNT_MANAGEMENT_ROUTE_NAME);
-        } else {
-            $builder->addNav('Bio Editor', 'bioEditor')
-                    ->addNav('Tagebuch schreiben', 'diary_editor')
-                    ->addNav('Taubenschlag' . ($count > 0 ? ' (Neu: ' . $count . ')' : ''), 'mail_show');
-            if ($account->getUserRole()->getWriteMotd()) {
-                $builder->addNavhead('Motd')
-                        ->addNav('Motd-Creator', 'motd_editor', []);
-            }
-            if ($account->getUserRole()->getEditWorld()) {
-                $builder->addNav('Einstellungen', 'settingsEditor');
-            }
-            if ($account->getUserRole()->getEditMonster()) {
-                $builder->addNavhead('Editoren')
-                        ->addNav('Monster', 'admin_monster', [])
-                        ->addNav('Aktivitäten', 'admin_activity', []);
-            }
-            if ($account->getUserRole()->getReviewPosts()) {
-                $builder->addNavhead('Mod')
-                        ->addNav('Postübersicht', 'post-list');
-            }
-        }
-        $builder->addNavhead('Sonstiges')
-                ->addNav('Karte', 'map')
-                ->addNav('Regeln', 'rules')
-                ->addNav('Kämpferliste', 'list')
-                ->addPopupLink('Discord', 'https://discord.gg/Yu8tYxF')
-                ->addPopupLink('Wiki', 'http://www.rhun-logd.de/wiki')
-                ->addNavhead('Abmelden')
-                ->addNav('Abmelden', 'account_logout', []);
+        CharacterService::deleteCharacter($eManager, $character);
 
-        return $builder;
-    }
-
-    private function getDescriptions($em) {
-        $repo = $em->getRepository('NavigationBundle:Area');
-
-        $seiya = $repo->findOneBy(['city' => 'seiya']);
-        $lerentia = $repo->findOneBy(['city' => 'lerentia']);
-        $manosse = $repo->findOneBy(['city' => 'manosse']);
-        $pyra = $repo->findOneBy(['city' => 'pyra']);
-        $nelaris = $repo->findOneBy(['city' => 'nelaris']);
-        $underworld = $repo->findOneBy(['city' => 'underworld']);
-
-        return [
-            'seiyaDescr' => $seiya->getDescription(),
-            'lerentiaDescr' => $lerentia->getDescription(),
-            'pyraDescr' => $pyra->getDescription(),
-            'manosseDescr' => $manosse->getDescription(),
-            'nelarisDescr' => $nelaris->getDescription(),
-            'underworldDescr' => $underworld->getDescription()
-        ];
-    }
-
-    private function checkCharSlots() {
-        $acct = $this->getAccount();
-        if (count($acct->getCharacters()) >= $acct->getMaxChars()) {
-            $session = new RhunSession('');
-            $session->getFlashBag()->add('error', 'Du hast bereits die maximale Anzahl an Charakteren. Bitte kaufe erst neue Plätze.`n');
-            return false;
-        }
-        return true;
-    }
-
-    private function checkCharName($name) {
-        $char = $this->getDoctrine()->getManager()->getRepository('App:Character')->findOneBy(array('name' => $name));
-        if (!$char) {
-            return true;
-        }
-        $session = new RhunSession('');
-        $session->getFlashBag()->add('error', 'Dieser Name wird bereits benutzt.');
-        return false;
-    }
-
-    private function checkCharRace(Race $race) {
-        if (!$race->getAllowed()) {
-            $session = new RhunSession('');
-            $session->getFlashBag()->add('error', 'Diese Rasse ist nicht erlaubt.');
-            return false;
-        }
-        return true;
-    }
-
-    private function hasNewPost(User $account) {
-        $chars = $account->getCharacters();
-        $result = [];
-        $repo = $this->getDoctrine()->getManager()->getRepository('App:Post');
-        foreach ($chars as $character) {
-            $result[$character->getId()] = $repo->hasBeenAnswered($character) ? '`c`dJa`c' : '`c`$Nein`c';
-        }
-        return $result;
+        return $this->redirectToRoute(self::ACCOUNT_MANAGEMENT_ROUTE_NAME);
     }
 
 }

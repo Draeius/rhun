@@ -65,11 +65,13 @@ class CreateCharacterFacade {
         $character->setNewest(true);
         $character->setActionPoints($actionPoints);
 
-        $this->eManager->createQueryBuilder()->update('App:Character', 'c')
-                ->set('c.newest', 'false')->getQuery()->execute();
         $this->eManager->persist($character->getWeapon());
         $this->eManager->persist($character->getArmor());
+        $this->eManager->flush();
         $this->eManager->persist($character);
+        $this->eManager->flush();
+        $this->eManager->createQueryBuilder()->update('App:Character', 'c')
+                ->set('c.newest', 'false')->getQuery()->execute();
         $this->eManager->flush();
         return $character;
     }
