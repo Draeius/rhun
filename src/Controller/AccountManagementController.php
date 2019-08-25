@@ -13,6 +13,7 @@ use App\Repository\UserRepository;
 use App\Service\CharacterService;
 use App\Service\ConfigService;
 use App\Service\DateTimeService;
+use App\Service\FormatService;
 use App\Service\NavbarFactory\AccountMngmtNavbarFactory;
 use App\Service\ParamGenerator\AccountMngmtParamGenerator;
 use App\Util\Session\RhunSession;
@@ -109,7 +110,7 @@ class AccountManagementController extends BasicController {
      * @Route("/createchar", name="create_char")
      * @deprecated since version number
      */
-    public function createCharacter(Request $request) {
+    public function createCharacter(Request $request, CharacterService $charService, FormatService $formatter) {
         $this->cleanSession();
 
         $this->validateRequest($request, array(
@@ -125,10 +126,8 @@ class AccountManagementController extends BasicController {
 
         $race = $em->getRepository('App:Race')->find($request->get('race'));
         $success = $success && $this->checkCharRace($race);
-        echo('test ' . $success);
 
-        /* @var $charService CharacterService */
-        $charService = $this->get('app.character');
+        $request['name'] = strip_tags($formatter->parse($request->get("name"), true));
         $character = $charService->createChar($request->get('name'), $request->get('gender'), $this->getAccount(), $race
                 , WeaponService::getStartingWeapon($em), ArmorService::getStartingArmor($em));
 
