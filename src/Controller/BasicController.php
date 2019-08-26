@@ -4,6 +4,9 @@ namespace App\Controller;
 
 use App\Doctrine\UuidEncoder;
 use App\Entity\Character;
+use App\Entity\Message;
+use App\Entity\ShortNews;
+use App\Service\DateTimeService;
 use App\Service\SkinService;
 use App\Util\Skin;
 use App\Util\TabIdentification\TabIdentifier;
@@ -66,6 +69,30 @@ class BasicController extends AbstractController {
         $encoder = new UuidEncoder();
         return $this->redirectToRoute(WorldController::STANDARD_WORLD_ROUTE_NAME,
                         ['uuid' => $this->tabIdentifier->getIdentifier(), 'locationId' => $encoder->encode($char->getLocation()->getUuid())]);
+    }
+
+    public function addShortNews(string $content, Character $char) {
+        $news = new ShortNews();
+        $news->setCharacter($char);
+        $news->setContent($content);
+        $news->setCreated(DateTimeService::getDateTime('NOW'));
+
+        $manager = $this->getDoctrine()->getManager();
+        $manager->persist($news);
+        $manager->flush();
+    }
+
+    public function sendSystemPN(string $subject, string $content, Character $char) {
+        $message = new Message();
+        $message->setAddressee($char);
+        $message->setContent($content);
+        $message->setImportant(true);
+        $message->setSender(null);
+        $message->setSubject($subject);
+
+        $manager = $this->getDoctrine()->getManager();
+        $manager->persist($message);
+        $manager->flush();
     }
 
 }
