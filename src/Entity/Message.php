@@ -27,7 +27,7 @@ class Message extends RhunEntity {
      * The sender of this message
      * @var Character 
      * @ManyToOne(targetEntity="Character", inversedBy="messageSent")
-     * @JoinColumn(name="sender_id", referencedColumnName="id")
+     * @JoinColumn(name="sender_id", referencedColumnName="id", nullable=true)
      */
     protected $sender;
 
@@ -107,7 +107,7 @@ class Message extends RhunEntity {
         $this->content = $content;
     }
 
-    public function setSender(Character $sender) {
+    public function setSender(?Character $sender) {
         $this->sender = $sender;
     }
 
