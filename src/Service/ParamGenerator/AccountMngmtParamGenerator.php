@@ -16,6 +16,7 @@ use App\Service\CharacterService;
 use App\Service\DateTimeService;
 use App\Service\NavbarFactory\AccountMngmtNavbarFactory;
 use App\Service\SkinService;
+use App\Util\Session\RhunSession;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\FormInterface;
 
@@ -67,7 +68,6 @@ class AccountMngmtParamGenerator extends ParamGenerator {
     }
 
     public function getStandardParams(User $user, FormInterface $form, BroadcastRepository $repo) {
-
         $codingBroadcast = $repo->findNewestBroadcast(true);
         $broadcast = $repo->findNewestBroadcast(false);
 
@@ -94,6 +94,25 @@ class AccountMngmtParamGenerator extends ParamGenerator {
             'charLogoutRouteName' => LogoutController::LOGOUT_CHARACTER_ROUTE_NAME,
             'skinlist' => $this->skinService->getSkinList()
         ]);
+        return $vars;
+    }
+
+    public function getMailParams($charId, $charName) {
+        $session = new RhunSession();
+        /* @var $account User */
+        $account = $this->eManager->getRepository('App:User')->find($session->getAccountID());
+
+        if ($session->getTabIdentifier()->hasIdentifier()) {
+            $vars = $this->getBaseParams('Taubenschlag', $this->navFactory->buildMailNavbar($this->charRepo->find($session->getCharacterID())));
+        } else {
+            $vars = $this->getBaseParams('Taubenschlag', $this->navFactory->buildMailNavbar(null));
+        }
+
+        $vars['page'] = 'accountManager/mail';
+        $vars['chars'] = $this->charRepo->findByAccount($account);
+        $vars['messageRep'] = $this->eManager->getRepository('App:Message');
+        $vars['selectedChar'] = $charId;
+        $vars['targetName'] = $charName;
         return $vars;
     }
 

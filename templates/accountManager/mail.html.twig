@@ -1,0 +1,82 @@
+
+<script>
+    var messenger, preview;
+    $(document).ready(function () {
+        messenger = new mail.Messenger();
+        messenger.changeChar(0);
+        $("#inbox_button").click();
+        preview = new formatting.Preview(document.getElementById("msg_input"), document.getElementById("preview"));
+    })
+
+</script>
+
+<table>
+    <tr>
+        <td>
+            <form name="messageForm" action="{{ path('mail_add', {'uuid': uuid}) }}" method="POST">
+                Aktiver Charakter: <br />
+                <select name="author" onchange="messenger.changeChar(this.value)">
+                    <option value="null" selected>Alle anzeigen</option>
+                    {% for char in chars %}
+                        {% set count = messageRep.findNewMessages(char) | length %}
+                        <option value="{{char.getId()}}" {% if selectedChar == char.getId() %} selected {% endif %}>
+                            {{ char.getName() }} {% if count > 0 %} (Neu: {{ count }}){% endif %}
+                        </option>
+                    {% endfor %}
+                </select>
+                <h3>
+                    Nachricht schreiben
+                </h3>
+                Empfänger: <br />
+                <input name="target" value="{{targetName}}" /> <br />
+                Betreff:<br />
+                <input name="subject" /><br />
+                Nachricht: <br />
+                <textarea id="msg_input" name="content" maxlength="2000"></textarea><br />
+                <input type="submit" value="Senden" />
+            </form>
+            <div id="preview">
+            </div>
+        </td>
+        <td style="vertical-align: top">
+            Empfänger suchen:<br />
+            <input onkeyup="messenger.search(this.value)" /><br />
+            <ul id="searchList">
+
+            </ul>
+        </td>
+    </tr>
+</table>
+
+<ul class="tab">
+    <li><a class="tablinks active" id="inbox_button" onclick="content.ContentManager.openTab(event, 'inbox')">Eingang</a></li>
+    <li><a class="tablinks" onclick="content.ContentManager.openTab(event, 'important')">Wichtig</a></li>
+    <li><a class="tablinks" onclick="content.ContentManager.openTab(event, 'sent')">Gesendet</a></li>
+</ul>
+<div id="inbox" class="tabcontent">
+    <ul id="messageList">
+        Du hast keine Nachrichten.
+    </ul>
+</div>
+<div id="important" class="tabcontent">
+    <ul id="importantMessages">
+        Du hast keine wichtigen Nachrichten.
+    </ul>
+</div>
+<div id="sent" class="tabcontent">
+    <ul id="sentMessages">
+        Du hast keine gesendeten Nachrichten.
+    </ul>
+</div>
+
+<form name="del_form" action="{{ path('mail_delete', {'uuid': uuid}) }}" method="POST">
+    <input type="hidden" name="id" value="" />
+</form>
+
+<form name="imp_form" action="{{ path('mail_important', {'uuid': uuid}) }}" method="POST">
+    <input type="hidden" name="id" value="" />
+</form>
+
+<form name="unimp_form" action="{{ path('mail_unimportant', {'uuid': uuid}) }}" method="POST">
+    <input type="hidden" name="id" value="" />
+</form>

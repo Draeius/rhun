@@ -337,12 +337,12 @@ class FighterCharacter extends RPCharacter implements FighterInterface {
         $armorTemplate = $this->getArmor()->getArmorTemplate();
         switch ($armorTemplate->getArmorType()) {
             case ArmorType::LIGHT:
-                return $armorTemplate->getDefense() + $modifier + $shield;
+                return $armorTemplate->getDefense() + $modifier + $shield;//ceil($modifier * 0.2) + $shield; kampfsystem
             case ArmorType::MIDDLE:
                 if ($modifier > 2) {
                     $modifier = 2;
                 }
-                return $armorTemplate->getDefense() + $modifier + $shield;
+                return $armorTemplate->getDefense() + $modifier + $shield;//ceil($modifier * 0.1)+3 + $shield; kampfsystem
             case ArmorType::HEAVY:
                 return $armorTemplate->getDefense() + $shield;
         }

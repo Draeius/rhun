@@ -11,9 +11,12 @@ namespace App\Service\NavbarFactory;
 use App\Controller\AccountManagementController;
 use App\Controller\LogoutController;
 use App\Controller\PreLoginController;
+use App\Doctrine\UuidEncoder;
+use App\Entity\Character;
 use App\Entity\User;
 use App\Query\GetNewMessageCountQuery;
 use App\Service\NavbarService;
+use App\Util\Session\RhunSession;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -59,6 +62,20 @@ class AccountMngmtNavbarFactory {
         return $builder;
     }
 
+    public function buildMailNavbar(?Character $character) {
+        $session = new RhunSession();
+        if (!$session->getTabIdentifier()->hasIdentifier()) {
+            $this->navbarService->addNav('Zurück', 'acct_mnmgt');
+        } else {
+            $encoder = new UuidEncoder();
+            $this->navbarService->addNav('Zurück', 'world', [
+                'uuid' => $session->getTabIdentifier()->getIdentifier(),
+                'locationId' => $encoder->encode($character->getLocation()->getUuid())
+            ]);
+        }
+        return $this->navbarService;
+    }
+
     private function addBannedNavs() {
         $this->navbarService
                 ->addNav('Bio Editor (gesperrt)', AccountManagementController::ACCOUNT_MANAGEMENT_ROUTE_NAME)
@@ -70,10 +87,10 @@ class AccountMngmtNavbarFactory {
         $query = new GetNewMessageCountQuery($this->eManager);
         $count = $query($user);
 
-//        $this->navbarService
+        $this->navbarService
 //                ->addNav('Bio Editor', 'bioEditor')
 //                ->addNav('Tagebuch schreiben', 'diary_editor')
-//                ->addNav('Taubenschlag' . ($count > 0 ? ' (Neu: ' . $count . ')' : ''), 'mail_show');
+                ->addNav('Taubenschlag' . ($count > 0 ? ' (Neu: ' . $count . ')' : ''), 'mail_show');
     }
 
     private function addModNavs(User $account) {

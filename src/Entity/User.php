@@ -184,29 +184,12 @@ class User extends RhunEntity implements UserInterface, Serializable {
         return $this->userRole;
     }
 
-    public function ownsCharacter(Character $check) {
-        foreach ($this->characters as $char) {
-            if ($char->getId() == $check->getId()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public function getBan(): DateTime {
         return $this->ban;
     }
 
     public function getBanReason() {
         return $this->banReason;
-    }
-
-    public function getCharacters() {
-        return $this->characters;
-    }
-
-    public function setCharacters($characters) {
-        $this->characters = $characters;
     }
 
     public function getAcceptTerms() {
