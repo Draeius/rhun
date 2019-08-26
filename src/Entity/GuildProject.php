@@ -20,6 +20,7 @@ use Doctrine\ORM\Mapping\Table;
 class GuildProject extends RhunEntity {
 
     const BUILD_ROOM_PROJECT = 0;
+    const BUILD_ROOM_TRAINING = 1;
 
     /**
      * 
@@ -101,6 +102,12 @@ class GuildProject extends RhunEntity {
         return $ready;
     }
 
+    public function setPrice(Price $price) {
+        $this->priceGold = $price->getGold();
+        $this->pricePlatin = $price->getPlatin();
+        $this->priceGems = $price->getGems();
+    }
+
     public function addGold(int $amount) {
         $this->progressGold += $amount;
         if ($this->progressGold >= $this->priceGold) {
@@ -128,7 +135,8 @@ class GuildProject extends RhunEntity {
         }
         if ($price->getPlatin() > $this->pricePlatin - $this->progressPlatin) {
             $price->setPlatin($this->pricePlatin - $this->progressPlatin);
-        }if ($price->getGems() > $this->priceGems - $this->progressGems) {
+        }
+        if ($price->getGems() > $this->priceGems - $this->progressGems) {
             $price->setGems($this->priceGems - $this->progressGems);
         }
 

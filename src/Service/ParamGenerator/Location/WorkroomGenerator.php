@@ -9,7 +9,6 @@ use App\Repository\HouseRepository;
 use App\Repository\NavigationRepository;
 use App\Util\Data2TreeExporter;
 use App\Service\HouseService;
-use Symfony\Component\VarDumper\VarDumper;
 
 /**
  * Description of WorkroomGenerator

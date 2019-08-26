@@ -1,0 +1,500 @@
+
+<link href="{{asset('bundles/codemirror/lib/codemirror.css')}}" rel='stylesheet' type='text/css' />
+
+<script src="{{asset('bundles/codemirror/lib/codemirror.js')}}"></script>
+<script src="{{asset('bundles/codemirror/mode/javascript/javascript.js')}}"></script>
+<script src="{{asset('bundles/codemirror/mode/xml/xml.js')}}"></script>
+
+<script>
+    var messenger;
+    $(document).ready(function () {
+        messenger = new mail.Messenger();
+        init();
+    })
+
+    function getLocation(location) {
+        if (location == 0) {
+            var form = document.getElementById("room_edit");
+            form.title.value = "";
+            form.description_spring.innerHTML = "";
+            form.description_summer.innerHTML = "";
+            form.description_fall.innerHTML = "";
+            form.description_winter.innerHTML = "";
+            return;
+        }
+        var con = new Ajax.AjaxConnector();
+        con.getData('location/get', {"location": location}, function (location) {
+            var form = document.getElementById("room_edit");
+            form.title.value = location.title;
+            form.description_spring.innerHTML = location.description_spring;
+            form.description_summer.innerHTML = location.description_summer;
+            form.description_fall.innerHTML = location.description_fall;
+            form.description_winter.innerHTML = location.description_winter;
+        });
+    }
+
+    function deleteInhabitant(id) {
+        document.forms.removeInhab.char.value = id;
+        document.forms.removeInhab.submit();
+    }
+
+    function save() {
+        var con = new Ajax.AjaxConnector();
+        con.getData('guild/hall/save/{{uuid}}', {data: exportNetwork()}, function (json) {
+            data = JSON.parse(json);
+            if (data.MSG) {
+                alert(data.MSG);
+            } else {
+                console.log(data);
+            }
+        });
+    }
+
+
+    var nodes = new vis.DataSet({{locData |raw}});
+    var edges = new vis.DataSet({{navData |raw}});
+    var network = null;
+
+    var data = null;
+
+    function setDefaultLocale() {
+        var defaultLocal = 'de';
+        var select = document.getElementById('locale');
+        select.selectedIndex = 0; // set fallback value
+        for (var i = 0, j = select.options.length; i < j; ++i) {
+            if (select.options[i].getAttribute('value') === defaultLocal) {
+                select.selectedIndex = i;
+                break;
+            }
+        }
+    }
+
+    function destroy() {
+        if (network !== null) {
+            network.destroy();
+            network = null;
+        }
+    }
+
+    function addConnections(elem, index) {
+        // need to replace this with a tree of the network, then get child direct children of the element
+        elem.connections = network.getConnectedNodes(index);
+    }
+
+    function exportNetwork() {
+        var nodes = objectToArray(network.getPositions());
+
+        for (var index = 0; index < nodes.length; index++) {
+            addConnections(nodes[index], nodes[index].id);
+        }
+
+        // pretty print node data
+        var exportValue = JSON.stringify(nodes, undefined, 2);
+
+        return exportValue;
+    }
+
+    function getNodeData(data) {
+        var networkNodes = [];
+
+        data.forEach(function (elem, index, array) {
+            networkNodes.push({id: elem.id, label: elem.id, x: elem.x, y: elem.y});
+        });
+
+        return new vis.DataSet(networkNodes);
+    }
+
+    function getNodeById(data, id) {
+        for (var n = 0; n < data.length; n++) {
+            if (data[n].id == id) {  // double equals since id can be numeric or string
+                return data[n];
+            }
+        }
+        ;
+
+        throw 'Can not find id \'' + id + '\' in data';
+    }
+
+    function getEdgeData(data) {
+        var networkEdges = [];
+
+        data.forEach(function (node) {
+            // add the connection
+            node.connections.forEach(function (connId, cIndex, conns) {
+                networkEdges.push({from: node.id, to: connId});
+                let cNode = getNodeById(data, connId);
+
+                var elementConnections = cNode.connections;
+
+                // remove the connection from the other node to prevent duplicate connections
+                var duplicateIndex = elementConnections.findIndex(function (connection) {
+                    return connection == node.id; // double equals since id can be numeric or string
+                });
+
+
+                if (duplicateIndex != -1) {
+                    elementConnections.splice(duplicateIndex, 1);
+                }
+                ;
+            });
+        });
+
+        return new vis.DataSet(networkEdges);
+    }
+
+    function objectToArray(obj) {
+        return Object.keys(obj).map(function (key) {
+            obj[key].id = key;
+            return obj[key];
+        });
+    }
+
+    function resizeExportArea() {
+        exportArea.style.height = (1 + exportArea.scrollHeight) + "px";
+    }
+
+
+    function draw() {
+        destroy();
+
+        var data = {
+            nodes: nodes,
+            edges: edges
+        };
+
+        // create a network
+        var container = document.getElementById('mynetwork');
+        var options = {
+            locale: document.getElementById('locale').value,
+            manipulation: {
+                addEdge: function (data, callback) {
+                    if (data.from == data.to) {
+                        return;
+                    } else {
+                        data.arrows = 'to, from'
+                        callback(data);
+                    }
+                },
+                addNode: false,
+                deleteNode: false
+            }
+        };
+
+        network = new vis.Network(container, data, options);
+    }
+
+    function init() {
+        setDefaultLocale();
+        draw();
+    }
+</script>
+
+<ul class="tab">
+    <li><a class="tablinks" onclick="content.ContentManager.openTab(event, 'contribute')">Projekte</a></li>
+        {% if guild.getMaster().getId() == character.getId() %}
+        <li><a class="tablinks" onclick="content.ContentManager.openTab(event, 'manage')">Mitglieder verwalten</a></li>
+        <li><a class="tablinks" onclick="content.ContentManager.openTab(event, 'organize_rooms')">Räume anordnen</a></li>
+        <li><a class="tablinks" onclick="content.ContentManager.openTab(event, 'edit_rooms')">Räume bearbeiten</a></li>
+        <li><a class="tablinks" onclick="content.ContentManager.openTab(event, 'start_project')">Projekt starten</a></li>
+        <li><a class="tablinks" onclick="content.ContentManager.openTab(event, 'edit_guild')">Gilde bearbeiten</a></li>
+        {% endif %}
+</ul>
+
+<div id="contribute" class="tabcontent" style="height: 900px;">
+
+    <p style="color: red">
+        Hier kannst du an aktuellen Gildenprojekten mitarbeiten.
+    </p>
+
+    {% for project in guild.getProjects() %}
+        <div style="border: 1px solid darkgrey;">
+            <h3 style="margin-bottom: 5px; margin-top: 5px;">
+                {% if project.getType() == 0 %} Einen leeren Raum anbauen {% endif %}
+            </h3>
+            <table>
+                <tr>
+                    <td>
+                        <div style="font-size: 1.3em;">
+                            Fortschritt:<br />
+                            {% if project.getPriceGold > 0 %}
+                                Gold: {{project.getProgressGold()}}/{{project.getPriceGold()}}<br />
+                                {% set percentage = (project.getProgressGold() / -project.getPriceGold()) %}
+                                <div style="
+                                     display: inline-block; 
+                                     width: 200px; 
+                                     height: 10px;
+                                     border: 1px solid green;
+                                     background-image: url({{asset('/images/vitalinfo/APBar.png')}});
+                                     background-position: {{200 - percentage * 200}}px 0px;">
+                                </div><br /><br />
+                            {% endif %}
+                            {% if project.getPricePlatin > 0 %}
+                                Platin: {{project.getProgressPlatin()}}/{{project.getPricePlatin()}}<br />
+                                {% set percentage = (project.getProgressPlatin() / -project.getPricePlatin()) %}
+                                <div style="
+                                     display: inline-block; 
+                                     width: 200px; 
+                                     height: 10px;
+                                     border: 1px solid green;
+                                     background-image: url({{asset('/images/vitalinfo/APBar.png')}});
+                                     background-position: {{200 - percentage * 200}}px 0px;">
+                                </div><br /><br />
+                            {% endif %}
+                            {% if project.getPriceGems > 0 %}
+                                Edelsteine: {{project.getProgressGems()}}/{{project.getPriceGems()}}<br />
+                                {% set percentage = (project.getProgressGems() / -project.getPriceGems()) %}
+                                <div style="
+                                     display: inline-block; 
+                                     width: 200px; 
+                                     height: 10px;
+                                     border: 1px solid green;
+                                     background-image: url({{asset('/images/vitalinfo/APBar.png')}});
+                                     background-position: {{200 - percentage * 200}}px 0px;">
+                                </div><br /><br />
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td>
+                        <form method="POST" action="{{path('guild_project_contribute', {'uuid': uuid})}}">
+                            <table style="margin-left: 50px;">
+                                {% if project.getPriceGold() > 0 %}
+                                    <tr>
+                                        <td style="text-align: right; font-size: 1.3em;">
+                                            Gold: 
+                                        </td>
+                                        <td>
+                                            <input type="number" name="gold" value="0" max="{{character.getWallet().getGold()}}"/> <br />
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                                {% if project.getPricePlatin() > 0 %}
+                                    <tr>
+                                        <td style="text-align: right; font-size: 1.3em;">
+                                            Platin:
+                                        </td>
+                                        <td>
+                                            <input type="number" name="platin" value="0" max="{{character.getWallet().getPlatin()}}"/> <br />
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                                {% if project.getPriceGems() > 0 %}
+                                    <tr>
+                                        <td style="text-align: right; font-size: 1.3em;">
+                                            Edelsteine:
+                                        </td>
+                                        <td>
+                                            <input type="number" name="gems" value="0" max="{{character.getWallet().getGems()}}"/> <br />
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                                <tr>
+                                    <td>
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="project" value="{{project.getId()}}" />
+                                        <input type="submit" value="Beitragen" />
+                                    </td>
+                                </tr>
+                            </table>
+                        </form>
+                    </td>
+                </tr>
+            </table>
+            {% if guild.getMaster().getId() == character.getId() and project.isReady() %}
+                <form method="POST" action="{{path('guild_project_finalize', {'uuid': uuid})}}">
+                    <input type="hidden" name="project" value="{{project.getId()}}" />
+                    <input type="submit" value="Fertigstellen" />
+                </form>
+                <br />
+                <br />
+            {% endif %}
+        </div>
+        <br />
+        <br />
+    {% endfor %}
+</div>
+
+{% if guild.getMaster().getId() == character.getId() %}
+    <div id="manage" class="tabcontent">
+        <table>
+            <tr>
+                <td>
+                    <p>
+                        {{'`dEin Mitglied einladen:' |colorize |raw }}
+                    </p>
+                    <form name="messageForm" action="{{ path('guild_invite', {'uuid': uuid}) }}" method="POST">
+                        Spieler: <br />
+                        <input name="target" /> <br />
+                        <input type="submit" value="Einladen" />
+                    </form>
+                </td>
+                <td style="vertical-align: top">
+                    Empfänger suchen:<br />
+                    <input onkeyup="messenger.search(this.value)" /><br />
+                    <ul id="searchList">
+
+                    </ul>
+                </td>
+                <td style="vertical-align: top">
+                    Ausstehende Einladungen<br />
+                    {% if invitations |length > 0 %}
+                        <ul>
+                            {% for invitation in invitations %}
+                                <li>{{ invitation.getCharacter() |charName(false) |colorize |raw }}</li>
+                                {% endfor %}
+                        </ul>
+                    {% else %}
+                        Keine
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+        <table>
+            <th>Name</th>
+            <th>Rasse</th>
+            <th>Stadt</th>
+            <th>Aktion</th>
+                {% if guild.getMembers() |length == 0 %}
+                <tr>
+                    <td>
+                        Niemand
+                    </td>
+                    <td>
+                        Keine
+                    </td>
+                    <td>
+                        Keine
+                    </td>
+                    <td>
+                        Keine
+                    </td>
+                </tr>
+            {% else %}
+                {% for char in guild.getMembers() %}
+                    <tr>
+                        <td>
+                            {{ char |charName |colorize |raw }}
+                        </td>
+                        <td>
+                            {{ char.getRace().getName() |colorize |raw }}
+                        </td>
+                        <td>
+                            {% for city in cities %}
+                                {% if char.getRace.getCity() == city.getCity() %}
+                                    {{ city.getColoredName() |colorize |raw }}
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {% if char.getId() != character.getId() %}
+                                <a href="{{ path('guild_kick_member', {'uuid': uuid, 'charId': char.getId()}) }}">Entfernen</a>
+                                <a href="{{ path('guild_change_master', {'uuid': uuid, 'charId': char.getId()}) }}">Zum Meister machen</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+        </table>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <form action="{{ path('guild_delete', {'uuid': uuid}) }}" method="POST">
+            <input type="submit" onsubmit="return confirm(unescape('Willst du die Gilde wirklich aufl%F6sen%3F'));" value="Gilde auflösen" />
+        </form>
+    </div>
+
+    <div id="organize_rooms" class="tabcontent" style="height: 900px;">
+        <button onclick="save();">Speichern</button>
+
+        <select style="display: none;" id="locale" onchange="draw();">
+            <option value="en">en</option>
+            <option value="de">de</option>
+            <option value="es">es</option>
+            <option value="it">it</option>
+            <option value="nl">nl</option>
+            <option value="pt-br">pt</option>
+            <option value="ru">ru</option>
+        </select>
+
+        <div id="mynetwork" style="height: 800px">
+
+        </div>
+    </div>
+
+    <div id="start_project" class="tabcontent">
+        <form method="POST" action="{{path('guild_project_start', {'uuid': uuid})}}">
+            <select name="type">
+                <option value="0">Einen leeren Raum bauen</option>
+                <option value="1">Einen Trainingsraum bauen</option>
+            </select><br />
+            <br/>
+            <input type="submit" value="Starten" />
+        </form>
+    </div>
+
+    <div id="edit_rooms" class="tabcontent">
+        <form  id="room_edit" action="{{path('guild_hall_edit_room', {'uuid': uuid})}}" method="POST">
+            <select name="location" onchange="getLocation(this.value);">
+                <option value="0">Einen Raum wählen</option>
+                {% for location in guild.getGuildHall().getLocations() %}
+                    <option value="{{ location.getId() }}">{{ location.getName() }}</option>
+                {% endfor %}
+            </select><br />
+            Name: <br />
+            <input name="title" /><br />
+            Beschreibung Frühling: <br />
+            <textarea name="description_spring"></textarea><br />
+            Beschreibung Sommer: <br />
+            <textarea name="description_summer"></textarea><br />
+            Beschreibung Herbst: <br />
+            <textarea name="description_fall"></textarea><br />
+            Beschreibung Winter: <br />
+            <textarea name="description_winter"></textarea><br />
+            <input type="submit" value="Ändern" />
+        </form>
+    </div>
+
+    <div id="edit_guild" class="tabcontent">
+        <form method="POST" action="{{ path('guild_edit', {'uuid': uuid}) }}">
+
+            Avatar:<br />
+            <input name="avatar" size="50" value="{{guild.getAvatar()}}"/><br /><br />    
+
+            <h4>Script (optional)</h4>
+            <span style="color: green">Hier kannst du alles an JavaScript reinschreiben, was deine Seite so braucht (ein script tag brauchst du nicht angeben).<br />
+                Alle script elemente in deiner Biographie werden entfernt werden.
+            </span><br />
+            <textarea id="script_area" name="script">{{guild.getScript()}}</textarea>
+
+            <h4>Beschreibung</h4>
+            <a class="clickable"  style="font-size: 1.2em;" href="/colorlist" target="_blank">{{ '`pF`ea`Nr`Gb`Le`Kn`Ll`Gi`Ns`et`pe' |colorize |raw }}</a><br /><br />
+            <textarea id="description_area" name="description">{{guild.getDescription()}}</textarea><br /><br />
+            <input type="submit" value="Haus speichern"/>
+        </form><br /><br />
+
+        <h3>Vorschau:</h3>
+        <div id="preview">
+
+        </div>
+    </div>
+
+    <script>
+        var scriptArea = CodeMirror.fromTextArea(document.getElementById("script_area"), {
+            lineNumbers: true,
+            mode: "text/javascript",
+            autoRefresh: true,
+        });
+        var descriptionArea = CodeMirror.fromTextArea(document.getElementById("description_area"), {
+            lineNumbers: true,
+            mode: "text/html",
+            autoRefresh: true,
+        });
+        var preview = new formatting.Preview(descriptionArea, document.getElementById("preview"));
+        descriptionArea.on("keyup", function (cm, keyup) {
+            preview.update();
+        });
+    </script>
+
+{% endif %}

@@ -167,6 +167,22 @@ class Location extends LocationBase {
      */
     protected $storage = false;
 
+    //guild location options
+
+    /**
+     *
+     * @var bool
+     * @Column(type="boolean")
+     */
+    protected $guildAdmin = false;
+
+    /**
+     *
+     * @var bool
+     * @Column(type="boolean")
+     */
+    protected $guildTraining = false;
+
     function getArea(): Area {
         return $this->area;
     }
@@ -255,6 +271,14 @@ class Location extends LocationBase {
         return $this->storage;
     }
 
+    function getGuildAdmin() {
+        return $this->guildAdmin;
+    }
+
+    function getGuildTraining() {
+        return $this->guildTraining;
+    }
+
     function setArea(Area $area) {
         $this->area = $area;
     }
@@ -341,6 +365,14 @@ class Location extends LocationBase {
 
     function setStorage($storage) {
         $this->storage = $storage;
+    }
+
+    function setGuildAdmin($guildAdmin) {
+        $this->guildAdmin = $guildAdmin;
+    }
+
+    function setGuildTraining($guildTraining) {
+        $this->guildTraining = $guildTraining;
     }
 
     public function getDataArray(): array {

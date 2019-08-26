@@ -17,7 +17,7 @@ class GuildListGenerator extends LocationParamGeneratorBase {
 
         return [
             'guilds' => $rep->findAll(),
-            'invitations' => $invRep->findBy(['character' => $this->getCharacter()]),
+            'invitations' => $invRep->findBy(['owner' => $this->getCharacter()]),
             'foundingPrice' => $this->getConfig()->getGuildConfig()->getGuildFoundingPrice()
         ];
     }

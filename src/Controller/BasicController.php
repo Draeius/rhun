@@ -75,7 +75,7 @@ class BasicController extends AbstractController {
         $news = new ShortNews();
         $news->setCharacter($char);
         $news->setContent($content);
-        $news->setCreated(DateTimeService::getDateTime('NOW'));
+        $news->setCreatedAtValue(DateTimeService::getDateTime('NOW'));
 
         $manager = $this->getDoctrine()->getManager();
         $manager->persist($news);

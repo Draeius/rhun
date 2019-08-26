@@ -47,9 +47,15 @@ trait EntityColoredNameTrait {
     function setColoredName(string $coloredName) {
         if (trim($coloredName) == '') {
             $this->coloredName = null;
+            $this->setName('');
         } else {
             $this->coloredName = $coloredName;
+            $this->setName(preg_replace('/(`[^`\^#])|(`\^[^`]{6},[^`]{6})|(`#[^`]{6})/', '', $coloredName));
         }
+    }
+
+    public function isSameName(string $coloredName): bool {
+        return preg_replace('/(`[^`\^#])|(`\^[^`]{6},[^`]{6})|(`#[^`]{6})/', '', trim($coloredName)) == trim($this->name);
     }
 
 }

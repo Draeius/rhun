@@ -1,0 +1,112 @@
+
+<script>
+    var previewName, previewTag;
+    $(document).ready(function () {
+        if (!window.location.hash) {
+            window.location.hash = "list";
+        }
+
+        $(document.getElementById(window.location.hash.substr(1) + "_link")).trigger('click');
+        $(document.getElementById(window.location.hash.substr(1) + "_link")).addClass('active');
+
+        previewName = new formatting.Preview(document.getElementById("name_input"), document.getElementById("name_preview"));
+        previewTitle = new formatting.Preview(document.getElementById("tag_input"), document.getElementById("tag_preview"));
+    });
+    function openTab(event, id) {
+        window.location.hash = id;
+        content.ContentManager.openTab(event, id);
+    }
+
+</script>
+
+<ul class="tab">
+    <li><a id="list_link" class="tablinks" onclick="openTab(event, 'list')">Gildengasse</a></li>
+    <li><a id="invitations_link" class="tablinks" onclick="openTab(event, 'invitations')">Einladungen</a></li>
+    <li><a id="found_link" class="tablinks" onclick="openTab(event, 'found')">Gilde gründen</a></li>
+</ul>
+
+<div id="list" class="tabcontent">
+    {% if guilds |length > 0 %}
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        Tag
+                    </th>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Stufe
+                    </th>
+                    <th>
+                        Aktionen
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for guild in guilds %}
+                    <tr>
+                        <td>
+                            {{ guild.getTag() |colorize |raw }}
+                        </td>
+                        <td>
+                            {{ guild.getName() |colorize |raw }}
+                        </td>
+                        <td>
+                            {{ guild.getLevel() }}
+                        </td>
+                        <td>
+                            <a href="{{path('guild_show', {'id': guild.getId(), 'uuid': uuid})}}">Anschauen</a> 
+                            {% if guild.hasMember(character) %}
+                                || <a href="{{path('world', {'locationId': uuid_encode(guild.getGuildHall().getEntrance().getUuid()), 'uuid': uuid})}}">Halle betreten</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}    
+        Scheinbar gibt es noch keine Gilden. Na los, mach dich auf und gründe eine Neue.
+    {% endif %}
+</div>
+
+<div id="invitations" class="tabcontent">
+    {% if invitations |length > 0 %}
+        <table>
+            <tr>
+                <th>
+                    Gilde
+                </th>
+                <th>
+                    Aktionen
+                </th>
+            </tr>
+            {% for invitation in invitations %}
+                <tr>
+                    <td>
+                        <span>{{ invitation.getGuild().getTag()  |colorize |raw }}</span> {{ invitation.getGuild().getName() |colorize |raw }}
+                    </td>
+                    <td>
+                        {% set invId = invitation.getId() %}
+                        <input type="button" onclick="window.location.href = '{{path('guild_accept_inv', {'invitationId': invId, 'uuid': uuid})}}';" value="Akzeptieren" />
+                        <input type="button" onclick="window.location.href = '{{path('guild_refuse_inv', {'invitationId': invId, 'uuid': uuid})}}';" value="Ablehnen" />
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        Du hast keine Einladungen in eine Gilde.
+    {% endif %}
+</div>
+
+<div id="found" class="tabcontent">
+    Eine Gilde gründen ({{ foundingPrice }}): <br />
+    <form action="{{path('guild_create', {'uuid': uuid})}}" method="POST">
+        Gildentag: [<span id="tag_preview"></span>]<br />
+        <input id="tag_input" name="tag" size="20" maxlength="12"/><br />
+        Name: <span id="name_preview"></span><br />
+        <input id="name_input" name="name" size="20" maxlength="128"/><br />
+        <input type="submit" value="Gründen" />
+    </form>
+</div>

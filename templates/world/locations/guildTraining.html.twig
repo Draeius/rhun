@@ -1,0 +1,19 @@
+
+<p>
+    Dieser Trainingsraum gibt einen Bonus von +{{ bonus }} auf {{ attribute }}.
+</p>
+
+{% if character.getGuild.getMaster().getId() == character.getId() %}
+    Hier kannst du das Attribut ändern, das gesteigert wird. Dies kostet dich {{ price }}.
+    <form method="POST" action="{{path('guild_change_training', {'uuid': uuid})}}">
+        <select name="attribute">
+            <option value="0" {% if attribute == 'Stärke' %} selected {% endif %}>Stärke</option>
+            <option value="1" {% if attribute == 'Geschicklichkeit' %} selected {% endif %}>Geschicklichkeit</option>
+            <option value="2" {% if attribute == 'Konstitution' %} selected {% endif %}>Konstitution</option>
+            <option value="3" {% if attribute == 'Intelligenz' %} selected {% endif %}>Intelligenz</option>
+            <option value="4" {% if attribute == 'Weisheit' %} selected {% endif %}>Weisheit</option>
+            <option value="5" {% if attribute == 'Willenskraft' %} selected {% endif %}>Willenskraft</option>
+        </select>
+        <input type="submit" value="Ändern" />
+    </form>
+{% endif %}

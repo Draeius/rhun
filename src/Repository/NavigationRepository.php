@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Doctrine\UuidEncoder;
+use App\Entity\Guild;
 use App\Entity\House;
 use App\Entity\Location;
 use App\Entity\Navigation;
@@ -36,6 +37,14 @@ class NavigationRepository extends ServiceEntityRepository {
                         'SELECT n FROM App:Navigation n WHERE n.location IN (SELECT l.id FROM App:House h JOIN h.rooms l '
                         . 'WHERE h.id = :id)')
                 ->setParameter('id', $house->getId());
+        return $query->execute();
+    }
+
+    public function findByGuild(Guild $guild) {
+        $query = $this->getEntityManager()->createQuery(
+                        'SELECT n FROM App:Navigation n WHERE n.location IN (SELECT l.id FROM App:Guild g JOIN g.guildHall gh JOIN gh.locations l '
+                        . 'WHERE g.id = :id)')
+                ->setParameter('id', $guild->getId());
         return $query->execute();
     }
 

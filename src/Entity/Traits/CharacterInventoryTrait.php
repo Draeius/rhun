@@ -3,7 +3,7 @@
 namespace App\Entity\Traits;
 
 use App\Entity\InventoryItem;
-use App\Entity\Item;
+use App\Entity\Items\Item;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\OneToMany;
 

@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Entity\Traits\EntityCreatedTrait;
-use DateTime;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\HasLifecycleCallbacks;

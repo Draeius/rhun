@@ -9,17 +9,16 @@ use App\Entity\Location;
 use App\Repository\CharacterRepository;
 use App\Repository\HouseRepository;
 use App\Repository\LocationRepository;
+use App\Service\CharacterService;
 use App\Service\ConfigService;
 use App\Service\FormatService;
 use App\Service\HouseService;
-use App\Service\NavigationUpdater;
 use App\Service\ParamGenerator\BiographyParamGenerator;
 use App\Util\Config\HouseConfig;
 use App\Util\House\Intrusion;
 use App\Util\Price;
 use App\Util\Session\RhunSession;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\VarDumper\VarDumper;
@@ -235,6 +234,7 @@ class HouseController extends BasicController {
         $session = new RhunSession();
         /* @var $house House */
         $house = $this->houseRepo->find($request->get('houseId'));
+        /* @var $character Character */
         $character = $this->charRepo->find($session->getCharacterID());
 
         if ($house->getOwner()->getId() != $character->getId()) {
@@ -260,6 +260,8 @@ class HouseController extends BasicController {
         $this->eManager->persist($house);
         $this->eManager->persist($character);
         $this->eManager->flush();
+
+        $this->sendSystemPN('Schlüssel bekommen', $character->getName() . ' hat dir einen Schlüssel zum Haus ' . $house->getTitle() . ' gegeben.', $newInhabitant);
 
         return $this->redirectToWorld($character);
     }
@@ -368,7 +370,7 @@ class HouseController extends BasicController {
 
         $this->eManager->persist($house);
         $this->eManager->flush();
-        
+
         $houseService->createHouseNavs($house, $this->eManager);
     }
 

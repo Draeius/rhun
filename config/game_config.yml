@@ -72,6 +72,31 @@ guild:
             gold: 0
             platin: 1000
             gems: 0
+    nav_update:
+        price: #Wenn die Orte neu angeordnet werden, muss dies bezahlt werden
+            gold: 0
+            platin: 300
+            gems: 0
+    buffed_attribute:
+        change_price: #Wenn man das Attribut ändern will, das gebufft wird, muss dieser Preis gezahlt werden
+            gold: 1000
+            platin: 300
+            gems: 0
+    projects:
+        add_room:
+            base_price: #Basispreis für einen Raum in der Gilde
+                gold: 100000
+                platin: 1000
+                gems: 0
+            size_addition: #Dieser Preis wird mir der Anzahl der Räume multipliziert und auf den Basispreis addiert
+                gold: 50000
+                platin: 500
+                gems: 0
+        training:
+            price:
+                gold: 500000
+                platin: 10000
+                gems: 0
             
 settings:
     start_money:

@@ -99,6 +99,13 @@ class Guild extends RhunEntity {
      */
     protected $projects;
 
+    /**
+     * 
+     * @var int 
+     * @Column(type="integer", nullable=true)
+     */
+    protected $buffedAttribute;
+
     public function __construct() {
         $this->members = new ArrayCollection();
         $this->buffs = new ArrayCollection();
@@ -166,6 +173,10 @@ class Guild extends RhunEntity {
         return $this->projects;
     }
 
+    function getBuffedAttribute() {
+        return $this->buffedAttribute;
+    }
+
     public function setProjects($projects) {
         $this->projects = $projects;
     }
@@ -208,6 +219,10 @@ class Guild extends RhunEntity {
 
     public function setBuffs($buffs) {
         $this->buffs = $buffs;
+    }
+
+    function setBuffedAttribute($buffedAttribute) {
+        $this->buffedAttribute = $buffedAttribute;
     }
 
 }

@@ -138,6 +138,9 @@ class FighterCharacter extends RPCharacter implements FighterInterface {
 //        }
 //        $calculator = new StatCalculator($this->buffList);
 
+        if ($this->getGuild() && $this->getGuild()->getBuffedAttribute() === $attribute) {
+            $value ++;
+        }
         return $value; // $calculator->calculateAttribute($attribute, $value);
     }
 
