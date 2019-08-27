@@ -59,7 +59,7 @@ class BasicController extends AbstractController {
     }
 
     public function getSkinFile() {
-        return 'skins/cobalt/cobalt.html.twig';
+        return 'skins/fire/fire.html.twig';
     }
 
     public function redirectToWorld(Character $char) {
