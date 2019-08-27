@@ -71,7 +71,8 @@ class TestController extends BasicController {
     }
 
     private function getData(): array {
-        $data = json_decode(file_get_contents('../SQL/data.json'), true);
+        $file = mb_convert_encoding(file_get_contents('../SQL/data.json'), 'HTML-ENTITIES', "UTF-8");
+        $data = json_decode($file, true);
         $resultSet = [];
         foreach ($data as $key => $entry) {
             if (array_key_exists('data', $entry)) {
@@ -105,12 +106,7 @@ class TestController extends BasicController {
                 $loc = new Location();
                 $loc->setAdult($data['adult']);
                 $loc->setArea($areaRepo->find($data['area_id']));
-                if (strpos($data['title'], '`') === false) {
-                    $loc->setName(htmlspecialchars($data['title']));
-                } else {
-                    $loc->setName(htmlspecialchars(substr($data['title'], 2)));
-                }
-                $loc->setColoredName(htmlspecialchars($data['title']));
+                $loc->setColoredName($data['title']);
                 $loc->setDescriptionSpring($data['descriptionSpring']);
                 $loc->setDescriptionSummer($data['descriptionSummer']);
                 $loc->setDescriptionFall($data['descriptionFall']);
@@ -125,8 +121,7 @@ class TestController extends BasicController {
         foreach ($dataSet as $data) {
             $race = new Race();
             $race->setCity($data['city']);
-            $race->setName(htmlspecialchars(preg_replace('/`./', '', $data['name'])));
-            $race->setColoredName(htmlspecialchars($data['name']));
+            $race->setColoredName($data['name']);
             $race->setCity($data['city']);
             $race->setAllowed($data['allowed']);
             $race->setDescription($data['description']);
@@ -142,11 +137,11 @@ class TestController extends BasicController {
         foreach ($dataSet as $areaData) {
             $area = new Area();
             $area->setCity($areaData['city']);
-            $area->setName(substr($areaData['name'], 2));
             $area->setColoredName($areaData['name']);
             $area->setDeadAllowed($areaData['deadAllowed']);
             $area->setDescription($areaData['description'] ? $areaData['description'] : '');
             $area->setRaceAllowed(false);
+            $area->setRaceAllowed(array_search($area->getCity(), ['nelaris', 'manosse', 'pyra', 'lerentia', 'underworld'], true) !== false);
             $eManager->persist($area);
         }
     }
@@ -161,7 +156,6 @@ class TestController extends BasicController {
         $weapon->setDescription('Ein kleiner Test');
         $weapon->setMadeByPlayer(false);
         $weapon->setMinAttribute(10);
-        $weapon->setName('TestWaffe');
         $weapon->setWeaponType(WeaponType::DAGGER);
         $weapon->setDamageType($damageRepo->find(12));
         $eManager->persist($weapon);
@@ -174,7 +168,6 @@ class TestController extends BasicController {
         $armor->setDescription('Ein kleiner Test');
         $armor->setMadeByPlayer(false);
         $armor->setMinAttribute(10);
-        $armor->setName('TestRüstung');
         $armor->setDefense(15);
         $armor->setResistances([
             $damageRepo->find(6),
