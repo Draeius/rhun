@@ -15,6 +15,7 @@ use App\Repository\NavigationRepository;
 use App\Service\LocationResolveService;
 use App\Service\NavbarFactory\WorldNavbarFactory;
 use App\Service\ParamGenerator\WorldParamGenerator;
+use App\Service\SkinService;
 use App\Util\Session\RhunSession;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -42,7 +43,8 @@ class WorldController extends BasicController {
      */
     private $paramGenerator;
 
-    function __construct(WorldNavbarFactory $worldNavFactory, WorldParamGenerator $generator) {
+    function __construct(SkinService $skinService, WorldNavbarFactory $worldNavFactory, WorldParamGenerator $generator) {
+        parent::__construct($skinService);
         $this->worldNavFactory = $worldNavFactory;
         $this->paramGenerator = $generator;
     }

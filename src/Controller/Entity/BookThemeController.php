@@ -6,6 +6,7 @@ use App\Controller\BasicController;
 use App\Entity\BookTheme;
 use App\Form\BookThemeType;
 use App\Service\ParamGenerator\EditorParamGenerator;
+use App\Service\SkinService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,7 +23,8 @@ class BookThemeController extends BasicController {
      */
     private $paramGenerator;
 
-    function __construct(EditorParamGenerator $paramGenerator) {
+    function __construct(SkinService $skinService, EditorParamGenerator $paramGenerator) {
+        parent::__construct($skinService);
         $this->paramGenerator = $paramGenerator;
     }
 

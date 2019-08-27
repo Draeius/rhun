@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Controller\BasicController;
-use App\Entity\Race;
 use App\Entity\User;
 use App\Form\CreateCharacterType;
 use App\Form\DTO\CreateCharacterDTO;
@@ -16,6 +15,7 @@ use App\Service\ConfigService;
 use App\Service\DateTimeService;
 use App\Service\NavbarFactory\AccountMngmtNavbarFactory;
 use App\Service\ParamGenerator\AccountMngmtParamGenerator;
+use App\Service\SkinService;
 use App\Util\Session\RhunSession;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,7 +45,8 @@ class AccountManagementController extends BasicController {
      */
     private $stopwatch;
 
-    function __construct(AccountMngmtNavbarFactory $navFactory, Stopwatch $stopwatch) {
+    function __construct(SkinService $skinService, AccountMngmtNavbarFactory $navFactory, Stopwatch $stopwatch) {
+        parent::__construct($skinService);
         $this->navFactory = $navFactory;
         $this->stopwatch = $stopwatch;
     }

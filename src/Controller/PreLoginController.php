@@ -7,15 +7,16 @@ use App\Form\DTO\CreateUserDTO;
 use App\Form\DTO\LoginUserDTO;
 use App\Form\DTO\ResetPasswordDTO;
 use App\Form\Facade\CreateUserFacade;
+use App\Form\LoginFormType;
 use App\Form\ResetPasswordFormType;
 use App\Service\ConfigService;
 use App\Service\EmailService;
 use App\Service\NavbarFactory\PreLoginNavbarFactory;
 use App\Service\ParamGenerator\PreLoginParamGenerator;
+use App\Service\SkinService;
 use App\Service\UserService;
 use App\Service\ValidationService;
 use App\Util\Session\RhunSession;
-use App\Form\LoginFormType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -41,7 +42,8 @@ class PreLoginController extends BasicController {
      */
     private $navbarFactory;
 
-    function __construct(PreLoginNavbarFactory $navbarFactory) {
+    function __construct(SkinService $skinService, PreLoginNavbarFactory $navbarFactory) {
+        parent::__construct($skinService);
         $this->navbarFactory = $navbarFactory;
     }
 

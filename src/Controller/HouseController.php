@@ -9,11 +9,11 @@ use App\Entity\Location;
 use App\Repository\CharacterRepository;
 use App\Repository\HouseRepository;
 use App\Repository\LocationRepository;
-use App\Service\CharacterService;
 use App\Service\ConfigService;
 use App\Service\FormatService;
 use App\Service\HouseService;
 use App\Service\ParamGenerator\BiographyParamGenerator;
+use App\Service\SkinService;
 use App\Util\Config\HouseConfig;
 use App\Util\House\Intrusion;
 use App\Util\Price;
@@ -67,8 +67,9 @@ class HouseController extends BasicController {
      */
     private $eManager;
 
-    function __construct(BiographyParamGenerator $paramGenerator, CharacterRepository $charRepo, HouseRepository $houseRepo,
+    function __construct(SkinService $skinService, BiographyParamGenerator $paramGenerator, CharacterRepository $charRepo, HouseRepository $houseRepo,
             EntityManagerInterface $eManager) {
+        parent::__construct($skinService);
         $this->paramGenerator = $paramGenerator;
         $this->charRepo = $charRepo;
         $this->houseRepo = $houseRepo;

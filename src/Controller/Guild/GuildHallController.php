@@ -10,9 +10,9 @@ use App\Repository\CharacterRepository;
 use App\Repository\GuildRepository;
 use App\Repository\LocationRepository;
 use App\Repository\NavigationRepository;
+use App\Service\SkinService;
 use App\Util\Session\RhunSession;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -43,7 +43,8 @@ class GuildHallController extends BasicController {
      */
     private $eManager;
 
-    function __construct(CharacterRepository $charRepo, GuildRepository $guildRepo, EntityManagerInterface $eManager) {
+    function __construct(SkinService $skinService, CharacterRepository $charRepo, GuildRepository $guildRepo, EntityManagerInterface $eManager) {
+        parent::__construct($skinService);
         $this->charRepo = $charRepo;
         $this->guildRepo = $guildRepo;
         $this->eManager = $eManager;

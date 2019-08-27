@@ -44,5 +44,9 @@ class Skin {
     public function getSkinFile() {
         return 'skins/' . $this->params['skin_base_dir'] . '/' . $this->params['skin_file'];
     }
+    
+    public function __toString() {
+        return $this->getSkinFile();
+    }
 
 }

@@ -8,6 +8,7 @@ use App\Entity\Message;
 use App\Entity\ShortNews;
 use App\Service\DateTimeService;
 use App\Service\SkinService;
+use App\Util\Session\RhunSession;
 use App\Util\Skin;
 use App\Util\TabIdentification\TabIdentifier;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -40,6 +41,10 @@ class BasicController extends AbstractController {
      */
     private $tabIdentifier = null;
 
+    function __construct(SkinService $skinService) {
+        $this->skinService = $skinService;
+    }
+
     /**
      * Gibt den TabIdentifier zurück, der in dieser Anfrage mitgeschickt wurde.
      * 
@@ -59,7 +64,12 @@ class BasicController extends AbstractController {
     }
 
     public function getSkinFile() {
-        return 'skins/fire/fire.html.twig';
+        $session = new RhunSession();
+        if (!$session->getAccountID()) {
+            return $this->skinService->getDefaultSkin();
+        }
+        $account = $this->getDoctrine()->getRepository('App:User')->find($session->getAccountID());
+        return $this->skinService->getSkinByName($account->getTemplate());
     }
 
     public function redirectToWorld(Character $char) {

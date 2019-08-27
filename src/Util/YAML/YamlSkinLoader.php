@@ -2,6 +2,7 @@
 
 namespace App\Util\YAML;
 
+use App\Service\SkinService;
 use Exception;
 use Symfony\Component\Config\Loader\FileLoader;
 use Symfony\Component\Yaml\Yaml;

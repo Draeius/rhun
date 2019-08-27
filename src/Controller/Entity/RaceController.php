@@ -7,6 +7,7 @@ use App\Entity\Race;
 use App\Form\RaceType;
 use App\Repository\RaceRepository;
 use App\Service\ParamGenerator\EditorParamGenerator;
+use App\Service\SkinService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,7 +24,8 @@ class RaceController extends BasicController {
      */
     private $paramGenerator;
 
-    function __construct(EditorParamGenerator $paramGenerator) {
+    function __construct(SkinService $skinService, EditorParamGenerator $paramGenerator) {
+        parent::__construct($skinService);
         $this->paramGenerator = $paramGenerator;
     }
 

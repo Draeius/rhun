@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Util\Skin;
 use App\Util\YAML\YamlListLoader;
 use App\Util\YAML\YamlSkinLoader;
 use Symfony\Component\Config\Exception\FileLocatorFileNotFoundException;

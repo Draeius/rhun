@@ -13,6 +13,7 @@ use App\Repository\AreaRepository;
 use App\Repository\CharacterRepository;
 use App\Repository\GuildRepository;
 use App\Service\GuildProjectService;
+use App\Service\SkinService;
 use App\Util\Price;
 use App\Util\Session\RhunSession;
 use Doctrine\ORM\EntityManagerInterface;
@@ -46,7 +47,8 @@ class GuildProjectController extends BasicController {
      */
     private $eManager;
 
-    function __construct(CharacterRepository $charRepo, GuildRepository $guildRepo, EntityManagerInterface $eManager) {
+    function __construct(SkinService $skinService, CharacterRepository $charRepo, GuildRepository $guildRepo, EntityManagerInterface $eManager) {
+        parent::__construct($skinService);
         $this->charRepo = $charRepo;
         $this->guildRepo = $guildRepo;
         $this->eManager = $eManager;
