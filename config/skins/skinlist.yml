@@ -1,7 +1,5 @@
 fire:
+    #Anzeigename des Skins
     name: fire
+    #config_file wird auch als id in der Datenbank verwendet um den Skin zu identifizieren.
     config_file: fire
-
-yarbrough:
-    name: yarbrough (WIP)
-    config_file: yarbrough

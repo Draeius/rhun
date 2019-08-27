@@ -1,11 +1,11 @@
 <?php
 
-namespace SkinBundle\Controller;
+namespace App\Controller;
 
+use App\Controller\BasicController;
 use App\Controller\PreLoginController;
 use App\Repository\UserRepository;
 use App\Util\Session\RhunSession;
-use AppBundle\Controller\BasicController;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,11 +18,11 @@ use Symfony\Component\Routing\Annotation\Route;
 class SkinController extends BasicController {
 
     /**
-     * @Route("/skin/change")
+     * @Route("/skin/change", name="skin_change")
      */
     public function changeSkin(Request $request, UserRepository $userRepo, EntityManagerInterface $eManager) {
         $session = new RhunSession();
-        if ($session->getAccountID()) {
+        if (!$session->getAccountID()) {
             return $this->redirectToRoute(PreLoginController::FRONT_PAGE_ROUTE_NAME);
         }
 

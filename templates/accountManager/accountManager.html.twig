@@ -275,7 +275,7 @@
 <div id="account" class="tabcontent">
 
     Skin ändern<br />
-    <form method="POST" action="/skin/change">
+    <form method="POST" action="{{path('skin_change')}}">
         <select name="skin">
             {% for skin in skinlist %}
                 <option value="{{skin['config_file']}}" {% if skin['config_file'] == account.getTemplate() %} selected {% endif %}>{{skin['name']}}</option>
