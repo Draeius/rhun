@@ -7,3 +7,9 @@ fire:
     name: fire
     #config_file wird auch als id in der Datenbank verwendet um den Skin zu identifizieren.
     config_file: fire
+
+doom:
+    #Anzeigename des Skins
+    name: doom
+    #config_file wird auch als id in der Datenbank verwendet um den Skin zu identifizieren.
+    config_file: doom

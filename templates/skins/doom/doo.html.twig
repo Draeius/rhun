@@ -1,0 +1,62 @@
+
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{parent()}}
+    <link href="{{ asset('css/fire.css')}}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Cinzel">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Tangerine">
+{% endblock %}
+
+{% block body %}
+    <div id="header" style="font-family: 'Cinzel', serif;">
+        <img src="{{ asset('images/logd.png')}}">
+        <h1 id='pagetitle'>
+            {{pagetitle}}
+        </h1>
+        {% if showLinks %}
+            &Diamond; <a href="https://discord.gg/Yu8tYxF" target="_blank">Discord</a> &Diamond;
+            <a href="http://www.rhun-logd.de/wiki" target="_blank">Wiki</a> &Diamond;
+            <a href="{{path('acct_mnmgt', {'_fragment': 'news'})}}" target="_blank"> MotD </a> &Diamond;<!-- echo($this->motdlink)  echo($this->petition) -->
+        {% endif %}
+        {% if showMails %}
+            <a href="{{ path(mail_link) }}" target="_blank">
+                {% if new_mails is defined and new_mails < 1 %}Mails
+                {% endif %}
+                {% if new_mails is defined and new_mails > 0 %}<b><font color="FFFF00">Mails (Neu: {{ new_mails }})</font></b>
+                {% endif %}</a> &Diamond;
+            {% endif %}
+    </div>
+    <table>
+        <tr>
+            <td id="navbar">
+                <div>
+
+                </div>
+                {{navbar|raw}}
+            </td>
+            <td id="content">
+                {% include asset(page ~ '.html.twig') %}
+            </td>
+            <td id="infobar">
+                {% if uuid.hasIdentifier() %}
+                    {% include 'parts/characterStats.html.twig' %}
+                {% elseif account %}
+                    {% include 'parts/accountStats.html.twig' %}
+                    <br />
+                    <br />
+                {% endif %}
+                {% if charsPresent %}
+                    {% include 'parts/charsPresent.html.twig' %}
+                {% endif %}
+                {% if not userOnline is same as(false) %}
+                    {% include 'parts/userOnline.html.twig' %}
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+    <div id="footer">
+        Design: Draeius für Rhûn
+    </div>
+
+{% endblock %}
