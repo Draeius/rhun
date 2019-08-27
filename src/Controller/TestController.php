@@ -14,19 +14,16 @@ use App\Entity\Race;
 use App\Entity\WeaponType;
 use App\Repository\AreaRepository;
 use App\Repository\ArmorTemplateRepository;
-use App\Repository\CharacterRepository;
 use App\Repository\LocationRepository;
-use App\Repository\MonsterRepository;
 use App\Repository\WeaponTemplateRepository;
-use App\Service\ConfigService;
-use App\Util\Fight\Fight;
+use App\Service\SkinService;
 use App\Util\Price;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Stopwatch\Stopwatch;
 use Symfony\Component\VarDumper\VarDumper;
+use function mb_convert_encoding;
 
 /**
  * Description of TestController
@@ -38,14 +35,9 @@ class TestController extends BasicController {
     /**
      * @Route("/test")
      */
-    public function test(Request $request, ConfigService $configService, Stopwatch $stopwatch, CharacterRepository $charRepo, MonsterRepository $monsterRepo) {
+    public function test(SkinService $skinService) {
 
-        $fight = new Fight();
-        $fight->addFighter($charRepo->find(1));
-
-        VarDumper::dump($fight);
-        VarDumper::dump($fight->getDataString());
-        VarDumper::dump(Fight::FROM_DATA_STRING($fight->getDataString(), $charRepo, $monsterRepo));
+        VarDumper::dump($skinService->getSkinList());
 
         return $this->render('test.html.twig');
     }

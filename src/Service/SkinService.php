@@ -38,10 +38,10 @@ class SkinService {
     }
 
     public function getDefaultSkin(): Skin {
-        return $this->getSkin(self::DEFAULT_SKIN);
+        return $this->getSkin($this->getSkinList(true)['default']['name']);
     }
 
-    public function getSkinList() {
+    public function getSkinList($maintainDefault = false) {
         $configDirectories = array($this->rootDir);
 
         $fileLocator = new FileLocator($configDirectories);
@@ -55,7 +55,11 @@ class SkinService {
         $loaderResolver = new LoaderResolver(array(new YamlListLoader($fileLocator)));
         $delegatingLoader = new DelegatingLoader($loaderResolver);
 
-        return $delegatingLoader->load($yamlSkinFile);
+        $list = $delegatingLoader->load($yamlSkinFile);
+        if (!$maintainDefault) {
+            unset($list['default']);
+        }
+        return $list;
     }
 
     private function getSkin(string $name) {

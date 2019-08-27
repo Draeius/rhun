@@ -1,3 +1,7 @@
+default:
+    name: fire
+
+#intern genutzer Name des skins
 fire:
     #Anzeigename des Skins
     name: fire
