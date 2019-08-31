@@ -1,135 +1,149 @@
 
 {% block content %}
-    <h1>Einstellungen für diesen Server</h1>
+    <div class="row">
+        <div class="col-5">
+            <div class="part">
+                <h1>Einstellungen für diesen Server</h1>
+                <span> LoGD Version {{ logd_version }} komplett auf deutsch, mit vielen Extras! </span>
+            </div>
 
-    <span> LoGD Version {{ logd_version }} komplett auf deutsch, mit vielen Extras! </span>
+            <div class="part">
+                <h2>Spieleinstellungen</h2>
+                <!--Spieler gegen Spieler erlaubt	1
+                     Erlaubte Anzahl Spielerkämpfe pro Tag	3
+                     Tage die Spieler sicher vor PvP sind	2
+                     Nötige Erfahrungspunkte bevor ein Spieler im PvP angreifbar wird	1500
+                -->
+                <table class="table">
+                    <tr>
+                        <td>
+                            Spielerbeiträge 'bereinigen' (Wortfilter)
+                        </td>
+                        <td>
+                            {{ rp_config.wordFilter ? 'Ja' : 'Nein' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Startgeld für neue Charaktere
+                        </td>
+                        <td>
+                            {{ settings.startMoney }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Avatare erlaubt?
+                        </td>
+                        <td>
+                            Ja
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Maximal gleichzeitig online
+                        </td>
+                        <td>
+                            unbegrenzt
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Emailadresse muss angegeben werden
+                        </td>
+                        <td>
+                            {{ settings.needEmailValidation ? 'Ja' : 'Nein' }}
+                        </td>
+                    </tr>
+                </table>
 
-    <h2>Spieleinstellungen</h2>
-    <!--Spieler gegen Spieler erlaubt	1
-    Erlaubte Anzahl Spielerkämpfe pro Tag	3
-    Tage die Spieler sicher vor PvP sind	2
-    Nötige Erfahrungspunkte bevor ein Spieler im PvP angreifbar wird	1500
-    -->
-    <table>
-        <tr>
-            <td>
-                Spielerbeiträge 'bereinigen' (Wortfilter)
-            </td>
-            <td>
-                {{ rp_config.wordFilter ? 'Ja' : 'Nein' }}
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Startgeld für neue Charaktere
-            </td>
-            <td>
-                {{ settings.startMoney }}
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Avatare erlaubt?
-            </td>
-            <td>
-                Ja
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Maximal gleichzeitig online
-            </td>
-            <td>
-                unbegrenzt
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Emailadresse muss angegeben werden
-            </td>
-            <td>
-                {{ settings.needEmailValidation ? 'Ja' : 'Nein' }}
-            </td>
-        </tr>
-    </table>
-    <h2>Neue Tage</h2>
-    <table>
-        <tr>
-            <td>
-                Spieltage pro Kalendertag
-            </td>
-            <td>
-                {{ settings.phasesPerDay }}
-            </td>
-        </tr>
-    </table>
-    <!--
-Um Zinsen zu bekommen muss ein Spieler weniger Waldkämpfe haben als	5
-Maximaler Zinssatz (%)	10
-Minimaler Zinssatz (%)	1
-Spieltage pro Kalendertag	12
-Extras des Spezialgebiets täglich einsetzen	1
-    
-    <h2>Handelseinstellungen</h2>
-    Maximum das ein Spieler pro Level leihen kann	1000
-    Maximum das ein Spieler pro Level ins Haus einlagern kann	10000
-    Maximum das ein Spieler pro Level aus dem Haus mitnehmen kann	10000
-    Maximum das ein Spieler pro Level überweisen kann	1000
-    Maximum das ein Spieler pro Level als Überweisung erhalten kann	1000
-    Mindestlevel für Überweisungen	2
-    Überweisungen die ein Spieler pro Tag empfangen darf	4
-    
-    <h2>Kopfgeld</h2>
-    Mindestbetrag pro Level der Zielperson	500
-    Maximalbetrag pro Level der Zielperson	5000
-    Mindestlevel um Opfer sein zu können	3
-    Gebühr für Dag Durnick in Prozent	10
-    Anzahl an Kopfgeldern die ein Spieler pro Tag aussetzen darf	1
-    
-    <h2>Wald</h2>
-    Waldkämpfe (Züge) pro Tag	15
-    Waldbewohner lassen wenigstens 1/4 des möglichen Golds fallen	1
-    Mindestlevel zum Herumstreifen	1
-    
-    <h2>Mail Einstellungen</h2>
-    Maximale Nachrichtengröße	5000
-    Maximale Anzahl an Nachrichten in der Inbox	25
-    Alte Nachrichten werden automatisch gelöscht nach Tagen	7
-    -->
+            </div>
 
-    <h2>Inhaltsverfallsdatum (0 für keines)</h2>
-    <table>
-        <tr>
-            <td>
-                Tage die der OOC aufgehoben wird
-            </td>
-            <td>
-                {{ settings.oocDays }}
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Tage die Posts aufgehoben werden
-            </td>
-            <td>
-                {{ settings.postDays }}
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Accounts die x Tage nicht angemeldet Angemeldet waren, werden gelöscht.
-            </td>
-            <td>
-                {{ settings.deleteThreshold }}
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Automatisches ausloggen bei Inaktivität
-            </td>
-            <td>
-                Nein
-            </td>
-        </tr>
-    </table>
+            <div class="part">
+                <h2>Neue Tage</h2>
+                <table class="table">
+                    <tr>
+                        <td>
+                            Spieltage pro Kalendertag
+                        </td>
+                        <td>
+                            {{ settings.phasesPerDay }}
+                        </td>
+                    </tr>
+                </table>
+                <!--
+                     Um Zinsen zu bekommen muss ein Spieler weniger Waldkämpfe haben als	5
+                     Maximaler Zinssatz (%)	10
+                     Minimaler Zinssatz (%)	1
+                     Spieltage pro Kalendertag	12
+                     Extras des Spezialgebiets täglich einsetzen	1
+
+                     <h2>Handelseinstellungen</h2>
+                     Maximum das ein Spieler pro Level leihen kann	1000
+                     Maximum das ein Spieler pro Level ins Haus einlagern kann	10000
+                     Maximum das ein Spieler pro Level aus dem Haus mitnehmen kann	10000
+                     Maximum das ein Spieler pro Level überweisen kann	1000
+                     Maximum das ein Spieler pro Level als Überweisung erhalten kann	1000
+                     Mindestlevel für Überweisungen	2
+                     Überweisungen die ein Spieler pro Tag empfangen darf	4
+
+                     <h2>Kopfgeld</h2>
+                     Mindestbetrag pro Level der Zielperson	500
+                     Maximalbetrag pro Level der Zielperson	5000
+                     Mindestlevel um Opfer sein zu können	3
+                     Gebühr für Dag Durnick in Prozent	10
+                     Anzahl an Kopfgeldern die ein Spieler pro Tag aussetzen darf	1
+
+                     <h2>Wald</h2>
+                     Waldkämpfe (Züge) pro Tag	15
+                     Waldbewohner lassen wenigstens 1/4 des möglichen Golds fallen	1
+                     Mindestlevel zum Herumstreifen	1
+
+                     <h2>Mail Einstellungen</h2>
+                     Maximale Nachrichtengröße	5000
+                     Maximale Anzahl an Nachrichten in der Inbox	25
+                     Alte Nachrichten werden automatisch gelöscht nach Tagen	7
+                -->
+
+            </div>
+
+            <div class="part">
+                <h2>Inhaltsverfallsdatum (0 für keines)</h2>
+                <table class="table">
+                    <tr>
+                        <td>
+                            Tage die der OOC aufgehoben wird
+                        </td>
+                        <td>
+                            {{ settings.oocDays }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Tage die Posts aufgehoben werden
+                        </td>
+                        <td>
+                            {{ settings.postDays }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Accounts die x Tage nicht angemeldet Angemeldet waren, werden gelöscht.
+                        </td>
+                        <td>
+                            {{ settings.deleteThreshold }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Automatisches ausloggen bei Inaktivität
+                        </td>
+                        <td>
+                            Nein
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
 {% endblock %}

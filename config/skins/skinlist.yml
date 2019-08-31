@@ -1,5 +1,5 @@
 default:
-    name: fire
+    name: doom
 
 #intern genutzer Name des skins
 fire:

@@ -1,138 +1,82 @@
 
 {% block content %}
-    <div style="text-align: center;">
-        <img style="
-             display: block;
-             margin-left: auto;
-             margin-right: auto;" 
-             src="{{ asset('images/rhun_schriftzug.png')}}">
-        <br />
-        <br />
-        <font size=3>{{seiya.name|colorize|raw}}</font><br />
-        <span>
-            {{seiya.descr|colorize|raw}}
-        </span>
+
+    <div class="row part">
+        <div class="col-4">
+            Autem maiores vel possimus. Quis dolor eum sapiente inventore. Aut dolor soluta et perspiciatis eos aut ipsa.
+
+            Magni maxime sapiente culpa saepe libero asperiores. Eos nulla quia adipisci vel ut delectus error sed. Maxime est hic occaecati ut a autem. In velit facere fuga. Quis corporis iste nihil.
+
+            Debitis hic voluptas voluptatem. Vel est qui dolore temporibus. Dolorem repellendus dolores aperiam placeat labore cupiditate. Tempora rerum perspiciatis pariatur ex temporibus.
+
+            Doloribus veniam dolor molestias fugit nam in aliquid commodi. Et rerum quidem inventore vel a velit est. Quia vel qui magni quod enim id. Est qui aspernatur quas ipsum aperiam. Aut sapiente excepturi ea repellat et architecto sint voluptatibus.
+
+                Qui asperiores nulla a nesciunt provident quis est. Et dolore officiis totam ut id est. Et ut ullam architecto. Ut ut laudantium consectetur tempora maiores. Quam molestiae a odit quibusdam. Possimus saepe libero dicta alias iusto.
+        </div>
+        <div class="col-4">
+            <img src="{{ asset('images/rhun_schriftzug.png')}}">
+        </div>
+
+        <div id="login" class="col-4">
+            <h2>Anmeldung</h2>
+            <!-- login form -->
+            {% if error %}
+                <span>{{ error.messageKey|trans(error.messageData, 'security') }}</span>
+            {% endif %}
+
+            {{ form_start(form, {'action': path(form_path)}) }}
+                <div class="form-group">
+                    <label for="login_name">Name</label>
+                    <input type="text" class="form-control" id="login_name" placeholder="Name">
+                </div>
+                <div class="form-group">
+                    <label for="login_password">Passwort</label>
+                    <input type="password" class="form-control" id="login_password" placeholder="Passwort">
+                </div>
+                <button type="submit" class="btn btn-primary" >Login</button>
+            {{ form_end(form) }}
+        </div>
     </div>
 
-    <table align='center'>
-        <tr>
-            <td valign=top>
-                <img src="{{ asset('images/lerentia.png')}}">
-            </td>
-            <td width=300 valign=top>
-                <font size=2>{{lerentia.name|colorize|raw}}</font>
-                <p align=justify>
-                    {{lerentia.descr|colorize|raw}}
-                </p>
-            </td>
-            <td width=50>
-
-            </td>
-            <td width=300 valign=top align=right>
-                <font size=2>{{nelaris.name|colorize|raw}}</font>
-                <p align=justify>
-                    {{nelaris.descr|colorize|raw}}
-                </p>
-            </td>
-            <td align=right valign=top><img src="{{ asset('images/nelaris.png')}}"></td>
-        </tr>
-    </table>
-    <!-- 
-        
-        login form 
-        
-    -->
-    {% if error %}
-        <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
-
-    <div id="login_wrapper" class="center_wrapper" style="background-image: url({{asset('images/logindragon.png')}});">
-        {{ form_start(form, {'action': path(form_path)}) }}
-        {{ form_row(form.username) }}
-        {{ form_row(form.password) }}
-        <button type="submit" class="button">Login</button>
-        {{ form_end(form) }}
+    <!-- lands -->
+    <div class="row part">
+        <div class="col-12">
+            <div id="lerentia" class="card mb-3 land">
+                <img class="card-img" src="{{ asset('images/lerentia.png')}}">
+                <div class="card-body">
+                    <h3 class="card-title">{{lerentia.name|colorize|raw}}</h3>
+                    <p class="card-text">{{lerentia.descr|colorize|raw}}</p>
+                </div>
+            </div>
+            <div id="nelaris" class="card land">
+                <img class="card-img" src="{{ asset('images/nelaris.png')}}">
+                <div class="card-body">
+                    <h3 class="card-title">{{nelaris.name|colorize|raw}}</h3>
+                    <p class="card-text">{{nelaris.descr|colorize|raw}}</p>
+                </div>
+            </div>
+            <div id="manosse" class="card land">
+                <img class="card-img" src="{{ asset('images/manosse.png')}}">
+                <div class="card-body">
+                    <h3 class="card-title">{{manosse.name|colorize|raw}}</h3>
+                    <p class="card-text">{{manosse.descr|colorize|raw}}</p>
+                </div>
+            </div>
+            <div id="pyra" class="card land">
+                <img class="card-img" src="{{ asset('images/pyra.png')}}">
+                <div class="card-body">
+                    <h3 class="card-title">{{pyra.name|colorize|raw}}</h3>
+                    <p class="card-text">{{pyra.descr|colorize|raw}}</p>
+                </div>
+            </div>
+            <div id="seiya" class="card land">
+                <img class="card-img" src="{{ asset('images/lerentia.png')}}">
+                <div class="card-body">
+                    <h3 class="card-title">{{seiya.name|colorize|raw}}</h3>
+                    <p class="card-text">{{seiya.descr|colorize|raw}}</p>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <table align='center'>
-        <tr>
-            <td valign=bottom>
-                <img src="{{ asset('images/pyra.png')}}">
-            </td>
-            <td valign=bottom width=300 align=top><font size=2>{{pyra.name|colorize|raw}}</font>
-                <p align=justify>
-                    {{pyra.descr|colorize|raw}}
-                </p>
-            </td>
-            <td width=50>
-
-            </td>
-
-            <td width=300 align=right valign=bottom>
-                <font size=2>{{manosse.name|colorize|raw}}</font>
-                <p align=justify>
-                    {{manosse.descr|colorize|raw}}
-                </p>
-            </td>
-            <td valign=bottom align=right>
-                <img src="{{ asset('images/manosse.png')}}">
-            </td>
-        </tr>
-    </table>
-    <br />
-    <br />
-    <br />
-
-
-    <br /> 
-    <br />
-    <div align='right'>
-        {{ '`yAn einem der Bäume stehen die Worte`n
-        `€&#34;Willkommen bei Legend of the Green Dragon,`n
-        schamlos abgekupfert von Seth Able&#39;s Legend of the Red Dragon.&#34; `n
-        `yverwundert schüttelst du nur den Kopf.. `n' |colorize |raw }}
-    </div>
-    <br />
-    <br />
-    <br />
-    <div align="right">
-        {{ ('`ùWenn du richtig gezählt hast, ist heute der `€'~ date ~' im Jahre '~ yearAfterMetroid ~' `ùnach dem letzten Meteoriteneinschlag
-        `ùund `€'~ time ~' `ùUhr. `nDemnach ist die nächste Phase nur noch `€'~ nextPhase ~' (Echtzeit)
-        `ù entfernt.') |colorize |raw }}
-    </div>
-    <br />
-    <br />
-    <br />
-
-    <div align='right'>
-        {{ ('`ùAls du gen Himmel blickst, erkennst du zwei alte Bekannte, die Monde `€Kuu `ùund `€Kun`ù.
-        Kuu ist `€'~ kuuTime ~'`ù, Kun ist `€'~ kunTime ~'`ù.') |colorize |raw }}
-    </div>
-    <br />
-    <br />
-    <div align='right'>
-         ('`ùDas letzte neue Gesicht wurde `€'~ lastNewPlayer |charName(false) ~'`ù genannt.`n') |colorize |raw }}
-    </div>
-    <!--`€<?php //echo $this->newdk      ?>`ù hat das zuletzte gesichtete Blasse Monstrum getötet! -->
-    <br />
-
-    <div align='right'>
-        <br />
-        <a href="http://www.browsergames-verzeichnis.de/">
-            <img src="http://www.browsergames-verzeichnis.de/button.php?u=Edana" alt="Browsergames Verzeichnis" border="0" />
-        </a>
-        <!--
-        disabled because unsafe
-        <span style="width: 88px; height: 31px; display: inline-block; overflow: hidden; background-image: url(http://www.kostenlose-onlinegames.net/images/bgbutton.gif); background-repeat: no-repeat; text-align: left;">
-            <a href="http://www.kostenlose-onlinegames.net" target="_blank" style="width: 85px; height: 27px; display: inline-block; margin: 4px 0 0 3px; font-family: Arial, sans-serif; font-size: 11px; font-weight: bold; line-height: 12px; letter-spacing: 0px; color: #ffffff; text-decoration: none;">
-                kostenlose onlinegames
-            </a>
-        </span>
-        <span style="width: 88px; height: 31px; display: inline-block; overflow: hidden; background-image: url(http://www.kostenlose-browsergames.de/images/bgbutton.gif); background-repeat: no-repeat; text-align: left;">
-            <a href="http://www.kostenlose-browsergames.de" target="_blank" style="width: 87px; height: 27px; display: inline-block; margin: 4px 0 0 1px; font-family: Arial, sans-serif; font-size: 11px; font-weight: bold; line-height: 12px; letter-spacing: 0px; color: #ffffff; text-decoration: none;">
-                kostenlose browsergames
-            </a> 
-        </span>
-        -->
-    </div>
 {% endblock %}

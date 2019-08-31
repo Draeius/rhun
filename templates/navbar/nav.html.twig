@@ -1,3 +1,6 @@
-<li class="nav" onclick="window.open('{{ path(target, params) }}', '_self')">
-    {{title |colorize|raw}}
+<!-- Impressum, Account erstellen, Rassenübersicht, Karte, 6t Sinn  -->
+<li class="nav-item">
+    <a class="nav-link" href="{{ path(target, params) }}">
+        {{title | colorize | raw}}
+    </a>
 </li>

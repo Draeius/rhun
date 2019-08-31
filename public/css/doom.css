@@ -1,0 +1,45 @@
+#main.container {
+}
+
+#lands {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    flex-flow: row wrap;
+}
+
+.land {
+    margin: 10px;
+    padding: 10px;
+    max-width: 50rem;
+    display: inline-flex;
+    flex-direction: row;
+}
+
+.land > img.card-img {
+    flex-basis: 118px;
+    margin: auto;
+    height: 100%;
+    width: 100%;
+}
+
+.land > .card-body {
+    flex-basis: 200px;
+}
+
+.land > .card-body > .card-text {
+    max-width: 400px;
+}
+
+.part {
+    margin: 25px;
+    padding: 10px;
+
+    border-style: solid;
+    border-width: 10px;
+    border-color: red;
+}
+
+#login > form {
+    max-width: 500px;
+}

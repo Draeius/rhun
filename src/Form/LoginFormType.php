@@ -14,9 +14,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 class LoginFormType extends AbstractType {
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
-        $builder
-                ->add('username', null, ['label' => 'Name'])
-                ->add('password', PasswordType::class, ['label' => 'Passwort']);
+#       $builder
+#               ->add('username', null, ['label' => 'Name'])
+#               ->add('password', PasswordType::class, ['label' => 'Passwort']);
     }
 
 }

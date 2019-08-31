@@ -1,0 +1,8 @@
+#files
+#base dir ab templates/skins
+skin_base_dir: doom
+
+#name des base files
+skin_file: doom.html.twig
+
+#components TBD

@@ -1,7 +1,6 @@
 
-<div style="width:100%;">
-    <img id="rhun_map_image" src="{{asset('images/rhun_map.jpg')}}" style="width: 100%;" usemap="#rhunmap" border="0" width="100%" />
-
+<div id="main-map" class="part">
+    <img id="rhun_map_image" src="{{asset('images/rhun_map.jpg')}}" usemap="#rhunmap"/>
     <map id="rhun_map" name="rhunmap">
         <area shape="rect" coords="600,430,690,480" href="{{path('world', {'uuid': uuid, 'locationId': '2' })}}" > <!-- Seiya -->
         <area shape="rect" coords="900,200,960,260" href="{{path('world', {'uuid': uuid, 'locationId': '5' })}}" > <!-- Pyra -->

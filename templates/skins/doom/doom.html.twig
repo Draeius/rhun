@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{parent()}}
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" crossorigin="anonymous"
+          href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/slate/bootstrap.min.css"
+          integrity="sha384-FBPbZPVh+7ks5JJ70RJmIaqyGnvMbeJ5JQfEbW0Ac6ErfvEg9yG56JQJuMNptWsH">
+
+    <link href="{{ asset('css/doom.css')}}" rel="stylesheet" type="text/css">
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block body %}
+
+    <nav class="navbar navbar-expand-lg">
+        <a class="navbar-brand" href="/index.php">
+            Die Legende von Rhûn
+        </a>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                {{navbar|raw}}
+            </div>
+
+            <div class="col-10">
+                {% include asset(page ~ '.html.twig') %}
+            </div>
+
+            <div class="col">
+                {% if uuid.hasIdentifier() %}
+                    {% include 'parts/characterStats.html.twig' %}
+                {% elseif account %}
+                    {% include 'parts/accountStats.html.twig' %}
+                {% endif %}
+                {% if charsPresent %}
+                    {% include 'parts/charsPresent.html.twig' %}
+                {% endif %}
+                {% if not userOnline is same as(false) %}
+                    {% include 'parts/userOnline.html.twig' %}
+                {% endif %}
+            </div>
+
+            {% if showLinks %}
+                <!-- ????? -->
+                &Diamond; <a href="https://discord.gg/Yu8tYxF" target="_blank">Discord</a>
+                &Diamond; <a href="http://www.rhun-logd.de/wiki" target="_blank">Wiki</a>
+                &Diamond; <a href="{{path('acct_mnmgt', {'_fragment': 'news'})}}" target="_blank"> MotD </a>
+                &Diamond; <!-- echo($this->motdlink)  echo($this->petition) -->
+            {% endif %}
+            {% if showMails %}
+                <a href="{{ path(mail_link) }}" target="_blank">
+                    {% if new_mails is defined and new_mails < 1 %}Mails
+                    {% endif %}
+                    {% if new_mails is defined and new_mails > 0 %}
+                        <b><font color="FFFF00">Mails (Neu: {{ new_mails }})</font></b>
+                    {% endif %}</a> &Diamond;
+            {% endif %}
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}
