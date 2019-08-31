@@ -26,7 +26,10 @@ class CreateAccountFormType extends AbstractType {
                     'second_options' => array('label' => ' '),)
                 )
                 ->add('email', EmailType::class, ['label' => ' ', 'required' => true])
-                ->add('birthday', BirthdayType::class, ['label' => ' ', 'required' => false]);
+                ->add('birthday', BirthdayType::class, [
+                    'label' => ' ',
+                    'widget' => 'single_text',
+                    'required' => false]);
     }
 
 }
