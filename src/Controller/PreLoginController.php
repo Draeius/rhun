@@ -96,11 +96,10 @@ class PreLoginController extends BasicController {
 
         if ($form->isSubmitted() && $form->isValid()) {
             $session = new RhunSession();
+            $user = $userFacade->createUser($userDTO);
+
+            $session->setAccountID($user->getId());
             if ($config->getSettings()->getNeedEmailValidation()) {
-                $user = $userFacade->createUser($userDTO);
-
-                $session->setAccountID($user);
-
                 $mailService->sendMailValidationCode($user);
 
                 return $this->redirectToRoute(AccountManagementController::ACCOUNT_MANAGEMENT_ROUTE_NAME);

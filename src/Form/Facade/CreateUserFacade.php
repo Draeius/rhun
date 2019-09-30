@@ -63,12 +63,12 @@ class CreateUserFacade {
         $user->setBirthday($dto->birthday);
 
         $user->setValidationCode($this->emailValidationService->getValidationCode());
-        $user->setValidated(!$this->configService->getStartSettings()->getNeedEmailValidation());
+        $user->setValidated(!$this->configService->getSettings()->getNeedEmailValidation());
 
-        $level = $this->userRoleRepository->find($this->configService->getStartSettings()->getStartUserLevelId());
+        $level = $this->userRoleRepository->find($this->configService->getSettings()->getStartUserLevelId());
         $user->setUserRole($level);
 
-        $encoded = $this->pwEncoder->encodePassword($user, $dto->getPassword());
+        $encoded = $this->pwEncoder->encodePassword($user, $dto->password);
         $user->setPassword($encoded);
 
         $this->eManager->persist($user);

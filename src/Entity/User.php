@@ -31,7 +31,7 @@ class User extends RhunEntity implements UserInterface, Serializable {
     /**
      *
      * @var string The account's password
-     * @Column(type="string", length=64, nullable=false)
+     * @Column(type="string", length=128, nullable=false)
      */
     protected $password = '';
 
