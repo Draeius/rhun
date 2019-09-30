@@ -27,8 +27,24 @@ class FightController extends BasicController {
     /**
      * @Route("/new/{uuid}", name=FightController::NEW_FIGHT_ROUTE_NAME)
      */
-    public function newFight($uuid, EntityManagerInterface $eManager, MonsterRepository $monsterRepo) {
-        
+    public function newFight($uuid, EntityManagerInterface $eManager, CharacterRepository $charRepo, MonsterRepository $monsterRepo) {
+        $fight = new Fight();
+        $session = new RhunSession();
+        /* @var $character Character */
+        $character = $charRepo->find($session->getCharacterID());
+        $enemies = $monsterRepo->findRandomByLocation($character->getLocation());
+        if (!$enemies) {
+            $session->error('Hier gibt es keine Feinde.');
+            return $this->redirectToWorld($character);
+        }
+
+        $fight->addFighter($character);
+        foreach ($enemies as $enemy) {
+            $fight->addFighter($enemy);
+        }
+        $fight->establishFightOrder();
+        $this->saveFight($fight, $session, $character, $eManager);
+        return $this->redirectToWorld($character);
     }
 
     /**

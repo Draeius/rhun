@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\EntityAttributesTrait;
 use App\Entity\Traits\EntityColoredNameTrait;
 use App\Util\Price;
 use Doctrine\ORM\Mapping\Column;
@@ -23,6 +24,7 @@ use Doctrine\ORM\Repository\RepositoryFactory;
 class Job extends RhunEntity {
 
     use EntityColoredNameTrait;
+    use EntityAttributesTrait;
 
     /**
      * @ManyToMany(targetEntity="Location", fetch="EXTRA_LAZY")
@@ -37,30 +39,6 @@ class Job extends RhunEntity {
      * )
      */
     protected $locations;
-
-    /**
-     * @var int
-     * @Column(type="integer")
-     */
-    protected $intRequirement;
-
-    /**
-     * @var int
-     * @Column(type="integer")
-     */
-    protected $strRequirement;
-
-    /**
-     * @var int
-     * @Column(type="integer")
-     */
-    protected $agiRequirement;
-
-    /**
-     * @var int
-     * @Column(type="integer")
-     */
-    protected $chaRequirement;
 
     /**
      *
@@ -82,24 +60,11 @@ class Job extends RhunEntity {
      */
     protected $platinSalary;
 
-    /**
-     * @var int
-     * @Column(type="integer")
-     */
-    protected $staminaDrain;
-
     public function isSuitable(Character $char) {
-        if ($char->getAgility() < $this->agiRequirement) {
-            return "Du hast nicht genug Agilität.";
-        }
-        if ($char->getCharme() < $this->chaRequirement) {
-            return "Du bist nicht charmant genug.";
-        }
-        if ($char->getStrength() < $this->strRequirement) {
-            return "Du bist nicht stark genug.";
-        }
-        if ($char->getIntelligence() < $this->intRequirement) {
-            return "Du bist nicht intelligent genug";
+        foreach (Attribute::toArray() as $attribute) {
+            if ($char->getAttribute($attribute) < $this->getAttribute($attribute)) {
+                return 'Du hast zu wenig ' . Attribute::getName($attribute);
+            }
         }
         $rep = RepositoryFactory::getRepositoryByClass('Job');
         $job = $rep->findByPromoteTo($this);
@@ -122,22 +87,6 @@ class Job extends RhunEntity {
         return new Price($this->goldSalary, $this->platinSalary, 0);
     }
 
-    public function getIntRequirement() {
-        return $this->intRequirement;
-    }
-
-    public function getStrRequirement() {
-        return $this->strRequirement;
-    }
-
-    public function getAgiRequirement() {
-        return $this->agiRequirement;
-    }
-
-    public function getChaRequirement() {
-        return $this->chaRequirement;
-    }
-
     public function getPromoteTo() {
         return $this->promoteTo;
     }
@@ -150,36 +99,12 @@ class Job extends RhunEntity {
         return $this->platinSalary;
     }
 
-    public function getStaminaDrain() {
-        return $this->staminaDrain;
-    }
-
     function getLocations() {
         return $this->locations;
     }
 
     function setLocations($locations) {
         $this->locations = $locations;
-    }
-
-    public function setStaminaDrain($staminaDrain) {
-        $this->staminaDrain = $staminaDrain;
-    }
-
-    public function setIntRequirement($intRequirement) {
-        $this->intRequirement = $intRequirement;
-    }
-
-    public function setStrRequirement($strRequirement) {
-        $this->strRequirement = $strRequirement;
-    }
-
-    public function setAgiRequirement($agiRequirement) {
-        $this->agiRequirement = $agiRequirement;
-    }
-
-    public function setChaRequirement($chaRequirement) {
-        $this->chaRequirement = $chaRequirement;
     }
 
     public function setPromoteTo(Job $promoteTo) {

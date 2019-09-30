@@ -1,0 +1,18 @@
+
+<div style="max-width: 600px; max-height: 600px;">
+    {% if guild.getAvatar() %}
+        <img src="{{ guild.getAvatar() }}"  style="max-width: 600px; max-height: 600px;">
+    {% endif %}
+</div>
+{% if guild.getDescription() %} 
+    <div>
+        {{ guild.getDescription() |colorize |raw}}
+    </div>
+    {% if guild.getScript() %} 
+        <script>
+            {{ guild.getScript() |raw }}
+        </script>
+    {% endif %}
+{% else %}
+    Leider ist nichts über diese Gilde bekannt.
+{% endif %}

@@ -12,10 +12,10 @@ use Doctrine\ORM\Mapping\Table;
  * Specifies which monster can spawn in which area at what rate
  *
  * @author Draeius
- * @Entity(repositoryClass="App\Repository\MonsterOccuranceRepository")
- * @Table(name="monster_occurances")
+ * @Entity
+ * @Table(name="encounters")
  */
-class MonsterOccurance extends LocationBasedEntity {
+class Encounter extends LocationBasedEntity {
 
     /**
      * The enemy this class refers to
@@ -24,6 +24,13 @@ class MonsterOccurance extends LocationBasedEntity {
      * @JoinColumn(name="monster_id", referencedColumnName="id")
      */
     protected $monster;
+
+    /**
+     * The amount of monsters that will spawn.
+     * @var int 
+     * @Column(type="integer")
+     */
+    protected $amount;
 
     /**
      * The rate at which the specified monster will spawn.
@@ -40,12 +47,20 @@ class MonsterOccurance extends LocationBasedEntity {
         return $this->rate;
     }
 
+    function getAmount() {
+        return $this->amount;
+    }
+
     public function setMonster(Enemy $monster) {
         $this->monster = $monster;
     }
 
     public function setRate($rate) {
         $this->rate = $rate;
+    }
+
+    function setAmount($amount) {
+        $this->amount = $amount;
     }
 
 }

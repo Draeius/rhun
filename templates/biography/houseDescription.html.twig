@@ -1,0 +1,18 @@
+
+<div style="max-width: 600px; max-height: 600px;">
+    {% if house.getAvatar() %}
+        <img src="{{ house.getAvatar() }}"  style="max-width: 600px; max-height: 600px;">
+    {% endif %}
+</div>
+{% if house.getDescription() %} 
+    <div>
+        {{ house.getDescription() |colorize |raw}}
+    </div>
+    {% if house.getScript() %} 
+        <script>
+            {{ house.getScript() |raw }}
+        </script>
+    {% endif %}
+{% else %}
+    Leider kannst du das Haus von hier aus nicht sehen.
+{% endif %}

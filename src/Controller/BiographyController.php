@@ -4,84 +4,66 @@ namespace App\Controller;
 
 use App\Entity\Biography;
 use App\Entity\Character;
-use App\Entity\ServerSettings;
+use App\Repository\CharacterRepository;
+use App\Repository\UserRepository;
+use App\Service\ParamGenerator\BiographyParamGenerator;
+use App\Service\SkinService;
+use App\Util\Session\RhunSession;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @App\Annotation\Security(needAccount=true)
+ */
 class BiographyController extends BasicController {
 
     /**
      *
-     * @var BiographyNavbarFactory
+     * @var BiographyParamGenerator
      */
-    private $navbarFactory;
+    private $paramGenerator;
+
+    /**
+     *
+     * @var EntityManagerInterface
+     */
+    private $eManager;
+
+    function __construct(SkinService $skinService, BiographyParamGenerator $paramGenerator, EntityManagerInterface $eManager) {
+        parent::__construct($skinService);
+        $this->paramGenerator = $paramGenerator;
+        $this->eManager = $eManager;
+    }
 
     /**
      * @Route("bio/editor", name="bioEditor")
      */
-    public function showEditor(Request $request) {
-        $builder = $this->get('app.navbar');
-        $builder->addNav('Zurück', 'charmanagement');
+    public function showEditor(Request $request, CharacterRepository $charRepo, UserRepository $userRepo) {
+        $session = new RhunSession();
+        $account = $userRepo->find($session->getAccountID());
 
-        $vars = array_merge($this->getBaseVariables($builder, 'Biographie'), [
-            'page' => 'default/bioeditor',
-            'characters' => $this->getAccount()->getCharacters(),
-            'selectedChar' => $request->get('selectedChar')
-        ]);
-
-        return $this->render($this->getSkinFile(), $vars);
+        return $this->render($this->getSkinFile(), $this->paramGenerator->getBioEditorParams($charRepo, $account, $request->get('selectedChar')));
     }
 
     /**
-     * App\Annotation\Security(needAccount=true)
      * @Route("/bio/{charId}/{uuid}", name="bio", defaults={"uuid"="1"})
      */
-    public function showBiography($charId, $uuid) {
-        $charRep = $this->getDoctrine()->getRepository('AppBundle:Character');
+    public function showBiography($charId, $uuid, CharacterRepository $charRepo) {
         /* @var $character Character */
-        $character = $charRep->find($charId);
+        $character = $charRepo->find($charId);
 
-        $settings = $this->getSettings();
-        if ($character) {
-            $bio = $this->getBiography($character, $settings);
-        } else {
-            $bio = null;
-        }
+        $settings = $this->eManager->find('App:ServerSettings', 1);
 
-        $builder = $this->get('app.navbar');
-        if ($uuid != '1') {
-            $builder->addNav('Zurück zur Kämpferliste', 'list', ['uuid' => $uuid]);
-            $builder->addNav('Zurück', 'world', ['uuid' => $uuid, 'locationId' => $this->getCharacter($uuid)->getLocation()->getId()]);
-        } else {
-            $builder->addNav('Zurück zur Kämpferliste', 'list');
-            $builder->addNav('Zurück zur Charakterübersicht', 'charmanagement');
-        }
-
-        $entries = $character->getDiaryEntries();
-        if (sizeof($entries) > 0 && !$this->getSettings()->getUseMaskedBios()) {
-            $builder->addNavhead('Tagebucheinträge');
-            foreach ($entries as $diaryEntry) {
-                $builder->addNav($diaryEntry->getTitle(), 'diary_show', ['charId' => $charId, 'diaryId' => $diaryEntry->getId(), 'uuid' => $uuid]);
-            }
-        }
-
-        $vars = array_merge($this->getBaseVariables($builder, 'Biographie'), [
-            'page' => 'default/biography',
-            'character' => $character,
-            'settings' => $settings,
-            'biography' => $bio
-        ]);
-
-        return $this->render($this->getSkinFile(), $vars);
+        return $this->render($this->getSkinFile(), $this->paramGenerator->getCharacterBioParams($character, $settings, $charRepo));
     }
 
     /**
      * @Route("/bio_editor/get/data", name="bio_data")
      */
     public function getBiographyData(Request $request) {
-        $rep = $this->getDoctrine()->getRepository('AppBundle:Biography');
-        $bio = $rep->find($request->get('id'));
+        $bio = $this->eManager->find('App:Biography', $request->get('id'));
 
         $result = array(
             'script' => $bio->getScript(),
@@ -106,17 +88,15 @@ class BiographyController extends BasicController {
     /**
      * @Route("/bio_editor/add", name="bio_add")
      */
-    public function addBiography(Request $request) {
-        $rep = $this->getDoctrine()->getRepository('AppBundle:Character');
-        $character = $rep->find($request->get('character'));
+    public function addBiography(Request $request, CharacterRepository $charRepo) {
+        $character = $charRepo->find($request->get('character'));
 
         $bio = new Biography();
         $bio->setName($request->get('name'));
         $bio->setOwner($character);
 
-        $manager = $this->getDoctrine()->getManager();
-        $manager->persist($bio);
-        $manager->flush();
+        $this->eManager->persist($bio);
+        $this->eManager->flush();
 
         return new JsonResponse(['msg' => 'Bio erfolgreich hinzugefügt']);
     }
@@ -125,9 +105,8 @@ class BiographyController extends BasicController {
      * @Route("/bio_editor/edit", name="bio_edit")
      */
     public function editBiography(Request $request) {
-        $rep = $this->getDoctrine()->getManager()->getRepository('AppBundle:Biography');
         /* @var $bio Biography */
-        $bio = $rep->find($request->get('bio'));
+        $bio = $this->eManager->find('App:Biography', $request->get('bio'));
 
         if (!$bio) {
             return new JsonResponse(['error' => 'Bio nicht gefunden.']);
@@ -153,21 +132,20 @@ class BiographyController extends BasicController {
         $bio->setEyecolor($request->get('eyecolor'));
         $bio->setAvatar($request->get('avatar'));
 
-        $manager = $this->getDoctrine()->getManager();
-        $manager->persist($bio);
+        $this->eManager->persist($bio);
         if ($bio->getSelected()) {
             foreach ($bio->getOwner()->getBiography() as $bioCheck) {
                 $bioCheck->setSelected($bioCheck->getId() == $bio->getId());
-                $manager->persist($bioCheck);
+                $this->eManager->persist($bioCheck);
             }
         }
         if ($bio->getMaskedBall()) {
             foreach ($bio->getOwner()->getBiography() as $bioCheck) {
                 $bioCheck->setMaskedBall($bioCheck->getId() == $bio->getId());
-                $manager->persist($bioCheck);
+                $this->eManager->persist($bioCheck);
             }
         }
-        $manager->flush();
+        $this->eManager->flush();
 
         return new JsonResponse(['msg' => 'Biographie erfolgreich geändert.']);
     }
@@ -175,33 +153,23 @@ class BiographyController extends BasicController {
     /**
      * @Route("/bio_editor/del", name="bio_del")
      */
-    public function removeBiography(Request $request) {
-        $bio = $this->getDoctrine()->getManager()->getRepository('AppBundle:Biography')->find($request->get('id'));
-        $account = $this->getAccount();
+    public function removeBiography(Request $request, UserRepository $userRepo) {
+        $bio = $this->eManager->find('App:Biography', $request->get('id'));
+        if (!$bio) {
+            return new JsonResponse(['error' => 'Diese Biography gehört dir nicht.']);
+        }
+
+        $session = new RhunSession();
+        $account = $userRepo->find($session->getAccountID());
 
         if ($account->getId() != $bio->getOwner()->getAccount()->getId()) {
             return new JsonResponse(['error' => 'Diese Biography gehört dir nicht.']);
         }
 
-        $manager = $this->getDoctrine()->getManager();
-        $manager->remove($bio);
-        $manager->flush();
+        $this->eManager->remove($bio);
+        $this->eManager->flush();
 
         return new JsonResponse(['msg' => 'Biographie erfolgreich gelöscht.']);
-    }
-
-    private function getBiography(Character $character, ServerSettings $settings) {
-        foreach ($character->getBiography() as $bio) {
-            if ($settings->getUseMaskedBios()) {
-                if ($bio->getMaskedBall()) {
-                    return $bio;
-                }
-            } else {
-                if ($bio->getSelected()) {
-                    return $bio;
-                }
-            }
-        }
     }
 
 }

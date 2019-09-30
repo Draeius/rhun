@@ -13,6 +13,8 @@
                 <script>
                     var rhun = {};
                     rhun.uuid = "{{ uuid.getIdentifier() }}";
+                    rhun.postLimit = "{{ postLimit }}";
+                    rhun.oocLimit = "{{ oocLimit }}";
                 </script>
             {% endif %}
             <script type="text/javascript" src="{{ asset('js/jquery.min.js')}}"></script>

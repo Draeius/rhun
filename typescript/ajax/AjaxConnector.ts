@@ -1,5 +1,6 @@
 
-module Ajax {
+namespace Ajax {
+
     export interface AjaxResponse {
         message: string;
     }
@@ -12,66 +13,52 @@ module Ajax {
             this.baseUrl = this.getBaseURL();
         }
 
-        public getPosts(callback: Function, ooc: boolean = true, page: number = 1, limit: number = 10) {
-            if (ooc) {
-                var urlPart = "ooc/get"
-            } else {
-                var urlPart = "post/get/" + uuid;
-            }
-
-            var url = this.baseUrl + urlPart + "?limit=" + limit + "&page=" + page;
-            $.ajax(url)
-                .done(function (data) {
-                    callback(data);
-                })
-                .fail(function (data) {
-                    console.log("failed to get posts");
-                    $(document.body).append(data.responseText);
-                });
+        public getData(url: string, params: {[key: string]: string}, callback: Function): void {
+            this.submit({
+                type: "GET",
+                url: url,
+                data: params,
+            }, callback);
         }
 
-        public getData(url: string, params: {[key: string]: string}, callback: Function): void {
-            var url = this.baseUrl + url;
-            //            url = this.addParams(url, params);
-            console.log(url);
-            $.post({
+        public postData(url: string, params: {[key: string]: string}, callback: Function): void {
+            this.submit({
                 type: "POST",
                 url: url,
                 data: params,
-            })
+            }, callback)
+        }
+
+        private submit(request: JQuery.UrlAjaxSettings, callback: Function) {
+            $.post(request)
                 .done(function (data) {
+                    Logging.Logger.debug("submit data:");
+                    Logging.Logger.debug(data);
                     if (data['ERR'] && data['ERR'] == 'logout') {
                         $(document.body).css('color', '#2E2E2E');
                     } else {
-                        callback(data);
+                        if (callback) {
+                            callback(data);
+                        }
                     }
                 })
                 .fail(function (data) {
-                    console.log("failed to get data. URL: " + url);
+                    Logging.Logger.error("failed to load data. URL: " + request.url);
                     $(document.body).append(data.responseText);
                 });
         }
 
         public submitForm(form: HTMLFormElement, callback: Function) {
-            console.log(form.action);
-            $.ajax({
+            Logging.Logger.debug("form submit action: " + form.action);
+            this.submit({
                 type: "POST",
                 url: form.action,
                 data: $(form).serialize(), // serializes the form's elements.
-                success: function (data) {
-                    //                    console.log(data);
-                    if (callback) {
-                        callback(data); // show response from the php script.
-                    }
-                },
-                error: function (data) {
-                    $(document.body).append(data.responseText);
-                }
-            });
+            }, callback);
             return false;
         }
 
-        private getBaseURL() {
+        protected getBaseURL() {
             return window.location.protocol + "//" + window.location.host + "/";
         }
 

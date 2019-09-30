@@ -1,5 +1,5 @@
 
-module Logging {
+namespace Logging {
 
     export const SHOW_DEBUG: boolean = true;
     export const SHOW_LOG: boolean = true;

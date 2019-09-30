@@ -7,18 +7,18 @@ use App\Controller\ListController;
 use App\Controller\WorldController;
 use App\Doctrine\UuidEncoder;
 use App\Entity\Character;
+use App\Entity\DiaryEntry;
 use App\Entity\ServerSettings;
 use App\Repository\CharacterRepository;
 use App\Service\NavbarService;
 use App\Util\Session\RhunSession;
-use App\Util\TabIdentification\TabIdentifier;
 
 /**
- * Description of BiographyNavbarGenerator
+ * Description of DiaryNavbarGenerator
  *
  * @author Draeius
  */
-class BiographyNavbarGenerator {
+class DiaryNavbarGenerator {
 
     /**
      *
@@ -30,14 +30,12 @@ class BiographyNavbarGenerator {
         $this->navbarService = $navbarService;
     }
 
-    public function getStandardNavbar(TabIdentifier $tabIdentifier, Character $char) {
-        $this->navbarService->addNav('Zurück', WorldController::STANDARD_WORLD_ROUTE_NAME, [
-            'uuid' => $tabIdentifier->getIdentifier(),
-            'locationId' => $char->getLocation()->getId()]);
+    public function getEditorNavbar() {
+        $this->navbarService->addNav('Zurück', AccountManagementController::ACCOUNT_MANAGEMENT_ROUTE_NAME);
         return $this->navbarService;
     }
 
-    public function getBiographyNavbar(Character $character, CharacterRepository $charRepo, ServerSettings $settings) {
+    public function getDiaryNavbar(Character $character, CharacterRepository $charRepo, ServerSettings $settings, DiaryEntry $entry) {
         $builder = $this->navbarService;
         $session = new RhunSession();
         if ($session->getTabIdentifier()->hasIdentifier()) {
@@ -59,17 +57,14 @@ class BiographyNavbarGenerator {
         if (sizeof($entries) > 0 && !$settings->getUseMaskedBios()) {
             $builder->addNavhead('Tagebucheinträge');
             foreach ($entries as $diaryEntry) {
-                $builder->addNav($diaryEntry->getTitle(), 'diary_show', [
-                    'charId' => $character->getId(),
-                    'diaryId' => $diaryEntry->getId(),
-                    'uuid' => $session->getTabIdentifier()->getIdentifier()]);
+                if ($entry->getId() != $diaryEntry->getId()) {
+                    $builder->addNav($diaryEntry->getTitle(), 'diary_show', [
+                        'charId' => $character->getId(),
+                        'diaryId' => $diaryEntry->getId(),
+                        'uuid' => $session->getTabIdentifier()->getIdentifier()]);
+                }
             }
         }
-    }
-
-    public function getEditorNavbar() {
-        $this->navbarService->addNav('Zurück', AccountManagementController::ACCOUNT_MANAGEMENT_ROUTE_NAME);
-        return $this->navbarService;
     }
 
 }

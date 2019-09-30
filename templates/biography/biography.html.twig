@@ -1,0 +1,138 @@
+{% if not biography %} 
+    `mEs ist leider nichts über diesen Charakter bekannt.
+{% else %}
+    <table>
+        <tr>
+            <td>
+                <div style="max-width: 600px; max-height: 600px;">
+                    {% if biography.getAvatar() %}
+                        <img src="{{ biography.getAvatar() }}"  style="max-width: 600px; max-height: 600px;">
+                    {% endif %}
+                </div>
+            </td>
+            <td style="vertical-align: top;">
+                <table>
+                    <tr>
+                        <td>
+                            Name:
+                        </td>
+                        <td>
+                            {{ character | charName | colorize | raw }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Geschlecht:
+                        </td>
+                        <td>
+                            {{ character.getGender() ? "Männlich" : "Weiblich" }}
+                        </td>
+                    </tr>
+                    {% if not settings.getUseMaskedBios() %}
+                        <tr>
+                            <td>
+                                Rasse:
+                            </td>
+                            <td>
+                                {{ character.getRace().getName() |colorize |raw }}
+                            </td>
+                        </tr>
+                    {% endif %}
+                    <tr>
+                        <td>
+                            Volkszugehörigkeit:
+                        </td>
+                        <td>
+                            {{ biography.getEthnicity() |colorize |raw }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Größe:
+                        </td>
+                        <td>
+                            {{ biography.getHeight() |colorize |raw }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Alter:
+                        </td>
+                        <td>
+                            {{ biography.getAge() |colorize |raw }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Haarfarbe:
+                        </td>
+                        <td>
+                            {{ biography.getHaircolor() |colorize |raw }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Frisur:
+                        </td>
+                        <td>
+                            {{ biography.getHaircut() |colorize |raw }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Augenfarbe:
+                        </td>
+                        <td>
+                            {{ biography.getEyecolor() |colorize |raw }}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            Gesinnung:
+                        </td>
+                        <td>
+                            {{ biography.getDisposition() |colorize |raw }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Level:
+                        </td>
+                        <td>
+                            {{ character.getLevel() }}
+                        </td>
+                    </tr>
+                    {% if character.getGuild() and not biography.getMaskedBall() %}
+                        <tr>
+                            <td>
+                                Gilde:
+                            </td>
+                            <td>
+                                [{{ character.getGuild().getTag() |colorize |raw }}] {{ character.getGuild().getName() |colorize |raw }}
+                            </td>
+                        </tr>
+                    {% endif %}
+                    {% if character.getPartner() and not biography.getMaskedBall() %}
+                        <tr>
+                            <td>
+                                Verheiratet mit:
+                            </td>
+                            <td>
+                                {{ character.getPartner() |charName |colorize |raw }}
+                            </td>
+                        </tr>
+                    {% endif %}
+                </table>
+            </td>
+        </tr>
+    </table>
+    <div>
+        {{ biography.getText() |colorize |raw}}
+    </div>
+    {% if biography.getScriptEnabled() %} 
+        <script>
+            {{ biography.getScript() |raw }}
+        </script>
+    {% endif %}
+{% endif %}

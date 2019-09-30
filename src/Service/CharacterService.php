@@ -84,28 +84,27 @@ class CharacterService {
 //        }
 //    }
 //
-//    public static function handleDeath(EntityManager $manager, Character &$character, $looseWallet = true, $relocate = false, $expLoss = 0.1) {
-//        if ($looseWallet) {
-//            $character->getWallet()->setGold(0);
-//            $character->getWallet()->setPlatin(0);
-//        }
-//        if ($relocate) {
-//            $character->setLocation($character->getRace()->getDeathLocation());
-//        }
-//        if ($expLoss > 1) {
-//            $expLoss = 1;
-//        } else if ($expLoss < 0) {
-//            $expLoss = 0;
-//        }
-//        $character->setExp(round($character->getExp() * (1 - $expLoss)));
-//
-//        $character->setCurrentHP(0);
-//        $character->setDead(true);
-//        $manager->persist($character);
-//        $manager->persist($character->getWallet());
-//        $manager->flush($character);
-//    }
-//
+    public static function handleDeath(EntityManagerInterface $manager, Character &$character, $looseWallet = true, $relocate = false, $expLoss = 0.1) {
+        if ($looseWallet) {
+            $character->getWallet()->setGold(0);
+            $character->getWallet()->setPlatin(0);
+        }
+        if ($relocate) {
+            $character->setLocation($character->getRace()->getDeathLocation());
+        }
+        if ($expLoss > 1) {
+            $expLoss = 1;
+        } else if ($expLoss < 0) {
+            $expLoss = 0;
+        }
+        $character->setExp(round($character->getExp() * (1 - $expLoss)));
+
+        $character->setCurrentHP(0);
+        $character->setDead(true);
+        $manager->persist($character);
+        $manager->flush();
+    }
+
     public static function deleteCharacter(EntityManagerInterface $eManager, Character $character) {
         self::deleteCharForeignKeyEntities($eManager, $character);
         $eManager->remove($character);

@@ -2,15 +2,17 @@
 
 namespace App\Entity;
 
+use App\Entity\Option\Option;
 use App\Entity\Traits\EntityColoredNameTrait;
 use App\Entity\Traits\EntityIdTrait;
-use App\Option\Option;
-use App\Option\OptionPicker;
+use App\Util\Option\OptionPicker;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
+use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\Table;
+use Symfony\Flex\Options;
 
 /**
  * Description of Activity
@@ -34,8 +36,8 @@ class Activity extends LocationBasedEntity {
 
     /**
      *
-     * @var string
-     * @Column(type="text")
+     * @var Options[]
+     * @OneToMany(targetEntity="Option", mappedBy="activity")
      */
     protected $options;
 
@@ -55,17 +57,10 @@ class Activity extends LocationBasedEntity {
         $this->options = $options;
     }
 
-    public function prepareOptions(EntityManager $manager, $uuid): OptionPicker {
+    public function prepareOptions(): OptionPicker {
         $optionPicker = new OptionPicker();
-        $optionArray = json_decode($this->options, true);
-        if (!is_array($optionArray)) {
-            return $optionPicker;
-        }
-        foreach ($optionArray as $params) {
-            $option = Option::FACTORY($manager, $uuid, $params);
-            if ($option) {
-                $optionPicker->addOption($option);
-            }
+        foreach ($this->options as $option) {
+            $optionPicker->addOption($option);
         }
         return $optionPicker;
     }

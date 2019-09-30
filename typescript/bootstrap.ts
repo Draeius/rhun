@@ -1,6 +1,4 @@
-//make the variable known to the system. 
-var uuid: string;
-
+var rhun: UserSettings;
 //array with the formats
 var formats: formatting.FormatArray;
 

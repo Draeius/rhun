@@ -101,6 +101,18 @@ class RhunSession extends Session {
         return $this->getFromArray('breakIn');
     }
 
+    public function setDungeonEncounterIds(array $encounters) {
+        $this->setInArray('encounters', $encounters);
+    }
+
+    public function getDungeonEncounterIds(): array {
+        return $this->getFromArray('encounters');
+    }
+
+    public function deleteDungeonEncounterIds() {
+        $this->deleteFromArray('encounters');
+    }
+
     /**
      * Kontrolliert, ob die gegebene id bereits als TabIdentifier genutzt wird.
      * 
@@ -140,18 +152,6 @@ class RhunSession extends Session {
             $this->deleteFromArray('log');
         }
         return $log ? $log : '';
-    }
-
-    public function getMonsterCount(): int {
-        return $this->getFromArray('monsterCount');
-    }
-
-    public function setMonsterCount(int $count): void {
-        $this->setInArray('monsterCount', $count);
-    }
-
-    public function deleteMonsterCount(): void {
-        $this->deleteFromArray('monsterCount');
     }
 
     public function clearData(): void {

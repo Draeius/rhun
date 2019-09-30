@@ -337,12 +337,12 @@ class FighterCharacter extends RPCharacter implements FighterInterface {
         $armorTemplate = $this->getArmor()->getArmorTemplate();
         switch ($armorTemplate->getArmorType()) {
             case ArmorType::LIGHT:
-                return $armorTemplate->getDefense() + $modifier + $shield;//ceil($modifier * 0.2) + $shield; kampfsystem
+                return $armorTemplate->getDefense() + $modifier + $shield; //ceil($modifier * 0.2) + $shield; kampfsystem
             case ArmorType::MIDDLE:
                 if ($modifier > 2) {
                     $modifier = 2;
                 }
-                return $armorTemplate->getDefense() + $modifier + $shield;//ceil($modifier * 0.1)+3 + $shield; kampfsystem
+                return $armorTemplate->getDefense() + $modifier + $shield; //ceil($modifier * 0.1)+3 + $shield; kampfsystem
             case ArmorType::HEAVY:
                 return $armorTemplate->getDefense() + $shield;
         }
@@ -391,9 +391,9 @@ class FighterCharacter extends RPCharacter implements FighterInterface {
             case WeaponType::BOW:
             case WeaponType::FOCUS:
             case WeaponType::STAFF:
-                return Attribute::GET_ABILITY_MODIFIER($this->getAttributeWithBuff(Attribute::DEXTERITY));
+                return Attribute::GET_ABILITY_MODIFIER($this->getAttributeWithBuff(Attribute::DEXTERITY)) / 5;
         }
-        return Attribute::GET_ABILITY_MODIFIER($this->getAttributeWithBuff(Attribute::STRENGTH));
+        return Attribute::GET_ABILITY_MODIFIER($this->getAttributeWithBuff(Attribute::STRENGTH)) / 5;
     }
 
     private function getAtkDiceMode() {

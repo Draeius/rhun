@@ -133,8 +133,8 @@ class Monster extends RhunEntity implements FighterInterface {
 
     /**
      * The occurances of this enemy
-     * @var MonsterOccurance[]
-     * @OneToMany(targetEntity="MonsterOccurance", mappedBy="monster", fetch="EXTRA_LAZY")
+     * @var Encounter[]
+     * @OneToMany(targetEntity="Encounter", mappedBy="monster", fetch="EXTRA_LAZY")
      */
     protected $occurances;
 

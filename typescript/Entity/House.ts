@@ -1,4 +1,4 @@
-module entities {
+namespace Entity {
 
     export interface House {
         id: number

@@ -47,6 +47,8 @@ class ParamGenerator {
             'nextPhase' => $this->dtService->timeUntilNextPhase(),
             'error' => '',
             'log' => '',
+            'postLimit' => 10,
+            'oocLimit' => 10,
             'userOnline' => false,
             'charsPresent' => false,
             'pagetitle' => $pageTitle,

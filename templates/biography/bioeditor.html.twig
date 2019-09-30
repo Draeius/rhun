@@ -1,0 +1,216 @@
+<link href="{{asset('bundles/codemirror/codemirror.css')}}" rel='stylesheet' type='text/css' />
+
+<script src="{{asset('bundles/codemirror/codemirror.js')}}"></script>
+<script src="{{asset('bundles/codemirror/CMAutoRefresh.js')}}"></script>
+<script src="{{asset('bundles/codemirror/javascript/javascript.js')}}"></script>
+<script src="{{asset('bundles/codemirror/xml/xml.js')}}"></script>
+
+<script>
+
+    var charId = 0;
+    var refreshBioList = false;
+
+    function selectChar(id) {
+        if (id) {
+            charId = id;
+            document.getElementById('selectedChar').value = id;
+            var con = new ajax.AjaxConnector();
+            con.getData('char/get_bios/' + id, {}, function (data) {
+                $(document.forms.biography.elements["bio"]).html("");
+                $(document.forms.biography.elements["bio"]).append($('<option value="null"></option>').html("Eine Biographie auswählen"));
+                for (var index in data['biographies']) {
+                    var option = $('<option value="' + data['biographies'][index]['id'] + '"></option>').html(data['biographies'][index]['name']);
+                    $(document.forms.biography.elements["bio"]).append(option);
+                }
+
+                document.getElementById('bio_editor').style.display = "block";
+            });
+        }
+    }
+
+    function selectBio(id) {
+        if (id == null) {
+            return;
+        }
+        var con = new ajax.AjaxConnector();
+        con.getData("bio_editor/get/data", {'id': id}, function (data) {
+            scriptArea.getDoc().setValue(data['script']);
+            bioArea.getDoc().setValue(data['text']);
+            document.forms.biography.elements["standardAction"].value = data['standardAction'];
+            document.forms.biography.elements["standardSpeech"].value = data['standardSpeech'];
+            document.forms.biography.elements["height"].value = data["height"];
+            document.forms.biography.elements["haircolor"].value = data["haircolor"];
+            document.forms.biography.elements["charName"].value = data["alternateName"];
+            document.forms.biography.elements["haircut"].value = data["hairstyle"];
+            document.forms.biography.elements["ethnicity"].value = data["ethnicity"];
+            document.forms.biography.elements["age"].value = data["age"];
+            document.forms.biography.elements["disposition"].value = data["disposition"];
+            document.forms.biography.elements["eyecolor"].value = data["eyecolor"];
+            document.forms.biography.elements["avatar"].value = data["avatar"];
+            if (data['selected']) {
+                $(document.forms.biography.elements["selected"]).attr("checked", "");
+            } else {
+                $(document.forms.biography.elements["selected"]).removeAttr("checked");
+            }
+            if (data['ballbio']) {
+                $(document.forms.biography.elements["masked"]).attr("checked", "")
+            } else {
+                $(document.forms.biography.elements["masked"]).removeAttr("checked");
+            }
+        });
+    }
+
+    function submitForm(name) {
+        if (name !== 'add_bio') {
+            document.forms.biography.elements["script"].innerHTML = scriptArea.getValue();
+            document.forms.biography.elements["text"].innerHTML = bioArea.getValue();
+        }
+        var refreshBioList = name === 'add_bio' || name === 'delete_bio';
+
+        var con = new ajax.AjaxConnector();
+        var form = $("form[name='" + name + "']").get(0);
+        con.submitForm(form, function () {
+            callback(refreshBioList);
+        });
+        return false;
+    }
+
+    function deleteBio() {
+        document.forms.delete_bio.elements['id'].value = document.forms.biography.elements['bio'].value;
+        if (confirm(unescape("Willst du die Biographie wirklich l%F6schen%3F Der Inhalt ist f%FCr immer weg. Das ist eine lange Zeit."))) {
+            submitForm('delete_bio');
+        }
+        return false;
+    }
+
+    function checkScript() {
+        $("#preview_script").replaceWith($("<script>" + scriptArea.getValue() + "<\/script>").attr("id", "preview_script"));
+    }
+
+    function callback(refreshBioList) {
+        if (refreshBioList) {
+            selectChar(charId);
+        } else {
+            alert('Die Biographie wurde gespeichert.');
+        }
+    }
+</script>
+
+<span style="color: red">Bitte wähle zunächst einen deiner Charaktere aus, für den du die Biographie bearbeiten willst.</span><br />
+<select onchange="selectChar(this.value)">
+    <option value="null">Einen Charakter auswählen</option>
+    {% for char in characters %}
+        <option value="{{ char.getId() }}" {% if char.getId() == selectedChar %} selected {% endif %}>{{ char |charName |colorize |raw }}</option>
+    {% endfor %}
+</select>
+
+<div id="bio_editor" style="display: none">
+    <h4>Biographie hinzufügen:</h4>
+    <span style="color: green">Du kannst eine Biographie zu deiner Auswahl hinzufügen, indem du hier einen Namen dafür eingibst.</span><br />
+    <form action="{{path('bio_add')}}" name="add_bio" method="POST">
+        Name der Biographie:<br />
+        <input name="name" value="Neue Biographie" /><br />
+        <input id="selectedChar" type="hidden" name="character" value="null" />
+    </form>
+    <input type="button" value="Hinzufügen" onclick="return submitForm('add_bio');" />
+
+    <form id="bio_edit_form" name="biography" action="{{path('bio_edit')}}" method="POST" >
+        <h4>Biographie wählen:</h4>
+        <span style="color: green">Wähle hier eine Biographie aus, die du bearbeiten möchtest. Wenn du noch keine hast, musst du zuerst oben eine hinzufügen.</span><br />
+        <table>
+            <tr>
+                <td>
+                    <select name="bio" onchange="selectBio(this.value)">
+                        <option value="null">Eine Biographie auswählen</option>
+                    </select> 
+                </td>
+                <td>
+                    <input type="checkbox" name="selected" /> Aktiv <br />
+                    <input type="checkbox" name="masked" /> Ballbio
+                </td>
+                <td>
+                    <input type="button" value="Löschen" onclick="deleteBio()" />
+                </td>
+            </tr>
+        </table>
+        <br />
+
+        <h5>
+            Standardfarben:
+        </h5>
+        <span style="color: green">Farben sind je Biographie unterschiedlich.</span><br /><br />
+        <a style="font-size: 1.2em;" class="clickable" href="/colorlist" target="_blank">{{ '`pF`ea`Nr`Gb`Le`Kn`Ll`Gi`Ns`et`pe' |colorize |raw }}</a><br /><br />
+        Aktionen:<br />
+        <input name="standardAction" maxlength="1"/><br />
+        Gespräche:<br />
+        <input name="standardSpeech" maxlength="1"/><br />
+        <h3>Deine Biographie</h3>
+        <span style="color: green">Alles ab hier ist speziell für diese Biographie und ändert sich je nachdem welche du auswählst.</span><br />
+
+        Größe:<br />
+        <input name="height" size="50" /><br />
+        Haarfarbe:<br />
+        <input name="haircolor" size="50" /><br />
+        Frisur:<br />
+        <input name="haircut" size="50" /><br />
+        Volkszugehörigkeit:<br />
+        <input name="ethnicity" size="50" /><br />
+        Alter:<br />
+        <input name="age" size="50" /><br />
+        Gesinnung:<br />
+        <input name="disposition" size="50" /><br />
+        Augenfarbe:<br />
+        <input name="eyecolor" size="50" /><br />
+        Avatar:<br />
+        <input name="avatar" size="50" /><br /><br />       
+        Charaktername (nur für Ballbios):<br />
+        <input name="charName" size="50"/><br />
+        <h4>Script (optional)</h4>
+        <span style="color: green">Hier kannst du alles an JavaScript reinschreiben, was deine Seite so braucht (ein script tag brauchst du nicht angeben).<br />
+            Alle script elemente in deiner Biographie werden entfernt werden.</span><br />
+        <p>Rhun stellt dir diverse Möglichkeiten zur Gestaltung deiner Biographie zur Verfügung. Wenn du mehr erfahren willst, dann klicke bitte 
+            <a href="biohelp.php" target="_blank">hier.</a></p>
+        <textarea id="script_area" name="script"></textarea>
+        <h4>Biographie</h4>
+        <span style="color: green">Hier kannst du den Inhalt deiner Biographie reinschreiben.</span><br /><br />
+        <a class="clickable"  style="font-size: 1.2em;" href="/colorlist" target="_blank">{{ '`pF`ea`Nr`Gb`Le`Kn`Ll`Gi`Ns`et`pe' |colorize |raw }}</a><br /><br />
+        <textarea id="bio_area" name="text"></textarea>
+    </form><br /><br />
+    <input type="button" value="Biographie speichern" onclick="return submitForm('biography');"/>
+
+    <script id="preview_script">
+
+    </script>
+
+    <input type="button" value="Script ausprobieren" onclick="checkScript()"/>
+
+    <h3>Vorschau:</h3>
+    <div id="preview">
+
+    </div>
+</div>
+
+<form name="delete_bio" action="{{path('bio_del')}}" method="POST" >
+    <input type="hidden" name="id" />
+</form>
+<script>
+    var scriptArea = CodeMirror.fromTextArea(document.getElementById("script_area"), {
+        lineNumbers: true,
+        mode: "text/javascript",
+        autoRefresh: true,
+    });
+    var bioArea = CodeMirror.fromTextArea(document.getElementById("bio_area"), {
+        lineNumbers: true,
+        mode: "text/html",
+        autoRefresh: true,
+    });
+    var preview = new formatting.Preview(bioArea, document.getElementById("preview"));
+    bioArea.on("keyup", function (cm, keyup) {
+        preview.update();
+    });
+    {% if selectedChar %}
+        $(document).ready(function () {
+            selectChar({{selectedChar}});
+        });
+    {% endif %}
+</script>

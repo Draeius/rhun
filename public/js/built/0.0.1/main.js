@@ -1,13 +1,13 @@
 var Util;
 (function (Util) {
-    var BroadcastCanvas = (function () {
-        function BroadcastCanvas() {
+    class BroadcastCanvas {
+        constructor() {
             this.page = 0;
         }
-        BroadcastCanvas.prototype.earlierMotCT = function () {
+        earlierMotCT() {
             this.page++;
             var con = new Ajax.AjaxConnector();
-            var _this = this;
+            let _this = this;
             con.getData('motd/show/' + this.page, { coding: 'true' }, function (data) {
                 if (data['error']) {
                     console.debug(data['error']);
@@ -17,14 +17,14 @@ var Util;
                     document.getElementById('motct_content').innerHTML = data['content'];
                 }
             });
-        };
-        BroadcastCanvas.prototype.laterMotCT = function () {
+        }
+        laterMotCT() {
             if (this.page <= 0) {
                 return;
             }
             this.page--;
-            var con = new Ajax.AjaxConnector();
-            var _this = this;
+            let con = new Ajax.AjaxConnector();
+            let _this = this;
             con.getData('motd/show/' + this.page, { coding: 'true' }, function (data) {
                 if (data['error']) {
                     console.debug(data['error']);
@@ -34,12 +34,11 @@ var Util;
                     document.getElementById('motct_content').innerHTML = data['content'];
                 }
             });
-        };
-        return BroadcastCanvas;
-    }());
+        }
+    }
     Util.BroadcastCanvas = BroadcastCanvas;
 })(Util || (Util = {}));
-var uuid;
+var rhun;
 var formats;
 function getBaseURL() {
     return window.location.protocol + "//" + window.location.host + "/";
@@ -62,14 +61,14 @@ function AprilFool() {
 }
 function initPreview() {
     $('[data-preview]').each(function () {
-        var previewId = $(this).attr('data-preview');
-        var element = document.getElementById(previewId);
+        let previewId = $(this).attr('data-preview');
+        let element = document.getElementById(previewId);
         if (element) {
             new formatting.Preview(this, element);
         }
     });
 }
-$(document).ready(function () {
+$(document).ready(() => {
     var keyNavigator = new navigation.KeyNavigator();
     var sorter = new Sorting.TableSorter();
     sorter.makeAllSortable(null);
@@ -77,118 +76,190 @@ $(document).ready(function () {
 });
 var Util;
 (function (Util) {
-    var ImageMap = (function () {
-        function ImageMap(map, image) {
+    class ImageMap {
+        constructor(map, image) {
             this.previousWidth = 1500;
             this.map = map;
             this.image = image;
             this.areas = map.getElementsByTagName('area');
-            var length = this.areas.length;
-            for (var index = 0; index < length; index++) {
-                var split = this.areas[index].coords.split(',');
-                for (var key in split) {
+            let length = this.areas.length;
+            for (let index = 0; index < length; index++) {
+                let split = this.areas[index].coords.split(',');
+                for (let key in split) {
                     this.coords[index][key] = parseInt(split[key]);
                 }
             }
             this.addToOnload();
         }
-        ImageMap.prototype.resize = function () {
-            var xStep = this.image.offsetWidth / this.previousWidth;
-            var len = this.areas.length;
-            for (var n = 0; n < len; n++) {
-                var clen = this.coords[n].length;
-                for (var m = 0; m < clen; m++) {
+        resize() {
+            let xStep = this.image.offsetWidth / this.previousWidth;
+            let len = this.areas.length;
+            for (let n = 0; n < len; n++) {
+                let clen = this.coords[n].length;
+                for (let m = 0; m < clen; m++) {
                     this.coords[n][m] *= xStep;
                 }
                 this.areas[n].coords = this.coords[n].join(',');
             }
             this.previousWidth = this.image.offsetWidth;
             return true;
-        };
-        ImageMap.prototype.addToOnload = function () {
+        }
+        addToOnload() {
             window.addEventListener("load", this.resize, false);
-        };
-        return ImageMap;
-    }());
+        }
+    }
     Util.ImageMap = ImageMap;
 })(Util || (Util = {}));
 var Ajax;
 (function (Ajax) {
-    var AjaxConnector = (function () {
-        function AjaxConnector() {
+    class AjaxConnector {
+        constructor() {
             this.baseUrl = this.getBaseURL();
         }
-        AjaxConnector.prototype.getPosts = function (callback, ooc, page, limit) {
-            if (ooc === void 0) { ooc = true; }
-            if (page === void 0) { page = 1; }
-            if (limit === void 0) { limit = 10; }
-            if (ooc) {
-                var urlPart = "ooc/get";
-            }
-            else {
-                var urlPart = "post/get/" + uuid;
-            }
-            var url = this.baseUrl + urlPart + "?limit=" + limit + "&page=" + page;
-            $.ajax(url)
-                .done(function (data) {
-                callback(data);
-            })
-                .fail(function (data) {
-                console.log("failed to get posts");
-                $(document.body).append(data.responseText);
-            });
-        };
-        AjaxConnector.prototype.getData = function (url, params, callback) {
-            var url = this.baseUrl + url;
-            console.log(url);
-            $.post({
+        getData(url, params, callback) {
+            this.submit({
+                type: "GET",
+                url: url,
+                data: params,
+            }, callback);
+        }
+        postData(url, params, callback) {
+            this.submit({
                 type: "POST",
                 url: url,
                 data: params,
-            })
+            }, callback);
+        }
+        submit(request, callback) {
+            $.post(request)
                 .done(function (data) {
+                Logging.Logger.debug("submit data:");
+                Logging.Logger.debug(data);
                 if (data['ERR'] && data['ERR'] == 'logout') {
                     $(document.body).css('color', '#2E2E2E');
                 }
                 else {
-                    callback(data);
-                }
-            })
-                .fail(function (data) {
-                console.log("failed to get data. URL: " + url);
-                $(document.body).append(data.responseText);
-            });
-        };
-        AjaxConnector.prototype.submitForm = function (form, callback) {
-            console.log(form.action);
-            $.ajax({
-                type: "POST",
-                url: form.action,
-                data: $(form).serialize(),
-                success: function (data) {
                     if (callback) {
                         callback(data);
                     }
-                },
-                error: function (data) {
-                    $(document.body).append(data.responseText);
                 }
+            })
+                .fail(function (data) {
+                Logging.Logger.error("failed to load data. URL: " + request.url);
+                $(document.body).append(data.responseText);
             });
+        }
+        submitForm(form, callback) {
+            Logging.Logger.debug("form submit action: " + form.action);
+            this.submit({
+                type: "POST",
+                url: form.action,
+                data: $(form).serialize(),
+            }, callback);
             return false;
-        };
-        AjaxConnector.prototype.getBaseURL = function () {
+        }
+        getBaseURL() {
             return window.location.protocol + "//" + window.location.host + "/";
-        };
-        return AjaxConnector;
-    }());
+        }
+    }
     Ajax.AjaxConnector = AjaxConnector;
 })(Ajax || (Ajax = {}));
+var Ajax;
+(function (Ajax) {
+    class PostConnector extends Ajax.AjaxConnector {
+        constructor(uuid) {
+            super();
+            this.uuid = uuid;
+        }
+        getNewOOC(lastPostId, limit, page, callback) {
+            this.getNew(PostConnector.OOC_GET_URL, lastPostId, limit, page, callback);
+        }
+        getNewPosts(lastPostId, limit, page, callback) {
+            this.getNew(PostConnector.POST_GET_URL, lastPostId, limit, page, callback);
+        }
+        getNew(url, lastPostId, limit, page, callback) {
+            this.getData(url, {
+                lastId: lastPostId.toString(),
+                limit: limit.toString(),
+                page: page.toString()
+            }, callback);
+        }
+    }
+    PostConnector.OOC_GET_URL = "ooc/get";
+    PostConnector.POST_GET_URL = "post/get/";
+    Ajax.PostConnector = PostConnector;
+})(Ajax || (Ajax = {}));
+class Queue {
+    constructor() {
+        this._store = [];
+    }
+    push(val) {
+        this._store.push(val);
+    }
+    pop() {
+        return this._store.shift();
+    }
+    peek() {
+        return this._store[0];
+    }
+    peekLast() {
+        return this._store[this._store.length - 1];
+    }
+    length() {
+        return this._store.length;
+    }
+    [Symbol.iterator]() {
+        let pointer = 0;
+        let components = this._store;
+        return {
+            next() {
+                if (pointer < components.length) {
+                    return {
+                        done: false,
+                        value: components[pointer++]
+                    };
+                }
+                else {
+                    return {
+                        done: true,
+                        value: null
+                    };
+                }
+            }
+        };
+    }
+}
+var Logging;
+(function (Logging) {
+    Logging.SHOW_DEBUG = true;
+    Logging.SHOW_LOG = true;
+    Logging.SHOW_WARNING = true;
+    class Logger {
+        static log(message) {
+            if (Logging.SHOW_LOG) {
+                console.log(message);
+            }
+        }
+        static debug(message) {
+            if (Logging.SHOW_DEBUG) {
+                console.debug(message);
+            }
+        }
+        static warning(message) {
+            if (Logging.SHOW_WARNING) {
+                console.warn(message);
+            }
+        }
+        static error(message) {
+            console.error(message);
+        }
+    }
+    Logging.Logger = Logger;
+})(Logging || (Logging = {}));
 var Biography;
 (function (Biography) {
-    var AnimationUtils = (function () {
-        function AnimationUtils() {
-        }
-        AnimationUtils.rotate = function (element, degree, duration) {
+    class AnimationUtils {
+        static rotate(element, degree, duration) {
             var rotateZ = degree ? degree : 360;
             return $(element).velocity({
                 rotateZ: rotateZ
@@ -198,9 +269,9 @@ var Biography;
                 duration: duration,
                 loop: degree === 0
             });
-        };
+        }
         ;
-        AnimationUtils.shake = function (element, times) {
+        static shake(element, times) {
             $(element).velocity({
                 rotateZ: 15
             }, {
@@ -218,13 +289,13 @@ var Biography;
                 delay: 0,
                 duration: 80
             });
-        };
+        }
         ;
-        AnimationUtils.blink = function (options) {
+        static blink(options) {
             if (typeof options !== "object") {
                 options = new Object();
             }
-            var defaults = {
+            let defaults = {
                 fadeIn: 350,
                 fadeOut: 2500,
                 delay: 300,
@@ -242,9 +313,9 @@ var Biography;
             window.setTimeout(function () {
                 AnimationUtils.blink(config);
             }, config.delay);
-        };
+        }
         ;
-        AnimationUtils.floatToPosition = function (element, startTop, startLeft, callback) {
+        static floatToPosition(element, startTop, startLeft, callback) {
             var originLeft = $(element).offset().left;
             var originTop = $(element).offset().top;
             var temp = $(element).clone().css("opacity", 0);
@@ -270,17 +341,16 @@ var Biography;
                     });
                 }
             });
-        };
+        }
         ;
-        return AnimationUtils;
-    }());
+    }
     Biography.AnimationUtils = AnimationUtils;
     ;
 })(Biography || (Biography = {}));
 var bio;
 (function (bio) {
-    var Downfall = (function () {
-        function Downfall(options) {
+    class Downfall {
+        constructor(options) {
             this.documentHeight = window.innerHeight;
             this.documentWidth = window.innerWidth;
             this.defaults = {
@@ -294,19 +364,19 @@ var bio;
             console.log(this.config);
             this.flake = $('<div id="flake" />').css({ 'position': 'fixed', 'top': '-50px' });
         }
-        Downfall.prototype.start = function () {
+        start() {
             var _this = this;
             this.intervalId = setInterval(function () { _this.run(_this.config, _this.documentWidth, _this.documentHeight); }, this.config.newOn);
-        };
-        Downfall.prototype.stop = function () {
+        }
+        stop() {
             if (typeof this.intervalId !== "undefined") {
                 clearInterval(this.intervalId);
             }
-        };
-        Downfall.prototype.getRandomArrayEntry = function (array) {
+        }
+        getRandomArrayEntry(array) {
             return array[Math.floor(Math.random() * array.length)];
-        };
-        Downfall.prototype.run = function (config, docWidth, docHeight) {
+        }
+        run(config, docWidth, docHeight) {
             var startPositionLeft = Math.random() * docWidth - 100;
             var startOpacity = 0.5 + Math.random();
             var sizeFlake = config.minSize + Math.random() * config.maxSize;
@@ -327,19 +397,18 @@ var bio;
             }, durationFall, 'linear', function () {
                 $(this).remove();
             });
-        };
-        return Downfall;
-    }());
+        }
+    }
     bio.Downfall = Downfall;
 })(bio || (bio = {}));
 var content;
 (function (content) {
-    var ContentManager = (function () {
-        function ContentManager(currVisible) {
+    class ContentManager {
+        constructor(currVisible) {
             this.currentlyVisible = currVisible;
         }
         ;
-        ContentManager.prototype.switchContent = function (id) {
+        switchContent(id) {
             if (id === this.currentlyVisible) {
                 return;
             }
@@ -353,66 +422,63 @@ var content;
                 });
             }
             this.currentlyVisible = id;
-        };
+        }
         ;
-        ContentManager.openTab = function (evt, tabName) {
+        static openTab(evt, tabName) {
             var tabcontent, tablinks;
             tabcontent = $(evt.currentTarget).closest("ul").parent().find(".tabcontent");
-            tabcontent.each(function (index, element) {
+            tabcontent.each((index, element) => {
                 $(element).css("display", "none");
             });
             tablinks = $(evt.currentTarget).closest("ul").parent().find(".tablinks");
-            tablinks.each(function (index, element) {
+            tablinks.each((index, element) => {
                 $(element).removeClass("active");
             });
             $('#' + tabName).css("display", "block");
             $(evt.currentTarget).addClass("active");
-        };
-        ContentManager.prototype.getCurrentlyVisible = function () {
+        }
+        getCurrentlyVisible() {
             return this.currentlyVisible;
-        };
+        }
         ;
-        return ContentManager;
-    }());
+    }
     content.ContentManager = ContentManager;
     ;
 })(content || (content = {}));
 var Content;
 (function (Content) {
-    var FormHelper = (function () {
-        function FormHelper(elementId, replaceIds) {
+    class FormHelper {
+        constructor(elementId, replaceIds) {
             this.observedElement = $('#' + elementId);
             this.replaceIds = replaceIds;
             if (this.checkIds()) {
                 this.getForm();
             }
         }
-        FormHelper.prototype.action = function (html) {
-            var parsed = $(html);
-            for (var _i = 0, _a = this.replaceIds; _i < _a.length; _i++) {
-                var id = _a[_i];
+        action(html) {
+            let parsed = $(html);
+            for (let id of this.replaceIds) {
                 $('#' + id).replaceWith(parsed.find('#' + id));
             }
-        };
-        FormHelper.prototype.init = function () {
-            var _this_1 = this;
+        }
+        init() {
             var _this = this;
-            this.observedElement.change(function () {
-                var data = _this_1.form.serialize();
+            this.observedElement.change(() => {
+                let data = this.form.serialize();
                 $.ajax({
-                    url: _this_1.form.attr('action'),
-                    type: _this_1.form.attr('method'),
+                    url: this.form.attr('action'),
+                    type: this.form.attr('method'),
                     data: data,
-                    success: function (data) {
+                    success: (data) => {
                         _this.action(data);
                     }
                 });
             });
-        };
-        FormHelper.prototype.getForm = function () {
+        }
+        getForm() {
             this.form = this.observedElement.closest('form');
-        };
-        FormHelper.prototype.checkIds = function () {
+        }
+        checkIds() {
             if (!this.observedElement) {
                 console.error("ObservedElement " + this.observedElement + " does not exist.");
                 return false;
@@ -423,17 +489,120 @@ var Content;
                 return false;
             }
             return true;
-        };
-        return FormHelper;
-    }());
+        }
+    }
     Content.FormHelper = FormHelper;
+})(Content || (Content = {}));
+var Content;
+(function (Content) {
+    class PostArea {
+        constructor(display, input, timer = 3000, ooc) {
+            this.input = input;
+            this.display = display;
+            this.timer = timer;
+            this.ooc = ooc;
+            this.posts = new Queue();
+            this.postCon = new Ajax.PostConnector(rhun.uuid);
+            this.initialize();
+        }
+        sendPost(form) {
+            this.postCon.submitForm(form, this.checkUpdate);
+            return false;
+        }
+        reload() {
+            this.loadPosts(0);
+        }
+        checkUpdate() {
+            let lastId = this.posts.peekLast().id;
+            if (!lastId) {
+                lastId = 0;
+            }
+            this.loadPosts(lastId);
+        }
+        loadPosts(lastPostId) {
+            if (this.ooc) {
+                this.postCon.getNewOOC(lastPostId, rhun.oocLimit, this.page, this.doUpdate);
+            }
+            else {
+                this.postCon.getNewPosts(lastPostId, rhun.postLimit, this.page, this.doUpdate);
+            }
+        }
+        doUpdate(postData) {
+            this.pageCount = postData.pages;
+            for (let post of postData.posts) {
+                this.posts.push(post);
+                this.processPost();
+            }
+        }
+        processPost() {
+            let element = $(this.posts.peekLast().text);
+            element.css("display", "none");
+            $(this.display).append(element);
+            if (this.deleteOldest()) {
+                $(this.display).children().first().fadeOut(200, () => {
+                    element.fadeIn(200);
+                });
+            }
+            else {
+                element.fadeIn(200);
+            }
+        }
+        deleteOldest() {
+            if (this.ooc && this.posts.length() > rhun.oocLimit) {
+                this.posts.pop();
+                return true;
+            }
+            else if (!this.ooc && this.posts.length() > rhun.postLimit) {
+                this.posts.pop();
+                return true;
+            }
+            return false;
+        }
+        setPage(page) {
+            if (page > this.pageCount) {
+                page = this.pageCount;
+            }
+            if (page < 1) {
+                page = 1;
+            }
+            this.page = page;
+        }
+        nextPage() {
+            this.setPage(this.page + 1);
+        }
+        previousPage() {
+            this.setPage(this.page - 1);
+        }
+        initialize() {
+            let _this = this;
+            if (!this.ooc) {
+                $("#post_previous").click(() => {
+                    _this.previousPage();
+                    _this.reload();
+                });
+                $("#post_earlier").click(() => {
+                    _this.nextPage();
+                    _this.reload();
+                });
+            }
+            else {
+                $("#ooc_previous").click(() => {
+                    _this.previousPage();
+                    _this.reload();
+                });
+                $("#ooc_earlier").click(() => {
+                    _this.nextPage();
+                    _this.reload();
+                });
+            }
+        }
+    }
+    Content.PostArea = PostArea;
 })(Content || (Content = {}));
 var display;
 (function (display) {
-    var Infobox = (function () {
-        function Infobox() {
-        }
-        Infobox.showInfobox = function (event, offsetX, offsetY) {
+    class Infobox {
+        static showInfobox(event, offsetX, offsetY) {
             var parent = event.currentTarget;
             if (!parent) {
                 return;
@@ -442,16 +611,16 @@ var display;
             infobox.css('display', 'block');
             infobox.css('left', event.pageX + offsetX);
             infobox.css('top', event.pageY + offsetY);
-        };
-        Infobox.hideInfobox = function (event) {
+        }
+        static hideInfobox(event) {
             var parent = event.currentTarget;
             if (!parent) {
                 return;
             }
             var infobox = $(parent).find('.infobox');
             infobox.css('display', 'none');
-        };
-        Infobox.isElementInViewport = function (el) {
+        }
+        static isElementInViewport(el) {
             if (typeof jQuery === "function" && el instanceof jQuery) {
                 var child = el.children[0];
             }
@@ -460,9 +629,8 @@ var display;
                 rect.left >= 0 &&
                 rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
                 rect.right <= (window.innerWidth || document.documentElement.clientWidth));
-        };
-        return Infobox;
-    }());
+        }
+    }
     display.Infobox = Infobox;
 })(display || (display = {}));
 var formatting;
@@ -481,41 +649,38 @@ var formatting;
 })(formatting || (formatting = {}));
 var formatting;
 (function (formatting) {
-    var Formatter = (function () {
-        function Formatter() {
-        }
-        Formatter.prototype.applyFormats = function () {
+    class Formatter {
+        applyFormats() {
             var body = document.body;
             this.iterateNodes(body);
-        };
+        }
         ;
-        Formatter.prototype.iterateNodes = function (node) {
+        iterateNodes(node) {
             this.getFormats(node);
-        };
+        }
         ;
-        Formatter.prototype.getFormats = function (node) {
+        getFormats(node) {
             var _this = this;
             formatting.getFormats(function () {
                 _this.formats = formatting.formats;
                 _this.iterateNodesAfterFormat(node);
             });
-        };
-        Formatter.prototype.iterateNodesAfterFormat = function (node) {
+        }
+        iterateNodesAfterFormat(node) {
             if (typeof node.nodeType == 'undefined') {
                 return;
             }
             if (node.hasChildNodes()) {
                 var children = Array.prototype.slice.call(node.childNodes);
-                for (var _i = 0, children_1 = children; _i < children_1.length; _i++) {
-                    var child = children_1[_i];
+                for (var child of children) {
                     this.iterateNodes(child);
                 }
             }
             if (node.nodeType == 3) {
                 this.handleTextNode(node);
             }
-        };
-        Formatter.prototype.handleTextNode = function (node) {
+        }
+        handleTextNode(node) {
             var text = this.getText(node);
             if (text.indexOf('`') == -1) {
                 return;
@@ -526,58 +691,56 @@ var formatting;
             tree.buildTree();
             var dom = tree.getRealRoot().buildDOM();
             _this.insert(node, dom);
-        };
+        }
         ;
-        Formatter.prototype.insert = function (node, dom) {
+        insert(node, dom) {
             if (dom.children.length == 0) {
                 return;
             }
             $(node).replaceWith($(dom.children));
-        };
+        }
         ;
-        Formatter.prototype.getText = function (node) {
+        getText(node) {
             var text = node.nodeValue.replace(/^\s+|[\n\r]|\s+$/g, '').trim();
             return text;
-        };
+        }
         ;
-        Formatter.prototype.decodeText = function (text) {
+        decodeText(text) {
             var txtArea = document.createElement("textarea");
             txtArea.innerHTML = text;
             return txtArea.innerText;
-        };
+        }
         ;
-        Formatter.prototype.encodeText = function (text) {
+        encodeText(text) {
             return $('<div/>').text(text).html();
-        };
+        }
         ;
-        return Formatter;
-    }());
+    }
     formatting.Formatter = Formatter;
 })(formatting || (formatting = {}));
 var formatting;
 (function (formatting) {
-    var FormatNode = (function () {
-        function FormatNode() {
+    class FormatNode {
+        constructor() {
             this.parentNode = null;
             this.children = [];
             this.text = "";
             this.format = null;
         }
-        FormatNode.prototype.appendChild = function (child) {
+        appendChild(child) {
             this.children.push(child);
             child.parentNode = this;
-        };
+        }
         ;
-        FormatNode.prototype.buildDOM = function () {
+        buildDOM() {
             var root = this.createRoot();
-            for (var _i = 0, _a = this.children; _i < _a.length; _i++) {
-                var node = _a[_i];
+            for (var node of this.children) {
                 root.appendChild(node.buildDOM());
             }
             return root;
-        };
+        }
         ;
-        FormatNode.prototype.createRoot = function () {
+        createRoot() {
             var htmlTag = "span";
             if (this.format != null && this.format.tag) {
                 htmlTag = this.format.tag;
@@ -596,43 +759,42 @@ var formatting;
                 root.className = this.format.style;
             }
             return root;
-        };
+        }
         ;
-        FormatNode.prototype.getLastChild = function () {
+        getLastChild() {
             if (this.children.length == 0) {
                 return null;
             }
             return this.children[this.children.length - 1];
-        };
+        }
         ;
-        FormatNode.prototype.getParentNode = function () {
+        getParentNode() {
             return this.parentNode;
-        };
+        }
         ;
-        FormatNode.prototype.getFormat = function () {
+        getFormat() {
             return this.format;
-        };
+        }
         ;
-        FormatNode.prototype.setFormat = function (format) {
+        setFormat(format) {
             this.format = format;
-        };
+        }
         ;
-        FormatNode.prototype.getText = function () {
+        getText() {
             return this.text;
-        };
+        }
         ;
-        FormatNode.prototype.setText = function (text) {
+        setText(text) {
             this.text = text;
-        };
+        }
         ;
-        return FormatNode;
-    }());
+    }
     formatting.FormatNode = FormatNode;
 })(formatting || (formatting = {}));
 var formatting;
 (function (formatting) {
-    var Preview = (function () {
-        function Preview(input, view) {
+    class Preview {
+        constructor(input, view) {
             this.requestThreshold = 500;
             this.checkThreshold = 200;
             this.view = view;
@@ -644,10 +806,10 @@ var formatting;
                 _this.update();
             });
         }
-        Preview.prototype.update = function () {
+        update() {
             this.lastActive = Date.now();
-        };
-        Preview.prototype.getPreview = function (_this) {
+        }
+        getPreview(_this) {
             var text = '';
             if (Date.now() - _this.lastActive - _this.requestThreshold < 0) {
                 return;
@@ -666,25 +828,23 @@ var formatting;
             con.getData("format/preview", { text: text }, function (preview) {
                 _this.view.innerHTML = preview;
             });
-        };
-        return Preview;
-    }());
+        }
+    }
     formatting.Preview = Preview;
 })(formatting || (formatting = {}));
 var formatting;
 (function (formatting) {
-    var TextTree = (function () {
-        function TextTree(text) {
+    class TextTree {
+        constructor(text) {
             this.delimiter = '`';
             this.root = new formatting.FormatNode();
             this.textArray = text.match(new RegExp(this.delimiter + "?.{1}[^" + this.delimiter + "]*", "g"));
         }
-        TextTree.prototype.setFormats = function (formats) {
+        setFormats(formats) {
             this.formats = formats;
-        };
-        TextTree.prototype.buildTree = function () {
-            for (var _i = 0, _a = this.textArray; _i < _a.length; _i++) {
-                var text = _a[_i];
+        }
+        buildTree() {
+            for (var text of this.textArray) {
                 var code = this.getCode(text);
                 if (code != "") {
                     if (this.formats[code] != null && this.formats[code].color) {
@@ -698,8 +858,8 @@ var formatting;
                     this.root.appendChild(this.buildNode(text, false));
                 }
             }
-        };
-        TextTree.prototype.addNonColorNode = function (text) {
+        }
+        addNonColorNode(text) {
             var jump = this.codeIsOpen(this.getCode(text));
             if (jump) {
                 this.root = jump;
@@ -714,9 +874,9 @@ var formatting;
             if (this.root.getLastChild().getFormat()) {
                 this.moveDown();
             }
-        };
+        }
         ;
-        TextTree.prototype.addColorNode = function (text) {
+        addColorNode(text) {
             if (!this.root.getFormat()) {
                 this.root.appendChild(this.buildNode(text, true));
                 return;
@@ -729,16 +889,16 @@ var formatting;
                 this.moveUp();
             }
             this.root.appendChild(this.buildNode(text, true));
-        };
+        }
         ;
-        TextTree.prototype.moveUp = function () {
+        moveUp() {
             if (this.root.getParentNode() == null) {
                 return;
             }
             this.root = this.root.getParentNode();
-        };
+        }
         ;
-        TextTree.prototype.moveDown = function () {
+        moveDown() {
             var lastChild = this.root.getLastChild();
             if (lastChild == null) {
                 return;
@@ -747,9 +907,9 @@ var formatting;
                 return;
             }
             this.root = lastChild;
-        };
+        }
         ;
-        TextTree.prototype.isBreakTag = function (node) {
+        isBreakTag(node) {
             if (!node) {
                 return false;
             }
@@ -760,9 +920,9 @@ var formatting;
                 return false;
             }
             return node.getFormat().tag.toUpperCase() == "BR";
-        };
+        }
         ;
-        TextTree.prototype.codeIsOpen = function (code) {
+        codeIsOpen(code) {
             var current = this.getLastInsertedNode();
             while (current != null) {
                 if (current.getFormat() != null && current.getFormat().code == code) {
@@ -771,16 +931,16 @@ var formatting;
                 current = current.getParentNode();
             }
             return null;
-        };
+        }
         ;
-        TextTree.prototype.getLastInsertedNode = function () {
+        getLastInsertedNode() {
             if (this.root.getLastChild() == null) {
                 return this.root;
             }
             return this.root.getLastChild();
-        };
+        }
         ;
-        TextTree.prototype.buildNode = function (text, hasFormat) {
+        buildNode(text, hasFormat) {
             var node = new formatting.FormatNode();
             if (hasFormat) {
                 node.setFormat(this.formats[this.getCode(text)]);
@@ -792,48 +952,44 @@ var formatting;
                 node.setText(text);
             }
             return node;
-        };
+        }
         ;
-        TextTree.prototype.getCode = function (text) {
+        getCode(text) {
             if (text.indexOf(this.delimiter) != -1) {
                 return text.substring(1, 2);
             }
             return '';
-        };
-        TextTree.prototype.getRoot = function () {
+        }
+        getRoot() {
             return this.root;
-        };
+        }
         ;
-        TextTree.prototype.getRealRoot = function () {
+        getRealRoot() {
             var root = this.root;
             while (root.getParentNode() != null) {
                 root = root.getParentNode();
             }
             return root;
-        };
+        }
         ;
-        TextTree.prototype.getFormats = function () {
+        getFormats() {
             return this.formats;
-        };
+        }
         ;
-        return TextTree;
-    }());
+    }
     formatting.TextTree = TextTree;
 })(formatting || (formatting = {}));
 var App;
 (function (App) {
     var Location;
     (function (Location) {
-        var Bank = (function () {
-            function Bank() {
-            }
-            Bank.changeInteraction = function (path) {
+        class Bank {
+            static changeInteraction(path) {
                 this.draw = !this.draw;
                 $(document.forms.namedItem("bank_form")).attr("action", path);
-            };
-            Bank.draw = true;
-            return Bank;
-        }());
+            }
+        }
+        Bank.draw = true;
         Location.Bank = Bank;
     })(Location = App.Location || (App.Location = {}));
 })(App || (App = {}));
@@ -841,68 +997,35 @@ var App;
 (function (App) {
     var Location;
     (function (Location) {
-        var Library = (function () {
-            function Library() {
-            }
-            Library.selectBook = function (element) {
+        class Library {
+            static selectBook(element) {
                 var id = $(element).attr('data-book');
                 if (!id) {
                     return;
                 }
-                var target = document.getElementById(id);
+                let target = document.getElementById(id);
                 target.style.display = target.style.display === "block" ? "none" : "block";
-            };
-            Library.getBookFromServer = function (element) {
+            }
+            static getBookFromServer(element) {
                 if (element.value == '0') {
                     return;
                 }
                 var connection = new Ajax.AjaxConnector();
                 connection.getData("book/get", { bookId: element.value }, function (book) {
-                    var form = document.forms.namedItem('book_edit');
+                    let form = document.forms.namedItem('book_edit');
                     form.elements.namedItem('theme').value = book.theme;
                     form.elements.namedItem('title').value = book.title;
                     form.elements.namedItem('content').value = book.content;
                 });
-            };
-            return Library;
-        }());
+            }
+        }
         Location.Library = Library;
     })(Location = App.Location || (App.Location = {}));
 })(App || (App = {}));
-var Logging;
-(function (Logging) {
-    Logging.SHOW_DEBUG = true;
-    Logging.SHOW_LOG = true;
-    Logging.SHOW_WARNING = true;
-    var Logger = (function () {
-        function Logger() {
-        }
-        Logger.log = function (message) {
-            if (Logging.SHOW_LOG) {
-                console.log(message);
-            }
-        };
-        Logger.debug = function (message) {
-            if (Logging.SHOW_DEBUG) {
-                console.debug(message);
-            }
-        };
-        Logger.warning = function (message) {
-            if (Logging.SHOW_WARNING) {
-                console.warn(message);
-            }
-        };
-        Logger.error = function (message) {
-            console.error(message);
-        };
-        return Logger;
-    }());
-    Logging.Logger = Logger;
-})(Logging || (Logging = {}));
 var mail;
 (function (mail) {
-    var Messenger = (function () {
-        function Messenger() {
+    class Messenger {
+        constructor() {
             this.messages = {};
             this.charId = -1;
             this.needsUpdate = false;
@@ -910,16 +1033,16 @@ var mail;
             this.importantListRoot = $('#importantMessages');
             this.sentListRoot = $('#sentMessages');
         }
-        Messenger.prototype.getMessages = function () {
+        getMessages() {
             var _this = this;
             var con = new Ajax.AjaxConnector();
-            con.getData("mail/get/" + this.charId.toString(), {}, function (messages) {
+            con.getData("mail/get/" + this.charId.toString(), {}, (messages) => {
                 _this.needsUpdate = true;
                 _this.messages = messages;
                 _this.updateList();
             });
-        };
-        Messenger.prototype.updateList = function () {
+        }
+        updateList() {
             this.listRoot.empty();
             this.importantListRoot.empty();
             this.sentListRoot.empty();
@@ -948,8 +1071,8 @@ var mail;
                 this.sentListRoot.append($('<li>').html("Du hast keine Nachrichten gesendet."));
             }
             this.needsUpdate = false;
-        };
-        Messenger.prototype.changeChar = function (id) {
+        }
+        changeChar(id) {
             if (id == this.charId) {
                 return;
             }
@@ -957,8 +1080,8 @@ var mail;
             this.messages = {};
             this.charId = id;
             this.getMessages();
-        };
-        Messenger.prototype.search = function (attempt) {
+        }
+        search(attempt) {
             if (attempt == "") {
                 $("#searchList").html("");
                 return;
@@ -969,8 +1092,7 @@ var mail;
                 var formatter = new formatting.Formatter();
                 var list = document.getElementById("searchList");
                 list.innerHTML = "";
-                for (var _i = 0, matches_1 = matches; _i < matches_1.length; _i++) {
-                    var char = matches_1[_i];
+                for (var char of matches) {
                     var li = document.createElement('li');
                     li.setAttribute("data-target", char.name);
                     $(li).html(char.label);
@@ -979,8 +1101,8 @@ var mail;
                     list.appendChild(li);
                 }
             });
-        };
-        Messenger.prototype.setTarget = function (event) {
+        }
+        setTarget(event) {
             var target = null;
             if ($(event.target).attr('data-target')) {
                 target = $(event.target).attr('data-target');
@@ -989,8 +1111,8 @@ var mail;
                 target = $(event.target).parents('*[data-target]').attr('data-target');
             }
             document.forms.namedItem('messageForm').setAttribute('target', target);
-        };
-        Messenger.prototype.changeVisibility = function (event) {
+        }
+        changeVisibility(event) {
             var target = $(event.target).attr("data-target");
             var element = $("#" + target);
             var display = element.css("display");
@@ -1001,8 +1123,8 @@ var mail;
                     element.parent('li').find('img').attr('src', '/images/mail_icons/mail_read_ico.png');
                 }
             });
-        };
-        Messenger.prototype.moveToImportant = function (id) {
+        }
+        moveToImportant(id) {
             for (var index in this.messages) {
                 if (id == this.messages[index].id) {
                     this.messages[index].important = true;
@@ -1010,8 +1132,8 @@ var mail;
                     return;
                 }
             }
-        };
-        Messenger.prototype.moveToUnimportant = function (id) {
+        }
+        moveToUnimportant(id) {
             for (var index in this.messages) {
                 if (id == this.messages[index].id) {
                     this.messages[index].important = false;
@@ -1019,17 +1141,17 @@ var mail;
                     return;
                 }
             }
-        };
-        Messenger.prototype.deleteMessage = function (id) {
+        }
+        deleteMessage(id) {
             document.forms.namedItem('del_form').elements['id'].value = id;
             var _this = this;
             this.messages = {};
             var con = new Ajax.AjaxConnector();
-            con.submitForm(document.forms.namedItem('del_form'), function () {
+            con.submitForm(document.forms.namedItem('del_form'), () => {
                 _this.getMessages();
             });
-        };
-        Messenger.prototype.answerMessage = function (id) {
+        }
+        answerMessage(id) {
             for (var index in this.messages) {
                 if (id == this.messages[index].id) {
                     var message = this.messages[index];
@@ -1039,8 +1161,8 @@ var mail;
             document.forms.namedItem('messageForm').elements['subject'].value = "AW: " + message.subject;
             document.forms.namedItem('messageForm').elements['content'].value = "-----------------------------------<br />\n\rHistorie<br />\n\r" + message.subject
                 + "<br \>\n" + message.content;
-        };
-        Messenger.prototype.createMessageElement = function (message) {
+        }
+        createMessageElement(message) {
             var li = $('<li>');
             var _this = this;
             if (!message.sent) {
@@ -1053,23 +1175,23 @@ var mail;
                 else {
                     li.append($('<img>').attr({ src: '/images/mail_icons/mail_unread_ico.png' }).addClass('mailimage').css({ float: "left", width: "40px", height: "40px" }));
                 }
-                li.append($('<button>').html('L&ouml;schen').css('float', 'right').attr("data-target", message.id).click(function (data, event) {
+                li.append($('<button>').html('L&ouml;schen').css('float', 'right').attr("data-target", message.id).click((data, event) => {
                     var id = parseInt($(event.target).attr("data-target"));
                     _this.deleteMessage(id);
                 }));
                 if (message.important) {
-                    li.append($('<button>').html('Unwichtig').css('float', 'right').attr("data-target", message.id).click(function (data, event) {
+                    li.append($('<button>').html('Unwichtig').css('float', 'right').attr("data-target", message.id).click((data, event) => {
                         var id = parseInt($(event.target).attr("data-target"));
                         _this.moveToUnimportant(id);
                     }));
                 }
                 else {
-                    li.append($('<button>').html('Wichtig').css('float', 'right').attr("data-target", message.id).click(function (data, event) {
+                    li.append($('<button>').html('Wichtig').css('float', 'right').attr("data-target", message.id).click((data, event) => {
                         var id = parseInt($(event.target).attr("data-target"));
                         _this.moveToImportant(id);
                     }));
                 }
-                li.append($('<button>').html('Antworten').css('float', 'right').attr("data-target", message.id).click(function (data, event) {
+                li.append($('<button>').html('Antworten').css('float', 'right').attr("data-target", message.id).click((data, event) => {
                     var id = parseInt($(event.target).attr("data-target"));
                     _this.answerMessage(id);
                 }));
@@ -1081,7 +1203,7 @@ var mail;
                 .attr("data-target", "msg_" + message.id)
                 .html(message.subject + (message.read || message.sent ? '' : ' (neu)'))
                 .addClass('clickable')
-                .click(function (data, event) {
+                .click((data, event) => {
                 _this.changeVisibility(event);
             }))
                 .append('<br>');
@@ -1096,21 +1218,20 @@ var mail;
                 .css("display", "none"));
             li.append('<br />').append('<br />');
             return li;
-        };
-        Messenger.prototype.sendUpdatedMessage = function (message) {
+        }
+        sendUpdatedMessage(message) {
             document.forms.namedItem('imp_form').elements['id'].value = message.id;
             this.needsUpdate = true;
             var _this = this;
             var con = new Ajax.AjaxConnector();
-            con.submitForm(document.forms.namedItem('imp_form'), function () {
+            con.submitForm(document.forms.namedItem('imp_form'), () => {
                 _this.updateList();
             });
-        };
-        return Messenger;
-    }());
+        }
+    }
     mail.Messenger = Messenger;
-    var MailLink = (function () {
-        function MailLink() {
+    class MailLink {
+        constructor() {
             this.count = -1;
             this.firstTimeLoad = true;
             this.link = $("#maillink");
@@ -1119,64 +1240,63 @@ var mail;
             $(this.audio).attr("src", getBaseURL() + "resources/audio/mail.mp3");
             $(document.body).append(_this.getAudio());
         }
-        MailLink.prototype.getFirstTimeLoad = function () {
+        getFirstTimeLoad() {
             return this.firstTimeLoad;
-        };
-        MailLink.prototype.setFirstTimeLoad = function (load) {
+        }
+        setFirstTimeLoad(load) {
             this.firstTimeLoad = load;
-        };
-        MailLink.prototype.getAudio = function () {
+        }
+        getAudio() {
             return this.audio;
-        };
-        MailLink.prototype.setAudio = function (audio) {
+        }
+        setAudio(audio) {
             this.audio = audio;
-        };
-        MailLink.prototype.setCount = function (count) {
+        }
+        setCount(count) {
             if (!this.link) {
                 return;
             }
             this.count = count;
             this.link.html("Mail" + (count > 0 ? " (Neu: " + count + ")" : ""));
-        };
-        MailLink.prototype.getCount = function () {
+        }
+        getCount() {
             return this.count;
-        };
-        return MailLink;
-    }());
+        }
+    }
     mail.MailLink = MailLink;
 })(mail || (mail = {}));
 var navigation;
 (function (navigation) {
-    var KeyNavigator = (function () {
-        function KeyNavigator() {
+    class KeyNavigator {
+        constructor() {
             this.map = {};
             var that = this;
-            $('.nav').each(function (index, value) {
+            $('.nav').each((index, value) => {
                 that.addNav(value);
             });
-            $('body').on("keydown", function (event) {
+            $('body').on("keydown", (event) => {
                 that.navigate(event);
             });
         }
-        KeyNavigator.prototype.addNav = function (nav) {
+        addNav(nav) {
             if (nav.children.length === 0) {
                 nav.innerHTML = this.prepareNav(nav);
             }
             else {
-                for (var key = 0; key < nav.children.length; key++) {
-                    var html = this.prepareNav(nav.children[key]);
+                for (let key = 0; key < nav.children.length; key++) {
+                    let html = this.prepareNav(nav.children[key]);
                     if (html !== null) {
                         nav.children[key].innerHTML = html;
                         return;
                     }
                 }
             }
-        };
-        KeyNavigator.prototype.prepareNav = function (nav) {
-            var text = nav.textContent;
+        }
+        prepareNav(nav) {
+            let text = nav.textContent;
             if (text) {
-                for (var index = 0; index < text.length; index++) {
-                    var char = text.charAt(index);
+                for (let index = 0; index < text.length; index++) {
+                    let char = text.charAt(index);
                     if (!(char.toLowerCase() in this.map) && isNaN(char)) {
                         this.map[char.toLowerCase()] = nav;
                         return text.slice(0, index) + "<span style='text-decoration: underline;'>"
@@ -1185,8 +1305,8 @@ var navigation;
                 }
             }
             return text;
-        };
-        KeyNavigator.prototype.navigate = function (event) {
+        }
+        navigate(event) {
             if (event.altKey) {
                 return;
             }
@@ -1205,9 +1325,8 @@ var navigation;
             if (event.key in this.map) {
                 this.map[event.key].click();
             }
-        };
-        return KeyNavigator;
-    }());
+        }
+    }
     navigation.KeyNavigator = KeyNavigator;
 })(navigation || (navigation = {}));
 var navigation;
@@ -1218,8 +1337,7 @@ var navigation;
             "locId": "" + locId
         };
         var paramArray = params.split(";");
-        for (var _i = 0, paramArray_1 = paramArray; _i < paramArray_1.length; _i++) {
-            var entry = paramArray_1[_i];
+        for (var entry of paramArray) {
             var keyValue = entry.split('=');
             array[keyValue[0]] = keyValue[1];
         }
@@ -1258,10 +1376,8 @@ var navigation;
 })(navigation || (navigation = {}));
 var navigation;
 (function (navigation) {
-    var Navigator = (function () {
-        function Navigator() {
-        }
-        Navigator.prototype.createForm = function (target, fields) {
+    class Navigator {
+        createForm(target, fields) {
             var form = document.createElement('form');
             form.method = "POST";
             if (target != null && target != '') {
@@ -1280,35 +1396,29 @@ var navigation;
                 form.appendChild(input);
             }
             this.form = form;
-        };
-        Navigator.prototype.navigate = function () {
+        }
+        navigate() {
             document.body.appendChild(this.form);
             this.form.submit();
-        };
-        return Navigator;
-    }());
+        }
+    }
     navigation.Navigator = Navigator;
 })(navigation || (navigation = {}));
 var Sorting;
 (function (Sorting) {
-    var DateSortPolicy = (function () {
-        function DateSortPolicy() {
-        }
-        DateSortPolicy.prototype.sort = function (value, compare, reverse) {
+    class DateSortPolicy {
+        sort(value, compare, reverse) {
             var dateA = new Date(value);
             var dateB = new Date(compare);
             return reverse * (dateA > dateB ? -1 : dateA < dateB ? 1 : 0);
-        };
-        return DateSortPolicy;
-    }());
+        }
+    }
     Sorting.DateSortPolicy = DateSortPolicy;
 })(Sorting || (Sorting = {}));
 var Sorting;
 (function (Sorting) {
-    var NumberSortPolicy = (function () {
-        function NumberSortPolicy() {
-        }
-        NumberSortPolicy.prototype.sort = function (value, compare, reverse) {
+    class NumberSortPolicy {
+        sort(value, compare, reverse) {
             var result = 0;
             var floatValue = parseFloat(value);
             var floatCompare = parseFloat(compare);
@@ -1319,40 +1429,34 @@ var Sorting;
                 result = 1;
             }
             return reverse * result;
-        };
-        return NumberSortPolicy;
-    }());
+        }
+    }
     Sorting.NumberSortPolicy = NumberSortPolicy;
 })(Sorting || (Sorting = {}));
 var Sorting;
 (function (Sorting) {
-    var StandardSortPolicy = (function () {
-        function StandardSortPolicy() {
-        }
-        StandardSortPolicy.prototype.sort = function (value, compare, reverse) {
+    class StandardSortPolicy {
+        sort(value, compare, reverse) {
             if (isNaN(Number(value)) || isNaN(Number(value))) {
                 return reverse * value.localeCompare(compare);
             }
             return reverse * Number(value) - Number(compare);
-        };
-        return StandardSortPolicy;
-    }());
+        }
+    }
     Sorting.StandardSortPolicy = StandardSortPolicy;
 })(Sorting || (Sorting = {}));
 var Sorting;
 (function (Sorting) {
-    var TableSorter = (function () {
-        function TableSorter() {
-        }
-        TableSorter.prototype.makeAllSortable = function (parent) {
+    class TableSorter {
+        makeAllSortable(parent) {
             parent = parent || document.body;
             var tables = parent.getElementsByTagName('table');
             var index = tables.length;
             while (--index >= 0) {
                 this.makeSortable(tables[index]);
             }
-        };
-        TableSorter.prototype.makeSortable = function (table) {
+        }
+        makeSortable(table) {
             var _this = this;
             var th = table.tHead, i;
             th && (th = th.rows[0]) && (th = th.cells);
@@ -1365,13 +1469,13 @@ var Sorting;
                     var dir = 1;
                     th[i].addEventListener('click', function () { _this.sortTable(table, i, (dir = 1 - dir)); });
                 }(i));
-        };
-        TableSorter.prototype.sortTable = function (table, col, reverse) {
+        }
+        sortTable(table, col, reverse) {
             var tb = table.tBodies[0], tr = Array.prototype.slice.call(tb.rows, 0), index, sortPolicy;
             reverse = -((+reverse) || -1);
             if ($(tr[0].cells[col]).attr('data-type') == 'date') {
                 sortPolicy = new Sorting.DateSortPolicy();
-                tr = tr.sort(function (a, b) {
+                tr = tr.sort((a, b) => {
                     var value = $(a.cells[col]).attr('data-value');
                     var compare = $(b.cells[col]).attr('data-value');
                     return sortPolicy.sort(value, compare, reverse);
@@ -1384,7 +1488,7 @@ var Sorting;
                 else {
                     sortPolicy = new Sorting.StandardSortPolicy();
                 }
-                tr = tr.sort(function (a, b) {
+                tr = tr.sort((a, b) => {
                     var value = a.cells[col].textContent.trim();
                     var compare = b.cells[col].textContent.trim();
                     return sortPolicy.sort(value, compare, reverse);
@@ -1393,8 +1497,7 @@ var Sorting;
             for (index = 0; index < tr.length; ++index) {
                 tb.appendChild(tr[index]);
             }
-        };
-        return TableSorter;
-    }());
+        }
+    }
     Sorting.TableSorter = TableSorter;
 })(Sorting || (Sorting = {}));

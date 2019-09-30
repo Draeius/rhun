@@ -1,0 +1,11 @@
+
+<div>
+    {% if diary.getText() %}
+        {{ diary.getText() |colorize |raw}}
+    {% endif %}
+</div>
+{% if diary.getScript() %} 
+    <script>
+        {{ diary.getScript() |raw }}
+    </script>
+{% endif %}

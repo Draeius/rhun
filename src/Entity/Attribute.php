@@ -43,4 +43,8 @@ class Attribute extends BasicEnum {
         return floor(($score - 10) / 2);
     }
 
+    public static function toArray() {
+        return [0, 1, 2, 3, 4, 5];
+    }
+
 }

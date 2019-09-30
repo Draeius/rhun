@@ -96,7 +96,7 @@ class PreLoginController extends BasicController {
 
         if ($form->isSubmitted() && $form->isValid()) {
             $session = new RhunSession();
-            if ($config->getStartSettings()->getNeedEmailValidation()) {
+            if ($config->getSettings()->getNeedEmailValidation()) {
                 $user = $userFacade->createUser($userDTO);
 
                 $session->setAccountID($user);
