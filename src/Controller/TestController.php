@@ -19,8 +19,13 @@ use App\Repository\WeaponTemplateRepository;
 use App\Service\SkinService;
 use App\Util\Price;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\VarDumper\VarDumper;
 use function mb_convert_encoding;
@@ -40,6 +45,16 @@ class TestController extends BasicController {
         VarDumper::dump($skinService->getSkinList());
 
         return $this->render('test.html.twig');
+    }
+
+    /**
+     * @Route("/updateDatabase")
+     */
+    public function updateDatabase(Request $request, KernelInterface $kernel, EntityManagerInterface $eManager, LocationRepository $locRepo,
+            AreaRepository $areaRepo, WeaponTemplateRepository $wepRepo, ArmorTemplateRepository $armRepo) {
+        $this->populateData($request, $eManager, $locRepo, $areaRepo, $wepRepo, $armRepo);
+
+        return new Response($content);
     }
 
     /**
@@ -132,7 +147,7 @@ class TestController extends BasicController {
             $area->setColoredName($areaData['name']);
             $area->setDeadAllowed($areaData['deadAllowed']);
             $area->setDescription($areaData['description'] ? $areaData['description'] : '');
-            $area->setRaceAllowed(false);
+            $area->setRaceAllowed(array_search($areaData['city'], ['nelaris', 'manosse', 'pyra', 'lerentia', 'underworld'], true) !== false);
             $area->setRaceAllowed(array_search($area->getCity(), ['nelaris', 'manosse', 'pyra', 'lerentia', 'underworld'], true) !== false);
             $eManager->persist($area);
         }
