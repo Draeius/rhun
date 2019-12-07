@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Option;
+namespace App\Entity\Option;
 
 use App\Entity\Character;
 use App\Entity\Location;

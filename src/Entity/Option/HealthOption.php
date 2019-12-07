@@ -5,7 +5,10 @@ namespace App\Entity\Option;
 use App\Entity\Character;
 use App\Service\CharacterService;
 use App\Util\Price;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\Table;
 
 /**
  * @Entity
@@ -55,7 +58,7 @@ class HealthOption extends Option {
      */
     protected $priceGems;
 
-    public function execute(Character $character) {
+    public function execute(EntityManagerInterface $eManager, Character $character) {
         $amount = $this->amount;
 
         if ($this->isPercentage) {

@@ -2,11 +2,9 @@
 
 namespace App\Entity;
 
-use App\Entity\Option\Option;
 use App\Entity\Traits\EntityColoredNameTrait;
 use App\Entity\Traits\EntityIdTrait;
 use App\Util\Option\OptionPicker;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
@@ -37,7 +35,7 @@ class Activity extends LocationBasedEntity {
     /**
      *
      * @var Options[]
-     * @OneToMany(targetEntity="Option", mappedBy="activity")
+     * @OneToMany(targetEntity="App\Entity\Option\Option", mappedBy="activity")
      */
     protected $options;
 

@@ -4,15 +4,16 @@ namespace App\Entity\Option;
 
 use App\Entity\Activity;
 use App\Entity\Character;
+use App\Entity\RhunEntity;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\DiscriminatorColumn;
+use Doctrine\ORM\Mapping\DiscriminatorMap;
+use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\InheritanceType;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
-use Symfony\Component\Console\Helper\Table;
-use Symfony\Component\Serializer\Annotation\DiscriminatorMap;
-use Symfony\Component\Validator\Tests\Fixtures\Entity;
+use Doctrine\ORM\Mapping\Table;
 
 /**
  * @author Draeius
@@ -23,16 +24,16 @@ use Symfony\Component\Validator\Tests\Fixtures\Entity;
  * @DiscriminatorMap({
  * "death" = "DeathOption",
  * "rec_buff" = "ReceiveBuffOption",
- * "rem_buff" = "ReoveBuffOption",
+ * "rem_buff" = "RemoveBuffOption",
  * "health" = "HealthOption",
  * "price" = "PriceOption",
  * "item" = "ItemOption",
- * "port" = "TeleportOption",
+ * "port" = "TeleportationOption",
  * "text" = "TextOption"
  * })
  */
-abstract class Option {
-
+abstract class Option extends RhunEntity{
+    
     /**
      * The owner of this biography
      * @var Activity 

@@ -6,15 +6,15 @@ use App\Entity\Character;
 use App\Entity\Option\Option;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\Column;
-use Symfony\Component\Console\Helper\Table;
-use Symfony\Component\Validator\Tests\Fixtures\Entity;
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\Table;
 
 /**
  * 
  * @Entity
  * @Table(name="options_price")
  */
-class ReceivePriceOption extends Option {
+class PriceOption extends Option {
 
     /**
      *
