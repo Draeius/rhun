@@ -52,7 +52,34 @@ class TestController extends BasicController {
      */
     public function updateDatabase(Request $request, KernelInterface $kernel, EntityManagerInterface $eManager, LocationRepository $locRepo,
             AreaRepository $areaRepo, WeaponTemplateRepository $wepRepo, ArmorTemplateRepository $armRepo) {
-        $this->populateData($request, $eManager, $locRepo, $areaRepo, $wepRepo, $armRepo);
+        set_time_limit(0);
+        $application = new Application($kernel);
+        $application->setAutoExit(false);
+
+        $inputDrop = new ArrayInput([
+            'command' => 'doctrine:schema:drop',
+            '--force' => true
+        ]);
+        $inputCreate = new ArrayInput([
+            'command' => 'doctrine:schema:create'
+        ]);
+        $inputImport = new ArrayInput([
+            'command' => 'doctrine:database:import',
+            'file' => $kernel->getRootDir() . '/../SQL/ImportZeug.sql'
+        ]);
+
+        // You can use NullOutput() if you don't need the output
+        $output = new BufferedOutput();
+        $application->run($inputDrop, $output);
+        $content = $output->fetch() . '<br /><br />';
+        
+        $application->run($inputCreate, $output);        
+        $content .= $output->fetch() . '<br /><br />';
+        
+        $application->run($inputImport, $output);
+        $content .= $output->fetch() . '<br /><br />';
+        
+//        $this->populateData($request, $eManager, $locRepo, $areaRepo, $wepRepo, $armRepo);
 
         return new Response($content);
     }
