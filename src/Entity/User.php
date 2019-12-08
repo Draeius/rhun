@@ -113,6 +113,12 @@ class User extends RhunEntity implements UserInterface, Serializable {
      */
     protected $acceptTerms = false;
 
+    /**
+     * @var int 
+     * @Column(type="integer", nullable=false)
+     */
+    protected $postsPerPage = 10;
+
     public function __construct() {
         $this->characters = new ArrayCollection();
         $this->birthday = new DateTime('NOW');
@@ -194,6 +200,14 @@ class User extends RhunEntity implements UserInterface, Serializable {
 
     public function getAcceptTerms() {
         return $this->acceptTerms;
+    }
+
+    function getPostsPerPage() {
+        return $this->postsPerPage;
+    }
+
+    function setPostsPerPage($postsPerPage) {
+        $this->postsPerPage = $postsPerPage;
     }
 
     public function setAcceptTerms($acceptTerms) {

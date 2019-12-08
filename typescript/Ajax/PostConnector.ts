@@ -3,8 +3,8 @@ namespace Ajax {
 
     export class PostConnector extends AjaxConnector {
 
-        public static readonly OOC_GET_URL: string = "ooc/get";
-        public static readonly POST_GET_URL: string = "post/get/";
+        public static readonly OOC_GET_URL: string = "post/ooc/page";
+        public static readonly POST_GET_URL: string = "post/page/";
 
         private uuid: string;
 

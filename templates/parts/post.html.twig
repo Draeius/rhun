@@ -9,7 +9,7 @@
             <br />
             <a href="{{ path('bio', {'charId': post.getAuthor().getId(), 'uuid': uuid })}}" >Biographie besuchen</a><br />
             <br />
-            {% if uuid != '1' %}
+            {% if uuid != '0000' %}
                 <a href="{{ path('mail_show', {'charName': post.getAuthor().getName(), 'charId': char.getId()})}}" target="_blank" >Brieftaube senden</a><br />
                 <br />
             {% endif %}

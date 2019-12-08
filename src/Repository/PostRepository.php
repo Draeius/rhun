@@ -37,4 +37,22 @@ class PostRepository extends ServiceEntityRepository {
         $result = $this->matching($criteria);
         return array_reverse($result->getValues());
     }
+
+    public function findLastOwnPost(Character $character, $ooc) {
+        $locRep = $this->getEntityManager()->getRepository('App:LocationEntity');
+        $location = $character->getLocation();
+        $criteria = Criteria::create()
+                ->where(Criteria::expr()
+                        ->eq('location', $ooc ? $locRep->find(1) : $location))
+                ->andWhere(Criteria::expr()
+                        ->eq('author', $character))
+                ->orderBy(array("creationDate" => "DESC"))
+                ->setMaxResults(1);
+        $result = $this->matching($criteria);
+        if ($result->isEmpty()) {
+            return false;
+        }
+        return $result->first();
+    }
+
 }

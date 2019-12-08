@@ -67,6 +67,13 @@ class AccountMngmtParamGenerator extends ParamGenerator {
         $this->eManager = $eManager;
     }
 
+    public function getDSGVOParams(){
+        return array_merge($this->getBaseParams('DSGVO', $this->navFactory->buildEmptyNavbar()), [
+            'page' => 'accountManager/dsgvo'
+        ]);
+    }
+    
+    
     public function getStandardParams(User $user, FormInterface $form, BroadcastRepository $repo) {
         $codingBroadcast = $repo->findNewestBroadcast(true);
         $broadcast = $repo->findNewestBroadcast(false);

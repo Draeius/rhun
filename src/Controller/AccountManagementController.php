@@ -78,37 +78,31 @@ class AccountManagementController extends BasicController {
     }
 
     /**
-     * @App\Annotation\Security(needAccount=true)
      * @Route("/dsgvo", name=AccountManagementController::DSGVO_ROUTE_NAME)
      */
-    public function showDSGVO() {
-        $builder = $this->get('app.navbar');
-        $vars = array_merge($this->getBaseVariables($builder, 'Datenschutzerklärung'), [
-            'page' => 'default/dsgvo'
-        ]);
-        return $this->render($this->getSkinFile(), $vars);
+    public function showDSGVO(AccountMngmtParamGenerator $paramGenerator) {
+        return $this->render($this->getSkinFile(), $paramGenerator->getDSGVOParams());
     }
 
     /**
-     * @App\Annotation\Security(needAccount=true)
      * @Route("/dsgvo/answer", name="dsgvo_answer")
      */
-    public function answerDSGVO(Request $request) {
+    public function answerDSGVO(Request $request, UserRepository $accRepo, EntityManagerInterface $eManager) {
         $accept = filter_var($request->get('accept', false), FILTER_VALIDATE_BOOLEAN);
-        $manager = $this->getDoctrine()->getManager();
+        
+        $session = new RhunSession();
         if ($accept) {
-            $account = $this->getAccount();
+            $account = $accRepo->find($session->getAccountID());
             $account->setAcceptTerms(true);
-            $manager->persist($account);
+            $eManager->persist($account);
         } else {
             return $this->redirect('/account/delete');
         }
-        $manager->flush();
+        $eManager->flush();
         return $this->redirectToRoute(self::ACCOUNT_MANAGEMENT_ROUTE_NAME);
     }
 
     /**
-     * @App\Annotation\Security(needAccount=true)
      * @Route("/account/set/birthday")
      * @param Request $request
      */
@@ -125,7 +119,6 @@ class AccountManagementController extends BasicController {
     }
 
     /**
-     * @App\Annotation\Security(needAccount=true)
      * @Route("/account/change/password")
      * @param Request $request
      */
@@ -150,7 +143,6 @@ class AccountManagementController extends BasicController {
     }
 
     /**
-     * @App\Annotation\Security(needAccount=true)
      * @Route("/account/change/mail")
      */
     public function changeEmail(Request $request) {
@@ -164,7 +156,6 @@ class AccountManagementController extends BasicController {
     }
 
     /**
-     * @App\Annotation\Security(needAccount=true)
      * @Route("/account/verify")
      */
     public function verifyAccount(Request $request) {
@@ -179,7 +170,6 @@ class AccountManagementController extends BasicController {
     }
 
     /**
-     * @App\Annotation\Security(needAccount=true)
      * @Route("/account/buy_slot")
      */
     public function buyCharSlot() {
@@ -216,16 +206,17 @@ class AccountManagementController extends BasicController {
      * @App\Annotation\Security(needAccount=true)
      * @Route("account/delete")
      */
-    public function deleteAccount(UserRepository $userRepo) {
+    public function deleteAccount(EntityManagerInterface $eManager, UserRepository $userRepo, CharacterRepository $charRepo) {
         $session = new RhunSession();
         $account = $userRepo->find($session->getAccountID());
+        $characters = $charRepo->findBy(['account' => $account]);
+        
         $session->clearData();
-        $manager = $this->getDoctrine()->getManager();
-        foreach ($account->getCharacters() as $char) {
-            CharacterService::deleteCharacter($manager, $char);
+        foreach ($characters as $char) {
+            CharacterService::deleteCharacter($eManager, $char);
         }
-        $manager->remove($account);
-        $manager->flush();
+        $eManager->remove($account);
+        $eManager->flush();
 
         return $this->redirectToRoute(self::ACCOUNT_MANAGEMENT_ROUTE_NAME);
     }

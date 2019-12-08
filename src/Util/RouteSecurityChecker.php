@@ -45,13 +45,13 @@ class RouteSecurityChecker {
 
         $session = new RhunSession();
         $accountQuery = new CheckAccountSecurityQuery($this->eManager);
-        if (!$accountQuery($session->getAccountID(), $this->annotation)) {
+        if (!$session->getAccountID() || !$accountQuery($session->getAccountID(), $this->annotation)) {
             return false;
         }
 
         if ($this->annotation->needCharacter) {
             $characterQuery = new CheckCharacterSecurityQuery($this->eManager);
-            if (!$characterQuery($session->getCharacterID(), $session->getAccountID())) {
+            if (!$session->getCharacterID() || !$characterQuery($session->getCharacterID(), $session->getAccountID())) {
                 return false;
             }
         }

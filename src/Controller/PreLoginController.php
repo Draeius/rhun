@@ -101,9 +101,8 @@ class PreLoginController extends BasicController {
             $session->setAccountID($user->getId());
             if ($config->getSettings()->getNeedEmailValidation()) {
                 $mailService->sendMailValidationCode($user);
-
-                return $this->redirectToRoute(AccountManagementController::ACCOUNT_MANAGEMENT_ROUTE_NAME);
             }
+            return $this->redirectToRoute(AccountManagementController::ACCOUNT_MANAGEMENT_ROUTE_NAME);
         }
         return $this->render($this->getSkinFile(), $paramGenerator->getNewAccountParams($form));
     }

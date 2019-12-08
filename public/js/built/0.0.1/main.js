@@ -185,8 +185,8 @@ var Ajax;
             }, callback);
         }
     }
-    PostConnector.OOC_GET_URL = "ooc/get";
-    PostConnector.POST_GET_URL = "post/get/";
+    PostConnector.OOC_GET_URL = "post/ooc/page";
+    PostConnector.POST_GET_URL = "post/page/";
     Ajax.PostConnector = PostConnector;
 })(Ajax || (Ajax = {}));
 class Queue {

@@ -79,7 +79,7 @@ class TestController extends BasicController {
         $application->run($inputImport, $output);
         $content .= $output->fetch() . '<br /><br />';
         
-//        $this->populateData($request, $eManager, $locRepo, $areaRepo, $wepRepo, $armRepo);
+        $this->populateData($request, $eManager, $locRepo, $areaRepo, $wepRepo, $armRepo);
 
         return new Response($content);
     }

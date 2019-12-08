@@ -4,4 +4,4 @@ SELECT
 FROM
     posts p
 WHERE
-    p.owner_id = ''
+    p.owner_id = ?

@@ -42,6 +42,10 @@ class AccountMngmtNavbarFactory {
         $this->navbarService = $navbarService;
         $this->eManager = $eManager;
     }
+    
+    public function buildEmptyNavbar(){
+        return $this->navbarService;
+    }
 
     public function buildNavbar(User $user) {
         $builder = $this->navbarService;

@@ -39,6 +39,7 @@ class LoginController extends BasicController {
         $form = $this->createForm(LoginFormType::class, $userDTO);
         $form->handleRequest($request);
 
+        $user = false;        
         if ($form->isSubmitted() && $form->isValid()) {
             $session = new RhunSession();
             if (!empty($result = $userRepo->findByUsername($userDTO->username))) {
