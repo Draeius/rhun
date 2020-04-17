@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\PlayerReward;
 
 use App\Entity\Character;
 use App\Entity\RhunEntity;
