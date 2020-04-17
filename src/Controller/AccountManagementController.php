@@ -72,6 +72,7 @@ class AccountManagementController extends BasicController {
 
         if ($form->isSubmitted() && $form->isValid()) {
             $characterFacade->createUser($character, $config->getSettings()->getActionPoints());
+            return $this->redirectToRoute(AccountManagementController::ACCOUNT_MANAGEMENT_ROUTE_NAME);
         }
 
         return $this->render($this->getSkinFile(), $paramGenerator->getStandardParams($user, $form, $broadcastRepo));

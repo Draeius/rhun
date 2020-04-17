@@ -53,12 +53,12 @@ trait EntitySeasonDescriptionTrait {
                     return $this->descriptionSummer;
                 }
                 break;
-            case Season::SEASON_FALL:
+            case Season::FALL:
                 if ($this->descriptionFall) {
                     return $this->descriptionFall;
                 }
                 break;
-            case Season::SEASON_WINTER:
+            case Season::WINTER:
                 if ($this->descriptionWinter) {
                     return $this->descriptionWinter;
                 }
