@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Doctrine\UuidEncoder;
 use App\Entity\Character;
 use App\Entity\Message;
+use App\Entity\ServerSettings;
 use App\Entity\ShortNews;
 use App\Service\DateTimeService;
 use App\Service\SkinService;
@@ -61,6 +62,17 @@ class BasicController extends AbstractController {
      */
     public function setTabIdentifier(TabIdentifier $tabIdentifier): void {
         $this->tabIdentifier = $tabIdentifier;
+    }
+
+    public function getServerSettings(): ServerSettings {
+        $manager = $this->getDoctrine()->getManager();
+        $settings = $manager->find('App:ServerSettings', 1);
+        if (!$settings) {
+            $settings = new ServerSettings();
+            $manager->persist($settings);
+            $manager->flush();
+        }
+        return $settings;
     }
 
     public function getSkinFile() {

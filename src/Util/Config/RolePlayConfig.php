@@ -11,6 +11,13 @@ use App\Util\Price;
  */
 class RolePlayConfig extends Config {
 
+    public function getExcludeFromReward(): array{
+        $data = $this->getData('post');
+        $reward = $this->getData('reward', $data);
+
+        return $this->getData('exclude_from_reward', $reward);
+    }
+    
     public function getRpPointRewardMultiplier(): int {
         $data = $this->getData('post');
         $reward = $this->getData('reward', $data);

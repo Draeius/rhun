@@ -1,14 +1,17 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Post;
 
+use App\Controller\BasicController;
 use App\Entity\Character;
+use App\Entity\Location;
 use App\Entity\Post;
 use App\Entity\ServerSettings;
 use App\Query\GetPostCountQuery;
 use App\Repository\CharacterRepository;
 use App\Repository\LocationRepository;
 use App\Repository\PostRepository;
+use App\Service\RewardDistributor;
 use App\Util\Config\RolePlayConfig;
 use App\Util\Price;
 use App\Util\Session\RhunSession;
@@ -27,33 +30,12 @@ class PostController extends BasicController {
 
     /**
      * 
-     * @Route("/ooc/page/{uuid}/{page}", name="ooc_page")
-     */
-    public function getOOCPage(int $page, LocationRepository $locRepo, CharacterRepository $charRepo, EntityManagerInterface $eManager, PostRepository $postRepo) {
-        $session = new RhunSession();
-        $settings = $this->eManager->find('App:ServerSettings', 1);
-
-        $character = null;
-        if ($session->getTabIdentifier()->hasIdentifier()) {
-            /* @var $character Character */
-            $character = $charRepo->find($session->getCharacterID());
-        }
-        $posts = $postRepo->findByLocation($locRepo->find(1), $character->getAccount()->getPostsPerPage(), $page);
-
-        $query = new GetPostCountQuery($eManager);
-        $pages = ceil($query() / $character->getAccount()->getPostsPerPage());
-
-        return new JsonResponse($this->preparePostArray($posts, $character, $settings, $eManager, $pages));
-    }
-
-    /**
-     * 
      * @Route("/page/{uuid}/{page}", name="post_page")
      * @App\Annotation\Security(needCharacter=true)
      */
     public function getPage(int $page, EntityManagerInterface $eManager, CharacterRepository $charRepo, PostRepository $postRepo) {
         $session = new RhunSession();
-        $settings = $this->eManager->find('App:ServerSettings', 1);
+        $settings = $this->getServerSettings();
 
         /* @var $character Character */
         $character = $charRepo->find($session->getCharacterID());
@@ -74,37 +56,19 @@ class PostController extends BasicController {
         /* @var $character Character */
         $character = $charRepo->find($session->getCharacterID());
         $location = $this->getPostLocation($request, $character, $locRepo);
-        
-        $content = strip_tags(trim($request->get('content')));
-        if ($content == '') {
+        try {
+            $post = $this->createPost($request, $character, $location);
+        } catch (EmptyPostException | DuplicatePostException $ex) {
             return new JsonResponse(array(
-                'error' => 'Du musst schon etwas schreiben.'
-            ));
-        }
-
-        $post = new Post();
-        $post->setContent($content);
-        $post->setLocation($location);
-        $post->setAuthor($character);
-
-        if ($this->isDuplicatePost($character, $post)) {
-            return new JsonResponse(array(
-                'error' => 'Der Post ist doppelt.'
+                'error' => $ex.getMessage()
             ));
         }
 
         //add Reward
-        if ($post->getLocation()->getId() != 1) {
-            /* @var $config RolePlayConfig */
-            $config = $this->getServerConfig()->getRpConfig();
-            $character->getWallet()->addPrice($this->getReward($post));
-            $length = count(explode(' ', $post->getContent()));
-            if ($length > $config->getPostRewardMinWordCount()) {
-                $character->setPostCounter(
-                        $character->getPostCounter() + $config->getRpPointRewardMultiplier() * (ceil($length / $config->getPostRewardMaxWordCount()))
-                );
-            }
-        }
+        /* @var $config RolePlayConfig */
+        $config = $this->getServerConfig()->getRpConfig();
+        $distributor = new RewardDistributor($config);
+        $distributor->handOutReward($post, $character);
 
         //persist db
         $eManager->persist($post);
@@ -201,13 +165,13 @@ class PostController extends BasicController {
             if ($length > $config->getPostRewardMinWordCount()) {
                 $character->setPostCounter(
                         $character->getPostCounter() - $config->getRpPointRewardMultiplier() * (ceil($length / $config->getPostRewardMaxWordCount()))
-                        );
+                );
             }
             $entityManager->flush($character);
         }
         return new JsonResponse();
     }
-    
+
     private function isDuplicatePost(Character $character, Post $post) {
         $rep = $this->getDoctrine()->getRepository('AppBundle:Post');
         $test = $rep->findLastPost($character, $post->getLocation()->getId() == 1);
@@ -223,7 +187,7 @@ class PostController extends BasicController {
         }
         return false;
     }
-    
+
     private function preparePostArray($posts, ?Character $character, ServerSettings $settings, EntityManagerInterface $eManager, int $pages) {
         $session = new RhunSession();
         $content = ['posts' => [], 'pageCount' => $pages];
@@ -248,25 +212,5 @@ class PostController extends BasicController {
         }
         return $rep->find($character->getLocation());
     }
-    
-    private function checkReward($oldReward, $newReward, Character $character) {
-        $entityManager = $this->getDoctrine()->getManager();
-        $difference = $newReward->subtract($oldReward);
 
-        $character->getWallet()->addPrice($difference);
-        if ($character->getWallet()->getGems() < 0) {
-            $account = $this->getAccount();
-
-            // negative amount of gems possible in account
-            $account->addGems($character->getWallet()->getGems() * -1);
-
-            // not possible in character
-            $character->getWallet()->setGems(0);
-
-            // update
-            $entityManager->persist($account);
-        }
-        $entityManager->persist($character);
-        $entityManager->flush();
-    }
 }

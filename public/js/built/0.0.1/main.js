@@ -177,6 +177,12 @@ var Ajax;
         getNewPosts(lastPostId, limit, page, callback) {
             this.getNew(PostConnector.POST_GET_URL, lastPostId, limit, page, callback);
         }
+        getPostToEdit(postId, callback) {
+            this.getData(PostConnector.POST_GET_EDIT_URL, {
+                lastId: postId.toString(),
+                uuid: this.uuid
+            }, callback);
+        }
         getNew(url, lastPostId, limit, page, callback) {
             this.getData(url, {
                 lastId: lastPostId.toString(),
@@ -187,6 +193,7 @@ var Ajax;
     }
     PostConnector.OOC_GET_URL = "post/ooc/page";
     PostConnector.POST_GET_URL = "post/page/";
+    PostConnector.POST_GET_EDIT_URL = "post/get/last/";
     Ajax.PostConnector = PostConnector;
 })(Ajax || (Ajax = {}));
 class Queue {

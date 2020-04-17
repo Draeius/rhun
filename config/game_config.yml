@@ -1,6 +1,8 @@
 role_play:
     post:
         reward:
+            exclude_from_reward:
+                - 1
             point_multiplier: 1 
             min_word_count: 50
             max_word_count: 550
