@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  *
  * @author Draeius
- * @Route("post")
+ * @Route("ooc")
  * @App\Annotation\Security(needAccount=true)
  */
 class OocPostController extends PostController {

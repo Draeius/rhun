@@ -24,7 +24,8 @@ class PostService {
         $post = new Post();
         $post->setContent($content);
         $post->setLocation($location);
-        $post->setAuthor($character);
+        $post->setOwner($character);
+        $post->setNewest(true);
 
         if ($this->isDuplicatePost($character, $post)) {
             throw new DuplicatePostException('Duplicate posts are not allowed.');
@@ -32,4 +33,8 @@ class PostService {
         return $post;
     }
 
+    public function isDuplicatePost(Character $character, Post $post){
+       return false;
+    }
+    
 }

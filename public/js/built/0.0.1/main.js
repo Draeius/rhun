@@ -68,11 +68,24 @@ function initPreview() {
         }
     });
 }
+function initPosts() {
+    $('[data-posts]').each(function () {
+        let data = $(this).attr('data-posts').split(";");
+        let form = document.getElementById(data[1]);
+        let ooc = data[0] == "ooc";
+        let submitButton = document.getElementById(data[2]);
+        let area = new Content.PostArea(this, ooc);
+        $(submitButton).click(function () {
+            area.sendPost(form);
+        });
+    });
+}
 $(document).ready(() => {
     var keyNavigator = new navigation.KeyNavigator();
     var sorter = new Sorting.TableSorter();
     sorter.makeAllSortable(null);
     initPreview();
+    initPosts();
 });
 var Util;
 (function (Util) {
@@ -151,6 +164,7 @@ var Ajax;
         }
         submitForm(form, callback) {
             Logging.Logger.debug("form submit action: " + form.action);
+            console.log(this.getBaseURL() + form.action);
             this.submit({
                 type: "POST",
                 url: form.action,
@@ -184,7 +198,7 @@ var Ajax;
             }, callback);
         }
         getNew(url, lastPostId, limit, page, callback) {
-            this.getData(url, {
+            this.getData(this.getBaseURL() + url, {
                 lastId: lastPostId.toString(),
                 limit: limit.toString(),
                 page: page.toString()
@@ -503,10 +517,8 @@ var Content;
 var Content;
 (function (Content) {
     class PostArea {
-        constructor(display, input, timer = 3000, ooc) {
-            this.input = input;
+        constructor(display, ooc) {
             this.display = display;
-            this.timer = timer;
             this.ooc = ooc;
             this.posts = new Queue();
             this.postCon = new Ajax.PostConnector(rhun.uuid);
@@ -832,7 +844,8 @@ var formatting;
             }
             var con = new Ajax.AjaxConnector();
             _this.lastText = text;
-            con.getData("format/preview", { text: text }, function (preview) {
+            console.log(con.getBaseURL() + "format/preview");
+            con.getData(con.getBaseURL() + "format/preview", { text: text }, function (preview) {
                 _this.view.innerHTML = preview;
             });
         }
@@ -1390,11 +1403,6 @@ var navigation;
             if (target != null && target != '') {
                 form.action = target;
             }
-            var id = document.createElement("input");
-            id.type = "hidden";
-            id.name = "uuid";
-            id.value = uuid;
-            form.appendChild(id);
             for (var key in fields) {
                 var input = document.createElement('input');
                 input.type = "hidden";

@@ -44,7 +44,8 @@ module formatting {
 
             var con = new Ajax.AjaxConnector();
             _this.lastText = text;
-            con.getData("format/preview", { text: text }, function(preview: string) {
+            console.log(con.getBaseURL() + "format/preview");
+            con.getData(con.getBaseURL() + "format/preview", { text: text }, function(preview: string) {
                 _this.view.innerHTML = preview;
             });
         }

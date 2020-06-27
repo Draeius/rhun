@@ -33,10 +33,24 @@ function initPreview() {
     });
 }
 
+function initPosts() {
+    $('[data-posts]').each(function () {
+        let data = $(this).attr('data-posts').split(";");
+        let form = <HTMLFormElement>document.getElementById(data[1]);
+        let ooc = data[0] == "ooc";
+        let submitButton = document.getElementById(data[2]);
+        let area = new Content.PostArea(this, ooc);
+        $(submitButton).click(function () {
+            area.sendPost(form);
+        });
+    });
+}
+
 //apply formats
 $(document).ready(() => {
     var keyNavigator = new navigation.KeyNavigator();
     var sorter = new Sorting.TableSorter();
     sorter.makeAllSortable(null);
     initPreview();
+    initPosts();
 });

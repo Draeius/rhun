@@ -30,7 +30,7 @@ namespace Ajax {
         }
 
         private getNew(url: string, lastPostId: number, limit: number, page: number, callback: Function) {
-            this.getData(url, {
+            this.getData(this.getBaseURL() + url, {
                 lastId: lastPostId.toString(),
                 limit: limit.toString(),
                 page: page.toString()

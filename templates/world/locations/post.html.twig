@@ -3,35 +3,29 @@
 <br />
 <br />
 <div data-posts="post">
+    <div class="postcontainer">
+        
+    </div>
 
-</div>
+    <span class="last_page" class="clickable" style="color: darkgreen;"><-- vorherige Seite</span> 
+    <span class="next_page" class="clickable" style="color: darkred;">nächste Seite --></span><br />
 
-<span id="post_earlier" class="clickable" style="color: darkgreen;"><-- vorherige Seite</span> 
-<span id="post_next" class="clickable" style="color: darkred;">nächste Seite --></span><br />
+    <div class="preview">
 
-<div id="post_preview">
+    </div>
 
-</div>
-
-<form action="post/add/{{ uuid }}" method="POST" >
-    <textarea data-preview="post_preview"></textarea>
-</form>
-
-
-{% if uuid %}
-    <span class="clickable" style="color: darkgreen;" on-tap="editPost" >Letzten Post bearbeiten </span> || 
-    <span class="clickable" on-tap="deletePost" style="color: darkred;">Letzten Post löschen</span>
+    <span class="clickable" style="color: darkgreen;" onclick="editPost" >Letzten Post bearbeiten </span> || 
+    <span class="clickable" style="color: darkred;" onclick="deletePost" >Letzten Post löschen</span>
     <span style="color: red">{{error}}</span>
-    <div id="commentaryPreview"></div>
+    <br />
     <br />
     <a class="clickable" href="http://www.rhun-logd.de/colorlist" target="_blank">Farbenliste</a> || 
     <a class="clickable" href="http://www.rhun-logd.de/posthelp" target="_blank">Tags</a>
-    <form name="post_form" action="/post/add" method="POST">
-        <textarea id="commentaryInput" name="content" value="{{postContent::input}}" rows="1" cols="40"></textarea>
-        <br /> <br />
-        <input type="hidden" name="ooc" value="{{ooc}}" />
-        <input type="hidden" name="id" value="{{postId}}" />
-        <input type="hidden" name="uuid" value="{{uuid}}" />
+
+    <form action="/post/add/{{ uuid }}" method="POST" >
+        <textarea data-preview="post_preview"></textarea>
+        <input type="hidden" name="id" value="" />
     </form>
-    <input type="button" value="Hinzuf&uuml;gen" on-tap="sendPost"/>
-{% endif %}
+    <input class="btn submit" type="button" value="Hinzuf&uuml;gen" />
+</div>
+

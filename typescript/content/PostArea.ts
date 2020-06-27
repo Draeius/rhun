@@ -8,11 +8,7 @@ namespace Content {
 
     export class PostArea {
 
-        private input: HTMLElement;
-
         private display: HTMLElement;
-
-        private timer: number;
 
         private ooc: boolean;
 
@@ -31,10 +27,8 @@ namespace Content {
          * @param ooc Gibt an, ob es sich um einen OOC handelt
          * @param previewOutput Das Element in dem die Vorschau ausgegeben wird.
          */
-        public constructor(display: HTMLElement, input: HTMLElement, timer: number = 3000, ooc: boolean) {
-            this.input = input;
+        public constructor(display: HTMLElement, ooc: boolean) {
             this.display = display;
-            this.timer = timer;
             this.ooc = ooc;
             this.posts = new Queue<Entity.Post>();
             this.postCon = new Ajax.PostConnector(rhun.uuid);

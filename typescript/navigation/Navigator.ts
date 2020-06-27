@@ -11,12 +11,6 @@ module navigation {
                 form.action = target;
             }
 
-            var id = document.createElement("input");
-            id.type = "hidden";
-            id.name = "uuid";
-            id.value = uuid;
-            form.appendChild(id);
-
             for (var key in fields) {
                 var input = document.createElement('input');
                 input.type = "hidden";

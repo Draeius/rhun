@@ -4,14 +4,15 @@ namespace App\Controller\Post;
 
 use App\Controller\BasicController;
 use App\Entity\Character;
-use App\Entity\Location;
 use App\Entity\Post;
 use App\Entity\ServerSettings;
 use App\Query\GetPostCountQuery;
 use App\Repository\CharacterRepository;
 use App\Repository\LocationRepository;
 use App\Repository\PostRepository;
-use App\Service\RewardDistributor;
+use App\Service\ConfigService;
+use App\Service\PlayerReward\RewardDistributor;
+use App\Service\PostService;
 use App\Util\Config\RolePlayConfig;
 use App\Util\Price;
 use App\Util\Session\RhunSession;
@@ -28,9 +29,12 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class PostController extends BasicController {
 
+    const GET_PAGE_ROUTE_NAME = 'post_page';
+    const EDIT_POST_ROUTE_NAME = 'post_edit';
+    
     /**
      * 
-     * @Route("/page/{uuid}/{page}", name="post_page")
+     * @Route("/page/{uuid}/{page}", name=PostController::ADD_POST_ROUTE_NAME)
      * @App\Annotation\Security(needCharacter=true)
      */
     public function getPage(int $page, EntityManagerInterface $eManager, CharacterRepository $charRepo, PostRepository $postRepo) {
@@ -51,23 +55,25 @@ class PostController extends BasicController {
      * @App\Annotation\Security(needCharacter=true)
      * @Route("/add/{uuid}")
      */
-    public function addPost(Request $request, EntityManagerInterface $eManager, CharacterRepository $charRepo, LocationRepository $locRepo) {
+    public function addPost(Request $request, EntityManagerInterface $eManager, CharacterRepository $charRepo, LocationRepository $locRepo, PostService $pService, ConfigService $config) {
+        if($request->get('id')){
+            return $this->redirectToRoute(PostController::EDIT_POST_ROUTE_NAME);
+        }
         $session = new RhunSession();
         /* @var $character Character */
         $character = $charRepo->find($session->getCharacterID());
         $location = $this->getPostLocation($request, $character, $locRepo);
         try {
-            $post = $this->createPost($request, $character, $location);
+            $post = $pService->createPost($request, $character, $location);
         } catch (EmptyPostException | DuplicatePostException $ex) {
             return new JsonResponse(array(
-                'error' => $ex.getMessage()
+                'error' => $ex->getMessage()
             ));
         }
 
         //add Reward
         /* @var $config RolePlayConfig */
-        $config = $this->getServerConfig()->getRpConfig();
-        $distributor = new RewardDistributor($config);
+        $distributor = new RewardDistributor($config->getRpConfig());
         $distributor->handOutReward($post, $character);
 
         //persist db
@@ -98,13 +104,13 @@ class PostController extends BasicController {
 
     /**
      * @App\Annotation\Security(needCharacter=true)
-     * @Route("/edit/{uuid}")
+     * @Route("/edit/{uuid}", name=PostController::EDIT_POST_ROUTE_NAME)
      * @param Request $request
      * @param type $uuid
      * @return JsonResponse
      */
     public function editPost(Request $request, $uuid) {
-        $rep = $this->getDoctrine()->getRepository('AppBundle:Post');
+        $rep = $this->getDoctrine()->getRepository('App:Post');
 
         $post = $rep->findLastOwnPost($this->getCharacter($uuid), filter_var($request->get("ooc"), FILTER_VALIDATE_BOOLEAN));
 
@@ -141,7 +147,7 @@ class PostController extends BasicController {
     public function deletePost(Request $request, $uuid) {
         $character = $this->getCharacter($uuid);
         /* @var $rep PostRepository */
-        $rep = $this->getDoctrine()->getRepository('AppBundle:Post');
+        $rep = $this->getDoctrine()->getRepository('App:Post');
         $post = $rep->findLastPost($character, filter_var($request->get("ooc"), FILTER_VALIDATE_BOOLEAN));
 
         //check if there is any post
@@ -172,22 +178,6 @@ class PostController extends BasicController {
         return new JsonResponse();
     }
 
-    private function isDuplicatePost(Character $character, Post $post) {
-        $rep = $this->getDoctrine()->getRepository('AppBundle:Post');
-        $test = $rep->findLastPost($character, $post->getLocation()->getId() == 1);
-        //check for same author
-        if (!$test) {
-            return false;
-        }
-
-        if ($test->getAuthor()->getId() == $post->getAuthor()->getId()) {
-            if ($test->getContent() == $post->getContent()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private function preparePostArray($posts, ?Character $character, ServerSettings $settings, EntityManagerInterface $eManager, int $pages) {
         $session = new RhunSession();
         $content = ['posts' => [], 'pageCount' => $pages];
@@ -206,7 +196,7 @@ class PostController extends BasicController {
     }
 
     private function getPostLocation(Request $request, Character $character, LocationRepository $locRepo) {
-        $rep = $this->getDoctrine()->getRepository('NavigationBundle:LocationEntity');
+        $rep = $this->getDoctrine()->getRepository('App:Location');
         if (filter_var($request->get('ooc'), FILTER_VALIDATE_BOOLEAN)) {
             return $rep->find(1);
         }

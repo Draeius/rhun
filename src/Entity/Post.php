@@ -32,13 +32,13 @@ class Post extends LocationBasedEntity {
      * @Column(type="text")
      */
     protected $content;
-
+    
     public function getContent() {
         return $this->content;
     }
-
-    public function setAuthor(Character $author) {
-        $this->author = $author;
+    
+    public function setContent(string $content){
+        $this->content = $content;
     }
 
 }

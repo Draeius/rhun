@@ -50,6 +50,7 @@ namespace Ajax {
 
         public submitForm(form: HTMLFormElement, callback: Function) {
             Logging.Logger.debug("form submit action: " + form.action);
+            console.log(this.getBaseURL() + form.action)
             this.submit({
                 type: "POST",
                 url: form.action,
@@ -58,7 +59,7 @@ namespace Ajax {
             return false;
         }
 
-        protected getBaseURL() {
+        public getBaseURL() {
             return window.location.protocol + "//" + window.location.host + "/";
         }
 

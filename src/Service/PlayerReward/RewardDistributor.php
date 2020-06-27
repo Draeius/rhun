@@ -22,7 +22,7 @@ class RewardDistributor {
         $this->config = $config;
     }
 
-    private function getReward(RhunEntity $entity): Price {
+    private function getReward(RhunEntity $entity): Reward {
         $calculator = RewardCalculator::FACTORY($entity, $this->config);
         return $calculator->getRewardFor($entity);
     }

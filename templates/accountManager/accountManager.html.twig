@@ -210,7 +210,23 @@
                     </td>
                     <td>
                         {% if newposts[char.id] is defined %}
-                            {{ newposts[char.id] | colorize | raw }}
+                            {% set oneAnswered = 0 %}
+                            {% for loc in newposts[char.id] %}
+                                {% if loc['isAnswered'] %}
+                                    {% set oneAnswered = 1 %}
+                                {% endif %}
+                            {% endfor %}
+                            <div onmouseover="display.Infobox.showInfobox(event, 20, 10)" onmouseout="display.Infobox.hideInfobox(event)">
+                                <img src="{% if oneAnswered %}{{asset('images/Icon_green_dot.png')}}{% else %}{{asset('images/Icon_red_dot.png')}}{% endif %}"
+                                    style="width: 20px; height: 20px;">
+                                <div class="infobox" style="display: none; z-index: 1000;">
+                                    {% for loc in newposts[char.id] %}
+                                        <img src="{% if loc['isAnswered'] %}{{asset('images/Icon_green_dot.png')}}{% else %}{{asset('images/Icon_red_dot.png')}}{% endif %}"
+                                            style="width: 10px; height: 10px;">
+                                        {{ loc['title'] | colorize | raw }}<br/>
+                                    {% endfor %}
+                                </div>
+                            </div>
                         {% else %}
                             Keine Posts 
                         {% endif %}
